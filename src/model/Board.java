@@ -14,6 +14,7 @@ public class Board {
 	private int[][] blackPawnCaptures = {{1, 0}, {-1, 1}};
 	Map<AxialCoordinate, Piece> pieces = new HashMap<>();
 	public boolean isWhiteTurn = true;
+	private AxialCoordinate enPassant;
 	public Board() {
 		int[][] kings = {{1, 4}};
 		int[][] queens = {{-1, 5}};
@@ -33,12 +34,27 @@ public class Board {
 		for (Map.Entry<AxialCoordinate, Piece> entry : other.pieces.entrySet())
 			pieces.put(entry.getKey(), entry.getValue());
 		isWhiteTurn = other.isWhiteTurn;
+		enPassant = other.enPassant;
 	}
 	public Piece getPiece(AxialCoordinate coord) {
 		return pieces.get(coord);
 	}
+	private boolean isPromotionCell(AxialCoordinate pos, boolean isWhite) {
+		return !pos.add(0, isWhite ? -1 : 1).isValid();
+	}
 	public void movePiece(AxialCoordinate from, AxialCoordinate to) {
-		pieces.put(to, pieces.remove(from));
+		Piece p = pieces.remove(from);
+		if (p.type == PieceType.PAWN) {
+			if (to.equals(enPassant))
+				pieces.remove(new AxialCoordinate(to.q, p.isWhite ? to.r + 1 : to.r - 1));
+			int dr = to.r - from.r;
+			enPassant = Math.abs(dr) == 2 ? new AxialCoordinate(from.q, from.r + dr / 2) : null;
+			if (isPromotionCell(to, p.isWhite))
+				p = new Piece(PieceType.QUEEN, p.isWhite);
+		} else {
+			enPassant = null;
+		}
+		pieces.put(to, p);
 		isWhiteTurn = !isWhiteTurn;
 	}
 	private void addStepMoves(AxialCoordinate pos, Piece p, int[][] offsets, List<Move> moves) {
@@ -65,17 +81,29 @@ public class Board {
 			}
 		}
 	}
+	private boolean isPawnStartCell(AxialCoordinate pos, boolean isWhite) {
+		int q = pos.q, r = pos.r;
+		if (isWhite)
+			return q <= 0 ? r == 1 - q : r == 1;
+		return q >= 0 ? r == -1 - q : r == -1;
+	}
 	private void addPawnMoves(AxialCoordinate pos, Piece p, List<Move> moves) {
-		int forwardR = p.isWhite ? -1 : 1;
-		AxialCoordinate fwd = pos.add(0, forwardR);
-		if (fwd.isValid() && pieces.get(fwd) == null)
+		int direction = p.isWhite ? -1 : 1;
+		AxialCoordinate fwd = pos.add(0, direction);
+		if (fwd.isValid() && pieces.get(fwd) == null) {
 			moves.add(new Move(pos, fwd));
-		for (int[] off : p.isWhite ? whitePawnCaptures : blackPawnCaptures) {
-			AxialCoordinate cap = pos.add(off[0], off[1]);
+			if (isPawnStartCell(pos, p.isWhite)) {
+				AxialCoordinate fwd2 = fwd.add(0, direction);
+				if (fwd2.isValid() && pieces.get(fwd2) == null)
+					moves.add(new Move(pos, fwd2));
+			}
+		}
+		for (int[] o : p.isWhite ? whitePawnCaptures : blackPawnCaptures) {
+			AxialCoordinate cap = pos.add(o[0], o[1]);
 			if (!cap.isValid())
 				continue;
 			Piece target = pieces.get(cap);
-			if (target != null && target.isWhite != p.isWhite)
+			if ((target != null && target.isWhite != p.isWhite) || cap.equals(enPassant))
 				moves.add(new Move(pos, cap));
 		}
 	}
