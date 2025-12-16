@@ -32,6 +32,15 @@
 		</dependency>
 	</dependencies>
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.css</include>
+					<include>**/*.fxml</include>
+				</includes>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -53,6 +62,13 @@
 				<configuration>
 					<target>${gluonfx.target}</target>
 					<mainClass>${main.class}</mainClass>
+					<reflectionList>
+						<list>im.bpu.hexachess.MainWindow</list>
+						<list>javafx.scene.canvas.Canvas</list>
+						<list>javafx.scene.control.Button</list>
+						<list>javafx.scene.layout.GridPane</list>
+						<list>javafx.scene.layout.HBox</list>
+					</reflectionList>
 				</configuration>
 			</plugin>
 		</plugins>
