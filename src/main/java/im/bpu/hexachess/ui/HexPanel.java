@@ -25,7 +25,7 @@ public class HexPanel {
 		this.board = board;
 		this.renderer = new HexRenderer(geometry, board);
 		this.canvas = canvas;
-		PieceImageLoader.loadImages();
+		PieceImageLoader.loadImages(this::repaint);
 		canvas.setOnMouseClicked(event -> handleMouseClick(event.getX(), event.getY()));
 		repaint();
 		// accumulate opacity to remove hex gaps
