@@ -55,7 +55,7 @@ class HexRenderer {
 	}
 	private void drawPiece(GraphicsContext gc, double x, double y, Piece p) {
 		Image img = PieceImageLoader.get((p.isWhite ? "w" : "b") + p.type.code);
-		if (img != null && !img.isError() && img.getProgress() == 1.0)
+		if (PieceImageLoader.isLoaded())
 			drawPieceImage(gc, x, y, img);
 		else
 			drawPieceFallback(gc, x, y, p);
