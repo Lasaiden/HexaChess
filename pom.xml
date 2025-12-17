@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>im.bpu</groupId>
 	<artifactId>hexachess</artifactId>
-	<version>2025.12.16</version>
+	<version>2025.12.17</version>
 	<properties>
 		<maven.compiler.source>21</maven.compiler.source>
 		<maven.compiler.target>21</maven.compiler.target>
