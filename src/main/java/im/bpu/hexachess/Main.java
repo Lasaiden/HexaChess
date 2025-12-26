@@ -14,6 +14,7 @@ public class Main extends Application {
 		Parent root = mainWindowLoader.load();
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("ui/style.css").toExternalForm());
+		stage.setTitle("HexaChess");
 		stage.setScene(scene);
 		stage.show();
 	}
