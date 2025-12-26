@@ -10,6 +10,7 @@ import im.bpu.hexachess.model.Piece;
 
 import java.util.ArrayList;
 import java.util.List;
+import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Screen;
@@ -22,6 +23,7 @@ public class HexPanel {
 	private AxialCoordinate selected;
 	private List<AxialCoordinate> highlighted = new ArrayList<>();
 	private Canvas canvas;
+	private boolean isLockedIn = false;
 	public HexPanel(Canvas canvas, State state) {
 		this.state = state;
 		ai.setMaxDepth(Settings.maxDepth);
@@ -58,13 +60,21 @@ public class HexPanel {
 		repaint();
 	}
 	private void executeMove(AxialCoordinate target) {
+		if (isLockedIn)
+			return;
 		state.history.push(new Board(state.board));
 		state.board.movePiece(selected, target);
 		deselect();
-		Move bestMove = ai.getBestMove(state.board);
-		if (bestMove != null)
-			state.board.movePiece(bestMove.from, bestMove.to);
-		repaint();
+		isLockedIn = true;
+		new Thread(() -> {
+			Move bestMove = ai.getBestMove(state.board);
+			Platform.runLater(() -> {
+				if (bestMove != null)
+					state.board.movePiece(bestMove.from, bestMove.to);
+				isLockedIn = false;
+				repaint();
+			});
+		}).start();
 	}
 	private void selectPiece(AxialCoordinate coord) {
 		selected = coord;
@@ -75,6 +85,8 @@ public class HexPanel {
 		repaint();
 	}
 	private void handleMouseClick(double x, double y) {
+		if (isLockedIn)
+			return;
 		double cx = canvas.getWidth() / 2;
 		double cy = canvas.getHeight() / 2;
 		AxialCoordinate clicked = geometry.pixelToHex(x, y, cx, cy);
@@ -93,12 +105,16 @@ public class HexPanel {
 			deselect();
 	}
 	public void restart() {
+		if (isLockedIn)
+			return;
 		state.clear();
 		ai.setMaxDepth(Settings.maxDepth);
 		renderer.setBoard(state.board);
 		deselect();
 	}
 	public void rewind() {
+		if (isLockedIn)
+			return;
 		if (!state.history.isEmpty()) {
 			state.board = state.history.pop();
 			renderer.setBoard(state.board);
