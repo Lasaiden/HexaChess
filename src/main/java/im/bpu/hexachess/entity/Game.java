@@ -2,7 +2,7 @@ package im.bpu.hexachess.entity;
 
 import java.time.LocalDateTime;
 
-public class Games {
+public class Game {
 	private String gameId;
 	private String whitePlayerId;
 	private String blackPlayerId;
@@ -13,7 +13,7 @@ public class Games {
 	private LocalDateTime endTime;
 	private String victoryType;
 
-	public Games(String gameId, String whitePlayerId, String blackPlayerId, String winnerId,
+	public Game(String gameId, String whitePlayerId, String blackPlayerId, String winnerId,
 		String tournamentId, String moves, LocalDateTime startTime, LocalDateTime endTime,
 		String victoryType) {
 		this.gameId = gameId;

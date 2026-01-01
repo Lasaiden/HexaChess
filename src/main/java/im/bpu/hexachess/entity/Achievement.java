@@ -1,11 +1,11 @@
 package im.bpu.hexachess.entity;
 
-public class Achievements {
+public class Achievement {
 	private String achievementId;
 	private String name;
 	private String description;
 
-	public Achievements(String achievementId, String name, String description) {
+	public Achievement(String achievementId, String name, String description) {
 		this.achievementId = achievementId;
 		this.name = name;
 		this.description = description;
