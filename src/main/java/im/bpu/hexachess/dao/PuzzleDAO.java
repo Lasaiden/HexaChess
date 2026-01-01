@@ -11,7 +11,7 @@ public class PuzzleDAO extends DAO<Puzzle> {
 	@Override
 	public Puzzle create(Puzzle obj) {
 		String requete = "INSERT INTO puzzles (puzzle_id, moves, solutions, rating, theme, "
-						 + "created_at) VALUES(?, ?, ?, ?, ?, ?)";
+			+ "created_at) VALUES(?, ?, ?, ?, ?, ?)";
 		try {
 			PreparedStatement pstmt = connect.prepareStatement(requete);
 			pstmt.setString(1, obj.getPuzzleId());
@@ -26,8 +26,8 @@ public class PuzzleDAO extends DAO<Puzzle> {
 				pstmt.setTimestamp(6, null);
 
 			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 		return obj;
 	}
@@ -35,7 +35,7 @@ public class PuzzleDAO extends DAO<Puzzle> {
 	@Override
 	public Puzzle update(Puzzle obj) {
 		String requete = "UPDATE puzzles SET moves = ?, solutions = ?, rating = ?, theme = ? WHERE "
-						 + "puzzle_id = ?";
+			+ "puzzle_id = ?";
 		try {
 			PreparedStatement pstmt = connect.prepareStatement(requete);
 			pstmt.setString(1, obj.getMoves());
@@ -44,8 +44,8 @@ public class PuzzleDAO extends DAO<Puzzle> {
 			pstmt.setString(4, obj.getTheme());
 			pstmt.setString(5, obj.getPuzzleId());
 			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 		return obj;
 	}
@@ -57,8 +57,8 @@ public class PuzzleDAO extends DAO<Puzzle> {
 			PreparedStatement pstmt = connect.prepareStatement(requete);
 			pstmt.setString(1, obj.getPuzzleId());
 			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 	}
 
@@ -77,8 +77,8 @@ public class PuzzleDAO extends DAO<Puzzle> {
 						: null);
 			}
 			rs.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 		return p;
 	}
@@ -96,8 +96,8 @@ public class PuzzleDAO extends DAO<Puzzle> {
 						: null));
 			}
 			rs.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 		return list;
 	}

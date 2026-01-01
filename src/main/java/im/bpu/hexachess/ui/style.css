@@ -95,3 +95,10 @@
 	/* navajowhite */
 	-fx-background-color: rgb(255, 206, 158);
 }
+
+#loginButton,
+#registerButton,
+#signOutButton
+{
+	-fx-pref-width: 128px;
+}

@@ -21,21 +21,22 @@ public class RegisterWindow {
 	private void handleRegister() {
 		PlayerDAO dao = new PlayerDAO();
 		String id = UUID.randomUUID().toString().substring(0, 11);
-		Player newPlayer = new Player(id, handleField.getText(), emailField.getText(),
+		String handle = handleField.getText();
+		Player newPlayer = new Player(id, handle, emailField.getText(),
 			BCrypt.hashpw(passwordField.getText(), BCrypt.gensalt()), 1200, false,
 			java.time.LocalDateTime.now());
 
 		try {
 			dao.create(newPlayer);
+			Settings.userHandle = handle;
+			Settings.save();
 			FXMLLoader mainWindowLoader =
 				new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));
 			mainWindowLoader.setController(new MainWindow());
 			Parent root = mainWindowLoader.load();
-			MainWindow controller = mainWindowLoader.getController();
-			controller.setSession(newPlayer);
 			handleField.getScene().setRoot(root);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
 			statusLabel.setText("Erreur (Pseudo déjà pris ?)");
 			statusLabel.setVisible(true);
 			statusLabel.setStyle("-fx-text-fill: red;");
@@ -46,13 +47,13 @@ public class RegisterWindow {
 	@FXML
 	private void goBack() {
 		try {
-			FXMLLoader mainWindowLoader =
-				new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));
-			mainWindowLoader.setController(new MainWindow());
-			Parent root = mainWindowLoader.load();
+			FXMLLoader startWindowLoader =
+				new FXMLLoader(getClass().getResource("ui/startWindow.fxml"));
+			startWindowLoader.setController(new StartWindow());
+			Parent root = startWindowLoader.load();
 			handleField.getScene().setRoot(root);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
 		}
 	}
 }

@@ -10,7 +10,7 @@ public class TournamentDAO extends DAO<Tournament> {
 	@Override
 	public Tournament create(Tournament obj) {
 		String requete = "INSERT INTO tournaments (tournament_id, name, description, start_time, "
-						 + "end_time, winner_id) VALUES(?, ?, ?, ?, ?, ?)";
+			+ "end_time, winner_id) VALUES(?, ?, ?, ?, ?, ?)";
 		try {
 			PreparedStatement pstmt = connect.prepareStatement(requete);
 			pstmt.setString(1, obj.getTournamentId());
@@ -31,8 +31,8 @@ public class TournamentDAO extends DAO<Tournament> {
 			pstmt.setString(6, obj.getWinnerId());
 
 			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 		return obj;
 	}
@@ -40,7 +40,7 @@ public class TournamentDAO extends DAO<Tournament> {
 	@Override
 	public Tournament update(Tournament obj) {
 		String requete = "UPDATE tournaments SET name = ?, description = ?, start_time = ?, "
-						 + "end_time = ?, winner_id = ? WHERE tournament_id = ?";
+			+ "end_time = ?, winner_id = ? WHERE tournament_id = ?";
 		try {
 			PreparedStatement pstmt = connect.prepareStatement(requete);
 			pstmt.setString(1, obj.getName());
@@ -60,8 +60,8 @@ public class TournamentDAO extends DAO<Tournament> {
 			pstmt.setString(6, obj.getTournamentId());
 
 			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 		return obj;
 	}
@@ -73,8 +73,8 @@ public class TournamentDAO extends DAO<Tournament> {
 			PreparedStatement pstmt = connect.prepareStatement(requete);
 			pstmt.setString(1, obj.getTournamentId());
 			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 	}
 
@@ -97,8 +97,8 @@ public class TournamentDAO extends DAO<Tournament> {
 					rs.getString("winner_id"));
 			}
 			rs.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 		return t;
 	}

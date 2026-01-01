@@ -17,18 +17,18 @@ public abstract class DAO<T> {
 			connect = SingleConnection.getInstance();
 			stmt = connect.createStatement(
 				ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-		} catch (Exception e) {
+		} catch (Exception exception) {
 			System.out.println(" === ERREUR OPEN DAO === ");
-			e.printStackTrace();
+			exception.printStackTrace();
 		}
 	}
 
 	public void close() {
 		try {
 			SingleConnection.close();
-		} catch (Exception e) {
+		} catch (Exception exception) {
 			System.out.println(" === ERREUR CLOSE DAO === ");
-			e.printStackTrace();
+			exception.printStackTrace();
 		}
 	}
 

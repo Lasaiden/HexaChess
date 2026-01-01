@@ -9,7 +9,7 @@ public class SettingsDAO extends DAO<Settings> {
 	@Override
 	public Settings create(Settings obj) {
 		String requete = "INSERT INTO settings (player_id, theme, show_legal_moves, "
-						 + "auto_promote_queen, ai_difficulty_level) VALUES(?, ?, ?, ?, ?)";
+			+ "auto_promote_queen, ai_difficulty_level) VALUES(?, ?, ?, ?, ?)";
 		try {
 			PreparedStatement pstmt = connect.prepareStatement(requete);
 			pstmt.setString(1, obj.getPlayerId());
@@ -18,8 +18,8 @@ public class SettingsDAO extends DAO<Settings> {
 			pstmt.setBoolean(4, obj.isAutoPromoteQueen());
 			pstmt.setInt(5, obj.getAiDifficultyLevel());
 			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 		return obj;
 	}
@@ -27,7 +27,7 @@ public class SettingsDAO extends DAO<Settings> {
 	@Override
 	public Settings update(Settings obj) {
 		String requete = "UPDATE settings SET theme = ?, show_legal_moves = ?, auto_promote_queen "
-						 + "= ?, ai_difficulty_level = ? WHERE player_id = ?";
+			+ "= ?, ai_difficulty_level = ? WHERE player_id = ?";
 		try {
 			PreparedStatement pstmt = connect.prepareStatement(requete);
 			pstmt.setString(1, obj.getTheme());
@@ -36,8 +36,8 @@ public class SettingsDAO extends DAO<Settings> {
 			pstmt.setInt(4, obj.getAiDifficultyLevel());
 			pstmt.setString(5, obj.getPlayerId());
 			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 		return obj;
 	}
@@ -49,8 +49,8 @@ public class SettingsDAO extends DAO<Settings> {
 			PreparedStatement pstmt = connect.prepareStatement(requete);
 			pstmt.setString(1, obj.getPlayerId());
 			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 	}
 
@@ -67,8 +67,8 @@ public class SettingsDAO extends DAO<Settings> {
 					rs.getInt("ai_difficulty_level"));
 			}
 			rs.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 		return s;
 	}

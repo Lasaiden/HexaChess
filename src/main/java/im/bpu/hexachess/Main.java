@@ -9,9 +9,18 @@ import javafx.stage.Stage;
 public class Main extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
-		FXMLLoader mainWindowLoader = new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));
-		mainWindowLoader.setController(new MainWindow());
-		Parent root = mainWindowLoader.load();
+		Parent root;
+		if (Settings.userHandle != null) {
+			FXMLLoader mainWindowLoader =
+				new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));
+			mainWindowLoader.setController(new MainWindow());
+			root = mainWindowLoader.load();
+		} else {
+			FXMLLoader startWindowLoader =
+				new FXMLLoader(getClass().getResource("ui/startWindow.fxml"));
+			startWindowLoader.setController(new StartWindow());
+			root = startWindowLoader.load();
+		}
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("ui/style.css").toExternalForm());
 		stage.setTitle("HexaChess");

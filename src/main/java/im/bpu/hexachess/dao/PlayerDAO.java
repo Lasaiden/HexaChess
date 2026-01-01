@@ -28,8 +28,8 @@ public class PlayerDAO extends DAO<Player> {
 
 			pstmt.executeUpdate();
 
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 		return obj;
 	}
@@ -47,8 +47,8 @@ public class PlayerDAO extends DAO<Player> {
 			pstmt.setBoolean(5, obj.isVerified());
 			pstmt.setString(6, obj.getPlayerId());
 			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 		return obj;
 	}
@@ -60,8 +60,8 @@ public class PlayerDAO extends DAO<Player> {
 			PreparedStatement pstmt = connect.prepareStatement(requete);
 			pstmt.setString(1, obj.getPlayerId());
 			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 	}
 
@@ -81,8 +81,8 @@ public class PlayerDAO extends DAO<Player> {
 						: null);
 			}
 			rs.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 		return p;
 	}
@@ -101,8 +101,8 @@ public class PlayerDAO extends DAO<Player> {
 						: null));
 			}
 			rs.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 		return list;
 	}
@@ -124,8 +124,8 @@ public class PlayerDAO extends DAO<Player> {
 						: null);
 			}
 			rs.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 		return p;
 	}
@@ -146,8 +146,8 @@ public class PlayerDAO extends DAO<Player> {
 						: null);
 			}
 			rs.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 		return p;
 	}

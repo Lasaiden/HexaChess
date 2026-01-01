@@ -17,8 +17,8 @@ public class AchievementDAO extends DAO<Achievement> {
 			pstmt.setString(2, obj.getName());
 			pstmt.setString(3, obj.getDescription());
 			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 		return obj;
 	}
@@ -33,8 +33,8 @@ public class AchievementDAO extends DAO<Achievement> {
 			pstmt.setString(2, obj.getDescription());
 			pstmt.setString(3, obj.getAchievementId());
 			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 		return obj;
 	}
@@ -46,8 +46,8 @@ public class AchievementDAO extends DAO<Achievement> {
 			PreparedStatement pstmt = connect.prepareStatement(requete);
 			pstmt.setString(1, obj.getAchievementId());
 			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 	}
 
@@ -63,8 +63,8 @@ public class AchievementDAO extends DAO<Achievement> {
 					rs.getString("description"));
 			}
 			rs.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 		return a;
 	}
@@ -79,8 +79,8 @@ public class AchievementDAO extends DAO<Achievement> {
 					rs.getString("description")));
 			}
 			rs.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 		return list;
 	}

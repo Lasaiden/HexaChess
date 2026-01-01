@@ -4,21 +4,10 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Label?>
 <VBox xmlns:fx="http://javafx.com/fxml" alignment="center">
 	<StackPane>
 		<Canvas fx:id="canvas" width="666" height="666" />
-		<HBox spacing="10" alignment="TOP_RIGHT" pickOnBounds="false" style="-fx-padding: 10;">
-			<HBox fx:id="authBox" spacing="10" alignment="TOP_RIGHT">
-				<Button text="Inscription" onAction="#goToRegister" />
-				<Button text="Connexion" onAction="#goToLogin" />
-			</HBox>
-			<HBox fx:id="userBox" visible="false" managed="false" spacing="10" alignment="TOP_RIGHT" pickOnBounds="false" style="-fx-padding: 10;">
-				<Label fx:id="usernameLabel" />
-				<Label fx:id="ratingLabel" />
-			</HBox>
-			<Button fx:id="settingsHelpButton" text="⋮" onAction="#openSettings" styleClass="settings-help-button" />
-		</HBox>
+		<Button fx:id="settingsHelpButton" text="⋮" onAction="#openSettings" StackPane.alignment="TOP_RIGHT" styleClass="settings-help-button" />
 	</StackPane>
 	<HBox alignment="center" spacing="16">
 		<Button text="Restart" onAction="#restart" />

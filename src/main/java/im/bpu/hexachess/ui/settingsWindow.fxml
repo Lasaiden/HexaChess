@@ -3,11 +3,12 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
-<VBox xmlns:fx="http://javafx.com/fxml" alignment="CENTER" spacing="32">
+<VBox xmlns:fx="http://javafx.com/fxml" alignment="center" spacing="32">
 	<Label text="Settings" styleClass="h2" />
-	<VBox alignment="CENTER" spacing="16">
+	<VBox alignment="center" spacing="16">
 		<Label text="AI Difficulty" />
 		<ComboBox fx:id="maxDepthComboBox" prefWidth="160" />
 	</VBox>
+	<Button fx:id="signOutButton" text="Sign Out" onAction="#openStart" />
 	<Button fx:id="backButton" text="Back" onAction="#openMain" />
 </VBox>

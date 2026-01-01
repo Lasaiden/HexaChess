@@ -10,8 +10,8 @@ public class GameDAO extends DAO<GameEntity> {
 	@Override
 	public GameEntity create(GameEntity obj) {
 		String requete = "INSERT INTO games (game_id, white_player_id, black_player_id, winner_id, "
-						 + "tournament_id, moves, start_time, end_time, victory_type) VALUES(?, ?, "
-						 + "?, ?, ?, ?, ?, ?, ?)";
+			+ "tournament_id, moves, start_time, end_time, victory_type) VALUES(?, ?, "
+			+ "?, ?, ?, ?, ?, ?, ?)";
 		try {
 			PreparedStatement pstmt = connect.prepareStatement(requete);
 			pstmt.setString(1, obj.getGameId());
@@ -34,8 +34,8 @@ public class GameDAO extends DAO<GameEntity> {
 			pstmt.setString(9, obj.getVictoryType());
 
 			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 		return obj;
 	}
@@ -43,7 +43,7 @@ public class GameDAO extends DAO<GameEntity> {
 	@Override
 	public GameEntity update(GameEntity obj) {
 		String requete = "UPDATE games SET moves = ?, end_time = ?, winner_id = ?, victory_type = "
-						 + "? WHERE game_id = ?";
+			+ "? WHERE game_id = ?";
 		try {
 			PreparedStatement pstmt = connect.prepareStatement(requete);
 			pstmt.setString(1, obj.getMoves());
@@ -58,8 +58,8 @@ public class GameDAO extends DAO<GameEntity> {
 			pstmt.setString(5, obj.getGameId());
 
 			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 		return obj;
 	}
@@ -71,8 +71,8 @@ public class GameDAO extends DAO<GameEntity> {
 			PreparedStatement pstmt = connect.prepareStatement(requete);
 			pstmt.setString(1, obj.getGameId());
 			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 	}
 
@@ -96,8 +96,8 @@ public class GameDAO extends DAO<GameEntity> {
 					rs.getString("victory_type"));
 			}
 			rs.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
 		}
 		return g;
 	}

@@ -40,4 +40,18 @@ public class SettingsWindow {
 			exception.printStackTrace();
 		}
 	}
+	@FXML
+	private void openStart() {
+		Settings.userHandle = null;
+		Settings.save();
+		try {
+			FXMLLoader startWindowLoader =
+				new FXMLLoader(getClass().getResource("ui/startWindow.fxml"));
+			startWindowLoader.setController(new StartWindow());
+			Parent root = startWindowLoader.load();
+			backButton.getScene().setRoot(root);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+	}
 }

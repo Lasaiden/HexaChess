@@ -31,8 +31,8 @@ public class SingleConnection {
 			if (connect != null && !connect.isClosed()) {
 				connect.close();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
 		}
 	}
 }

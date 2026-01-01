@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<VBox xmlns:fx="http://javafx.com/fxml" alignment="center" spacing="32">
+	<Label text="HexaChess" styleClass="h2" />
+	<VBox alignment="center" spacing="16">
+		<Button fx:id="registerButton" text="Inscription" onAction="#goToRegister" />
+		<Button fx:id="loginButton" text="Connexion" onAction="#goToLogin" />
+	</VBox>
+</VBox>
