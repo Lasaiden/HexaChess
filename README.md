@@ -105,6 +105,91 @@ cd HexaChess
 mvn clean gluonfx:run
 ```
 
+## 🗄️ Database Setup
+
+On Arch Linux:
+
+```bash
+sudo pacman -S apache mariadb php php-apache phpmyadmin
+```
+
+### PHP
+
+```bash
+sudo vim /etc/php/php.ini
+```
+
+```
+extension=mysqli
+```
+
+### phpMyAdmin
+
+```bash
+sudo vim /etc/httpd/conf/extra/phpmyadmin.conf
+```
+
+```
+Alias /phpmyadmin "/usr/share/webapps/phpMyAdmin"
+<Directory "/usr/share/webapps/phpMyAdmin">
+    DirectoryIndex index.php
+    AllowOverride All
+    Options FollowSymlinks
+    Require all granted
+</Directory>
+```
+
+### MariaDB
+
+```bash
+sudo systemctl stop mariadb
+sudo mariadbd-safe --skip-grant-tables --skip-networking &
+```
+
+```bash
+mariadb -u root
+```
+
+```sql
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'password123';
+FLUSH PRIVILEGES;
+EXIT;
+```
+
+```bash
+sudo kill $(pgrep mariadb)
+sudo systemctl start mariadb
+```
+
+### Apache
+
+```bash
+sudo vim /etc/httpd/conf/httpd.conf
+```
+
+```
+#LoadModule mpm_event_module modules/mod_mpm_event.so
+LoadModule mpm_prefork_module modules/mod_mpm_prefork.so
+LoadModule php_module modules/libphp.so
+AddHandler php-script .php
+Include conf/extra/php_module.conf
+Include conf/extra/phpmyadmin.conf
+```
+
+```bash
+sudo systemctl restart httpd
+```
+
+On Windows:
+
+### XAMPP Control Panel
+
+Start **Apache** and **MySQL**
+
+1. Open `http://localhost/phpmyadmin`
+2. Create database `hexachess`
+3. Import `Looping/hexachess.sql`
+
 ## 🛠️ Build from Source
 
 ### Linux
