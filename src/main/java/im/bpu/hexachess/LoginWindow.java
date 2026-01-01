@@ -32,13 +32,13 @@ public class LoginWindow {
 					loginSuccess = true;
 				}
 			}
+			System.out.println("Connecté en tant que : " + p.getHandle());
 			dao.close();
 		}
 
 		if (loginSuccess) {
 			Settings.userHandle = handle;
 			Settings.save();
-			System.out.println("Connecté en tant que : " + p.getHandle());
 			try {
 				FXMLLoader mainWindowLoader =
 					new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));
