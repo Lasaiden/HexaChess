@@ -13,7 +13,7 @@
 		</HBox>
 	</VBox>
 	<Button fx:id="menuButton" text="☰" onAction="#toggleSidebar" StackPane.alignment="top_left" styleClass="menu-button" />
-	<Button fx:id="settingsHelpButton" text="⋮" onAction="#openSettings" StackPane.alignment="top_right" styleClass="settings-help-button" />
+	<Button fx:id="settingsHelpButton" text="⋮" onAction="#openHelpSettings" StackPane.alignment="top_right" styleClass="settings-help-button" />
 	<VBox fx:id="sidebar" styleClass="sidebar" maxWidth="160">
 		<Button text="Search" onAction="#openSettings" styleClass="sidebar-item" />
 		<Button text="Profile" onAction="#openSettings" styleClass="sidebar-item" />

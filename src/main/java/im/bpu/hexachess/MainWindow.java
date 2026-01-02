@@ -5,9 +5,12 @@ import im.bpu.hexachess.ui.HexPanel;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Side;
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
@@ -61,5 +64,15 @@ public class MainWindow {
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
+	}
+	@FXML
+	private void openHelpSettings() {
+		ContextMenu menu = new ContextMenu();
+		MenuItem settingsItem = new MenuItem("Settings");
+		MenuItem helpItem = new MenuItem("Help");
+		settingsItem.setOnAction(ev -> openSettings());
+		helpItem.setOnAction(ev -> openSettings());
+		menu.getItems().addAll(settingsItem, helpItem);
+		menu.show(settingsHelpButton, Side.BOTTOM, 0, 0);
 	}
 }

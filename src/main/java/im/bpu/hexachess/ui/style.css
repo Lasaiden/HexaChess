@@ -77,6 +77,8 @@
 .button:hover,
 .combo-box-base:hover,
 .combo-box-popup .list-cell:filled:hover,
+.menu-item:focused,
+.menu-item:hover,
 .password-field:focused,
 .sidebar-item:hover,
 .text-field:focused
@@ -86,7 +88,8 @@
 	background-color: rgb(255, 206, 158);
 }
 
-.button:pressed
+.button:pressed,
+.menu-item:pressed
 {
 	/* peru */
 	-fx-background-color: rgb(209, 139, 71);
@@ -128,18 +131,31 @@
 	border-width: 0 3px 0 0;
 }
 
+.context-menu,
 .sidebar-item
 {
-	-fx-alignment: center-left;
 	-fx-background-color: white;
 	-fx-background-radius: 0;
 	-fx-border-color: black;
 	-fx-border-radius: 0;
-	-fx-border-width: 0 0 3px 0;
-	-fx-pref-width: 160px;
 	background-color: white;
 	border-color: black;
 	border-radius: 0;
+}
+
+.context-menu
+{
+	-fx-border-width: 3px;
+	-fx-padding: 0;
+	border-width: 3px;
+	padding: 0;
+}
+
+.sidebar-item
+{
+	-fx-alignment: center-left;
+	-fx-border-width: 0 0 3px 0;
+	-fx-pref-width: 160px;
 	border-width: 0 0 3px 0;
 }
 
