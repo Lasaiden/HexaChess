@@ -27,12 +27,15 @@ public class API {
 	private static HttpResponse<String> sendWithFallback(
 		HttpRequest.Builder requestBuilder, String endpoint) throws Exception {
 		try {
-			HttpRequest request = requestBuilder.uri(URI.create(DEV_URL + endpoint)).build();
-			return client.send(request, HttpResponse.BodyHandlers.ofString());
-		} catch (Exception exception) {
-			HttpRequest request = requestBuilder.uri(URI.create(PROD_URL + endpoint)).build();
-			return client.send(request, HttpResponse.BodyHandlers.ofString());
+			return sendRequest(requestBuilder, DEV_URL, endpoint);
+		} catch (Exception primaryException) {
+			return sendRequest(requestBuilder, PROD_URL, endpoint);
 		}
+	}
+	private static HttpResponse<String> sendRequest(
+		HttpRequest.Builder requestBuilder, String baseUrl, String endpoint) throws Exception {
+		HttpRequest request = requestBuilder.uri(URI.create(baseUrl + endpoint)).build();
+		return client.send(request, HttpResponse.BodyHandlers.ofString());
 	}
 	public static Player login(String handle, String password) {
 		try {

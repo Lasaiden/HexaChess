@@ -85,42 +85,23 @@ public class PlayerDAO extends DAO<Player> {
 			if (rs.next()) {
 				player = resultSetToPlayer(rs);
 			}
-			rs.close();
 		} catch (SQLException exception) {
 			exception.printStackTrace();
 		}
 		return player;
 	}
 	public ArrayList<Player> readAll() {
-		ArrayList<Player> list = new ArrayList<>();
+		ArrayList<Player> players = new ArrayList<>();
 		String request = "SELECT * FROM players";
 		try {
 			ResultSet rs = stmt.executeQuery(request);
 			while (rs.next()) {
-				list.add(resultSetToPlayer(rs));
+				players.add(resultSetToPlayer(rs));
 			}
-			rs.close();
 		} catch (SQLException exception) {
 			exception.printStackTrace();
 		}
-		return list;
-	}
-	public Player login(String handle, String password) {
-		Player player = null;
-		String request = "SELECT * FROM players WHERE handle = ? AND password_hash = ?";
-		try {
-			PreparedStatement pstmt = connect.prepareStatement(request);
-			pstmt.setString(1, handle);
-			pstmt.setString(2, password);
-			ResultSet rs = pstmt.executeQuery();
-			if (rs.next()) {
-				player = resultSetToPlayer(rs);
-			}
-			rs.close();
-		} catch (SQLException exception) {
-			exception.printStackTrace();
-		}
-		return player;
+		return players;
 	}
 	public Player getPlayerByHandle(String handle) {
 		Player player = null;
@@ -132,7 +113,6 @@ public class PlayerDAO extends DAO<Player> {
 			if (rs.next()) {
 				player = resultSetToPlayer(rs);
 			}
-			rs.close();
 		} catch (SQLException exception) {
 			exception.printStackTrace();
 		}
@@ -148,7 +128,6 @@ public class PlayerDAO extends DAO<Player> {
 			while (rs.next()) {
 				players.add(resultSetToPlayer(rs));
 			}
-			rs.close();
 		} catch (SQLException exception) {
 			exception.printStackTrace();
 		}

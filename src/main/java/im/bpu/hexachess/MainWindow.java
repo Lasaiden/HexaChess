@@ -27,10 +27,10 @@ public class MainWindow {
 	}
 	@FXML
 	private void toggleSidebar() {
-		boolean closed = !sidebar.isVisible();
+		boolean isClosed = !sidebar.isVisible();
 		Duration duration = Duration.millis(160);
 		TranslateTransition transition = new TranslateTransition(duration, sidebar);
-		if (closed) {
+		if (isClosed) {
 			transition.setToX(0);
 			sidebar.setVisible(true);
 		} else {

@@ -9,7 +9,7 @@ import com.mysql.cj.jdbc.MysqlDataSource;
 
 public class SingleConnection {
 	private static Connection connect;
-	private SingleConnection() throws ClassNotFoundException, SQLException {
+	private SingleConnection() throws SQLException {
 		String url =
 			Config.get("DB_URL", "jdbc:mysql://localhost:3306/hexachess?serverTimezone=UTC");
 		String login = Config.get("DB_USER", "root");
@@ -22,11 +22,10 @@ public class SingleConnection {
 	}
 	private String getPassword() {
 		String osName = System.getProperty("os.name").toLowerCase();
-		if (osName.contains("win"))
-			return "";
-		return "password123";
+		boolean isWindows = osName.contains("win");
+		return isWindows ? "" : "password123";
 	}
-	public static Connection getInstance() throws ClassNotFoundException, SQLException {
+	public static Connection getInstance() throws SQLException {
 		if (connect == null || connect.isClosed())
 			new SingleConnection();
 		return connect;
@@ -35,7 +34,7 @@ public class SingleConnection {
 		try {
 			if (connect != null && !connect.isClosed())
 				connect.close();
-		} catch (Exception exception) {
+		} catch (SQLException exception) {
 			exception.printStackTrace();
 		}
 	}
