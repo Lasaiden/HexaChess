@@ -10,11 +10,11 @@ import java.sql.Timestamp;
 public class GameDAO extends DAO<Game> {
 	@Override
 	public Game create(Game obj) {
-		String requete = "INSERT INTO games (game_id, white_player_id, black_player_id, winner_id, "
+		String request = "INSERT INTO games (game_id, white_player_id, black_player_id, winner_id, "
 			+ "tournament_id, moves, start_time, end_time, victory_type) VALUES(?, ?, "
 			+ "?, ?, ?, ?, ?, ?, ?)";
 		try {
-			PreparedStatement pstmt = connect.prepareStatement(requete);
+			PreparedStatement pstmt = connect.prepareStatement(request);
 			pstmt.setString(1, obj.getGameId());
 			pstmt.setString(2, obj.getWhitePlayerId());
 			pstmt.setString(3, obj.getBlackPlayerId());
@@ -38,10 +38,10 @@ public class GameDAO extends DAO<Game> {
 	}
 	@Override
 	public Game update(Game obj) {
-		String requete = "UPDATE games SET moves = ?, end_time = ?, winner_id = ?, victory_type = "
+		String request = "UPDATE games SET moves = ?, end_time = ?, winner_id = ?, victory_type = "
 			+ "? WHERE game_id = ?";
 		try {
-			PreparedStatement pstmt = connect.prepareStatement(requete);
+			PreparedStatement pstmt = connect.prepareStatement(request);
 			pstmt.setString(1, obj.getMoves());
 			if (obj.getEndTime() != null)
 				pstmt.setTimestamp(2, Timestamp.valueOf(obj.getEndTime()));
@@ -58,9 +58,9 @@ public class GameDAO extends DAO<Game> {
 	}
 	@Override
 	public void delete(Game obj) {
-		String requete = "DELETE FROM games WHERE game_id = ?";
+		String request = "DELETE FROM games WHERE game_id = ?";
 		try {
-			PreparedStatement pstmt = connect.prepareStatement(requete);
+			PreparedStatement pstmt = connect.prepareStatement(request);
 			pstmt.setString(1, obj.getGameId());
 			pstmt.executeUpdate();
 		} catch (SQLException exception) {
@@ -68,14 +68,14 @@ public class GameDAO extends DAO<Game> {
 		}
 	}
 	public Game read(String id) {
-		Game g = null;
-		String requete = "SELECT * FROM games WHERE game_id = ?";
+		Game game = null;
+		String request = "SELECT * FROM games WHERE game_id = ?";
 		try {
-			PreparedStatement pstmt = connect.prepareStatement(requete);
+			PreparedStatement pstmt = connect.prepareStatement(request);
 			pstmt.setString(1, id);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
-				g = new Game(rs.getString("game_id"), rs.getString("white_player_id"),
+				game = new Game(rs.getString("game_id"), rs.getString("white_player_id"),
 					rs.getString("black_player_id"), rs.getString("winner_id"),
 					rs.getString("tournament_id"), rs.getString("moves"),
 					rs.getTimestamp("start_time") != null
@@ -90,6 +90,6 @@ public class GameDAO extends DAO<Game> {
 		} catch (SQLException exception) {
 			exception.printStackTrace();
 		}
-		return g;
+		return game;
 	}
 }

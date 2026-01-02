@@ -98,8 +98,8 @@ public class HexPanel {
 			executeMove(clicked);
 			return;
 		}
-		Piece p = state.board.getPiece(clicked);
-		if (p != null && p.isWhite == state.board.isWhiteTurn)
+		Piece piece = state.board.getPiece(clicked);
+		if (piece != null && piece.isWhite == state.board.isWhiteTurn)
 			selectPiece(clicked);
 		else
 			deselect();

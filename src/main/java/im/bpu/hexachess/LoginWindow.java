@@ -26,16 +26,16 @@ public class LoginWindow {
 		}
 		String handle = handleField.getText();
 		String pass = passwordField.getText();
-		Player p = null;
+		Player player = null;
 		if ("root".equals(handle) && "password123".equals(pass)) {
-			p = new Player("00000000000", "root", "root@localhost", "", 1200, true, null);
+			player = new Player("00000000000", "root", "root@localhost", "", 1200, true, null);
 		} else {
-			p = API.login(handle, pass);
-			System.out.println("Connected as: " + (p != null ? p.getHandle() : "null"));
+			player = API.login(handle, pass);
+			System.out.println("Connected as: " + (player != null ? player.getHandle() : "null"));
 		}
-		if (p != null) {
+		if (player != null) {
 			Settings.userHandle = handle;
-			Settings.authToken = p.getToken();
+			Settings.authToken = player.getToken();
 			Settings.save();
 			try {
 				FXMLLoader mainWindowLoader =

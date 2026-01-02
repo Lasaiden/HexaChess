@@ -38,27 +38,27 @@ class HexRenderer {
 		double offset = size / 2;
 		gc.drawImage(img, x - offset, y - offset, size, size);
 	}
-	private void drawPieceFallback(GraphicsContext gc, double x, double y, Piece p) {
+	private void drawPieceFallback(GraphicsContext gc, double x, double y, Piece piece) {
 		double size = geometry.getHexSize();
 		double offset = size / 2;
-		gc.setFill(p.isWhite ? Color.WHITE : Color.BLACK);
+		gc.setFill(piece.isWhite ? Color.WHITE : Color.BLACK);
 		gc.fillOval(x - offset, y - offset, size, size);
-		gc.setStroke(p.isWhite ? Color.BLACK : Color.WHITE);
+		gc.setStroke(piece.isWhite ? Color.BLACK : Color.WHITE);
 		gc.setLineWidth(2);
 		gc.strokeOval(x - offset, y - offset, size, size);
-		gc.setFill(p.isWhite ? Color.BLACK : Color.WHITE);
+		gc.setFill(piece.isWhite ? Color.BLACK : Color.WHITE);
 		gc.setFont(Font.font(size * 0.666));
-		String label = String.valueOf(Character.toUpperCase(p.type.code));
+		String label = String.valueOf(Character.toUpperCase(piece.type.code));
 		gc.setTextAlign(TextAlignment.CENTER);
 		gc.setTextBaseline(VPos.CENTER);
 		gc.fillText(label, x, y - 1);
 	}
-	private void drawPiece(GraphicsContext gc, double x, double y, Piece p) {
-		Image img = PieceImageLoader.get((p.isWhite ? "w" : "b") + p.type.code);
+	private void drawPiece(GraphicsContext gc, double x, double y, Piece piece) {
+		Image img = PieceImageLoader.get((piece.isWhite ? "w" : "b") + piece.type.code);
 		if (PieceImageLoader.isLoaded())
 			drawPieceImage(gc, x, y, img);
 		else
-			drawPieceFallback(gc, x, y, p);
+			drawPieceFallback(gc, x, y, piece);
 	}
 	/*
 	private void drawCoordinates(GraphicsContext gc, double x, double y, AxialCoordinate coord) {
@@ -96,9 +96,9 @@ class HexRenderer {
 			gc.setFill(GREEN);
 			gc.fill();
 		}
-		Piece p = board.getPiece(coord);
-		if (p != null)
-			drawPiece(gc, center.getX(), center.getY(), p);
+		Piece piece = board.getPiece(coord);
+		if (piece != null)
+			drawPiece(gc, center.getX(), center.getY(), piece);
 		// drawCoordinates(gc, center.getX(), center.getY(), coord);
 	}
 	private void drawCellBorder(GraphicsContext gc, double cx, double cy, int q, int r) {

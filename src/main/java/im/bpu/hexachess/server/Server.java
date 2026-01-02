@@ -52,16 +52,16 @@ public class Server {
 				String handle = jsonNode.get("handle").asText();
 				String password = jsonNode.get("password").asText();
 				PlayerDAO dao = new PlayerDAO();
-				Player p = dao.getPlayerByHandle(handle);
+				Player player = dao.getPlayerByHandle(handle);
 				dao.close();
-				if (p != null && BCrypt.checkpw(password, p.getPasswordHash())) {
-					p.setPasswordHash(null);
-					p.setToken(Jwts.builder()
+				if (player != null && BCrypt.checkpw(password, player.getPasswordHash())) {
+					player.setPasswordHash(null);
+					player.setToken(Jwts.builder()
 							.issuedAt(new Date())
 							.signWith(KEY)
 							.subject(handle)
 							.compact());
-					String response = mapper.writeValueAsString(p);
+					String response = mapper.writeValueAsString(player);
 					sendResponse(exchange, 200, response);
 				} else {
 					sendResponse(exchange, 401, "Unauthorized");
@@ -80,15 +80,15 @@ public class Server {
 				return;
 			}
 			try {
-				Player newPlayer = mapper.readValue(exchange.getRequestBody(), Player.class);
-				String pass = newPlayer.getPasswordHash();
+				Player player = mapper.readValue(exchange.getRequestBody(), Player.class);
+				String pass = player.getPasswordHash();
 				String passwordHash = BCrypt.hashpw(pass, BCrypt.gensalt());
-				newPlayer.setPasswordHash(passwordHash);
-				newPlayer.setRating(1200);
-				newPlayer.setVerified(false);
-				newPlayer.setJoinedAt(LocalDateTime.now());
+				player.setPasswordHash(passwordHash);
+				player.setRating(1200);
+				player.setVerified(false);
+				player.setJoinedAt(LocalDateTime.now());
 				PlayerDAO dao = new PlayerDAO();
-				dao.create(newPlayer);
+				dao.create(player);
 				dao.close();
 				sendResponse(exchange, 200, "OK");
 			} catch (Exception exception) {
@@ -110,7 +110,7 @@ public class Server {
 				PlayerDAO dao = new PlayerDAO();
 				List<Player> players = dao.searchPlayers(handle);
 				dao.close();
-				for (Player p : players) p.setPasswordHash(null);
+				for (Player player : players) player.setPasswordHash(null);
 				String response = mapper.writeValueAsString(players);
 				sendResponse(exchange, 200, response);
 			} catch (Exception exception) {
@@ -130,11 +130,11 @@ public class Server {
 				String query = exchange.getRequestURI().getQuery();
 				String handle = query.split("=")[1];
 				PlayerDAO dao = new PlayerDAO();
-				Player p = dao.getPlayerByHandle(handle);
+				Player player = dao.getPlayerByHandle(handle);
 				dao.close();
-				if (p != null) {
-					p.setPasswordHash(null);
-					String response = mapper.writeValueAsString(p);
+				if (player != null) {
+					player.setPasswordHash(null);
+					String response = mapper.writeValueAsString(player);
 					sendResponse(exchange, 200, response);
 				} else {
 					sendResponse(exchange, 404, "Not Found");

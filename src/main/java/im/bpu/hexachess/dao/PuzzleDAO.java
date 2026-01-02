@@ -11,10 +11,10 @@ import java.util.ArrayList;
 public class PuzzleDAO extends DAO<Puzzle> {
 	@Override
 	public Puzzle create(Puzzle obj) {
-		String requete = "INSERT INTO puzzles (puzzle_id, moves, solutions, rating, theme, "
+		String request = "INSERT INTO puzzles (puzzle_id, moves, solutions, rating, theme, "
 			+ "created_at) VALUES(?, ?, ?, ?, ?, ?)";
 		try {
-			PreparedStatement pstmt = connect.prepareStatement(requete);
+			PreparedStatement pstmt = connect.prepareStatement(request);
 			pstmt.setString(1, obj.getPuzzleId());
 			pstmt.setString(2, obj.getMoves());
 			pstmt.setString(3, obj.getSolutions());
@@ -32,10 +32,10 @@ public class PuzzleDAO extends DAO<Puzzle> {
 	}
 	@Override
 	public Puzzle update(Puzzle obj) {
-		String requete = "UPDATE puzzles SET moves = ?, solutions = ?, rating = ?, theme = ? WHERE "
+		String request = "UPDATE puzzles SET moves = ?, solutions = ?, rating = ?, theme = ? WHERE "
 			+ "puzzle_id = ?";
 		try {
-			PreparedStatement pstmt = connect.prepareStatement(requete);
+			PreparedStatement pstmt = connect.prepareStatement(request);
 			pstmt.setString(1, obj.getMoves());
 			pstmt.setString(2, obj.getSolutions());
 			pstmt.setInt(3, obj.getRating());
@@ -49,9 +49,9 @@ public class PuzzleDAO extends DAO<Puzzle> {
 	}
 	@Override
 	public void delete(Puzzle obj) {
-		String requete = "DELETE FROM puzzles WHERE puzzle_id = ?";
+		String request = "DELETE FROM puzzles WHERE puzzle_id = ?";
 		try {
-			PreparedStatement pstmt = connect.prepareStatement(requete);
+			PreparedStatement pstmt = connect.prepareStatement(request);
 			pstmt.setString(1, obj.getPuzzleId());
 			pstmt.executeUpdate();
 		} catch (SQLException exception) {
@@ -59,14 +59,14 @@ public class PuzzleDAO extends DAO<Puzzle> {
 		}
 	}
 	public Puzzle read(String id) {
-		Puzzle p = null;
-		String requete = "SELECT * FROM puzzles WHERE puzzle_id = ?";
+		Puzzle puzzle = null;
+		String request = "SELECT * FROM puzzles WHERE puzzle_id = ?";
 		try {
-			PreparedStatement pstmt = connect.prepareStatement(requete);
+			PreparedStatement pstmt = connect.prepareStatement(request);
 			pstmt.setString(1, id);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
-				p = new Puzzle(rs.getString("puzzle_id"), rs.getString("moves"),
+				puzzle = new Puzzle(rs.getString("puzzle_id"), rs.getString("moves"),
 					rs.getString("solutions"), rs.getInt("rating"), rs.getString("theme"),
 					rs.getTimestamp("created_at") != null
 						? rs.getTimestamp("created_at").toLocalDateTime()
@@ -76,13 +76,13 @@ public class PuzzleDAO extends DAO<Puzzle> {
 		} catch (SQLException exception) {
 			exception.printStackTrace();
 		}
-		return p;
+		return puzzle;
 	}
 	public ArrayList<Puzzle> readAll() {
 		ArrayList<Puzzle> list = new ArrayList<>();
-		String requete = "SELECT * FROM puzzles";
+		String request = "SELECT * FROM puzzles";
 		try {
-			ResultSet rs = stmt.executeQuery(requete);
+			ResultSet rs = stmt.executeQuery(request);
 			while (rs.next()) {
 				list.add(new Puzzle(rs.getString("puzzle_id"), rs.getString("moves"),
 					rs.getString("solutions"), rs.getInt("rating"), rs.getString("theme"),
