@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -25,11 +24,10 @@
 		<Button text="Puzzles" onAction="#openSettings" styleClass="sidebar-item" />
 		<Button text="Tournaments" onAction="#openSettings" styleClass="sidebar-item" />
 	</VBox>
-	<HBox fx:id="playerItem" StackPane.alignment="bottom_left" alignment="center_left" maxWidth="240" maxHeight="80" spacing="12">
-		<padding>
-			<Insets bottom="16" left="16" />
-		</padding>
-		<ImageView fx:id="avatarIcon" fitHeight="50" fitWidth="50" preserveRatio="true" />
+	<HBox fx:id="playerItem" StackPane.alignment="bottom_left" spacing="12" styleClass="player-info-box">
+		<VBox styleClass="avatar-container">
+			<ImageView fx:id="avatarIcon" fitHeight="50" fitWidth="50" preserveRatio="true" />
+		</VBox>
 		<VBox alignment="center_left" spacing="4">
 			<HBox alignment="center_left" spacing="8">
 				<Label fx:id="handleLabel" />
