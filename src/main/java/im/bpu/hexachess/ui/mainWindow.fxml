@@ -31,7 +31,7 @@
 		<VBox alignment="center_left" spacing="4">
 			<HBox alignment="center_left" spacing="8">
 				<Label fx:id="handleLabel" />
-				<Region fx:id="countryFlagIcon" styleClass="country-flags country-flags-medium" />
+				<Region fx:id="countryFlagIcon" styleClass="country-flags, country-flags-medium" />
 			</HBox>
 			<Label fx:id="ratingLabel" />
 		</VBox>

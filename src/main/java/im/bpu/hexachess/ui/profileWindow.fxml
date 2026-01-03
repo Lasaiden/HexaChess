@@ -13,7 +13,7 @@
 		<VBox alignment="center_left" spacing="4">
 			<HBox alignment="center_left" spacing="8">
 				<Label fx:id="handleLabel" styleClass="h2" />
-				<Region fx:id="countryFlagIcon" styleClass="country-flags country-flags-large" />
+				<Region fx:id="countryFlagIcon" styleClass="country-flags, country-flags-large" />
 			</HBox>
 			<Label fx:id="ratingLabel" styleClass="profile-stat" />
 			<Label fx:id="locationLabel" styleClass="profile-info" />
