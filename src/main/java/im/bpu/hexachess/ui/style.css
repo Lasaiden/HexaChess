@@ -1,7 +1,30 @@
-.root
+#errorLabel,
+#statusLabel
+{
+	/* red */
+	-fx-text-fill: rgb(237, 53, 36);
+}
+
+#loginButton,
+#signOutButton,
+#signUpButton
+{
+	-fx-pref-width: 128px;
+}
+
+.avatar-container
 {
 	-fx-background-color: white;
+	-fx-border-color: black;
+	-fx-border-width: 3px;
 	background-color: white;
+	border-color: black;
+	border-width: 3px;
+}
+
+.button
+{
+	-fx-pref-width: 108px;
 }
 
 .button,
@@ -20,12 +43,6 @@
 	font-weight: bold;
 }
 
-.h2
-{
-	-fx-font-size: 24px;
-	font-size: 24px;
-}
-
 .button,
 .combo-box .list-cell,
 .combo-box-popup .list-cell,
@@ -34,17 +51,6 @@
 {
 	-fx-padding: 8 16;
 	padding: 8 16;
-}
-
-.button
-{
-	-fx-pref-width: 108px;
-}
-
-.square-button
-{
-	-fx-pref-width: 42px;
-	-fx-pref-height: 42px;
 }
 
 .button,
@@ -67,27 +73,12 @@
 	border-width: 3px;
 }
 
-.text-field,
-.password-field
-{
-	-fx-background-color: white;
-	-fx-pref-width: 240px;
-	background-color: white;
-}
-
 .button,
 .combo-box-base,
 .player-item
 {
 	-fx-cursor: hand;
 	cursor: hand;
-}
-
-.password-field,
-.text-field
-{
-	-fx-cursor: text;
-	cursor: text;
 }
 
 .button:hover,
@@ -114,69 +105,6 @@
 	background-color: rgb(209, 139, 71);
 }
 
-.menu-button,
-.settings-help-button
-{
-	-fx-background-color: transparent;
-	-fx-border-color: transparent;
-	-fx-cursor: hand;
-	-fx-font-size: 24px;
-	-fx-padding: 6 0;
-	-fx-pref-width: 54px;
-	-fx-text-fill: black;
-	background-color: transparent;
-	border-color: transparent;
-	cursor: hand;
-	font-size: 24px;
-	padding: 6 0;
-}
-
-.menu-button:hover,
-.menu-button:pressed,
-.settings-help-button:hover,
-.settings-help-button:pressed
-{
-	-fx-background-color: rgba(0, 0, 0, 0.06);
-	-fx-background-radius: 27;
-	background-color: rgba(0, 0, 0, 0.06);
-}
-
-.sidebar
-{
-	-fx-border-color: black;
-	-fx-border-width: 0 3px 0 0;
-	border-color: black;
-	border-width: 0 3px 0 0;
-}
-
-.context-menu,
-.sidebar-item
-{
-	-fx-background-color: white;
-	-fx-background-radius: 0;
-	-fx-border-color: black;
-	-fx-border-radius: 0;
-	background-color: white;
-	border-color: black;
-	border-radius: 0;
-}
-
-.context-menu
-{
-	-fx-border-width: 3px;
-	-fx-padding: 0;
-	border-width: 3px;
-	padding: 0;
-}
-
-.sidebar-item
-{
-	-fx-alignment: center-left;
-	-fx-border-width: 0 0 3px 0;
-	-fx-pref-width: 160px;
-	border-width: 0 0 3px 0;
-}
-
 .combo-box .arrow
 {
 	-fx-background-color: black;
@@ -189,144 +117,24 @@
 	background-color: transparent;
 }
 
-#errorLabel,
-#statusLabel
+.context-menu
 {
-	/* red */
-	-fx-text-fill: rgb(237, 53, 36);
-}
-
-#loginButton,
-#signOutButton,
-#signUpButton
-{
-	-fx-pref-width: 128px;
-}
-
-.player-info-box
-{
-	-fx-max-height: 80px;
-	-fx-max-width: 240px;
-	-fx-padding: 12px;
-	-fx-translate-x: 16px;
-	-fx-translate-y: -16px;
-	max-height: 80px;
-	max-width: 240px;
-	padding: 12px;
-}
-
-.profile-container
-{
-	-fx-padding: 16;
-	-fx-max-width: 320px;
-	padding: 16;
-	max-width: 320px;
-}
-
-.avatar-container
-{
-	-fx-border-color: black;
 	-fx-border-width: 3px;
-	-fx-background-color: white;
-	border-color: black;
+	-fx-padding: 0;
 	border-width: 3px;
-	background-color: white;
+	padding: 0;
 }
 
-.country-flags
-{
-	-fx-background-image: url("https://www.chess.com/bundles/web/images/sprites/flags-128.png");
-	background-image: url("https://www.chess.com/bundles/web/images/sprites/flags-128.png");
-}
-
-.country-flags-medium
-{
-	-fx-background-size: 324px 618px;
-	-fx-max-height: 18px;
-	-fx-max-width: 24px;
-	-fx-min-height: 18px;
-	-fx-min-width: 24px;
-	background-size: 324px 618px;
-	max-height: 18px;
-	max-width: 24px;
-	min-height: 18px;
-	min-width: 24px;
-}
-
-.country-flags-large
-{
-	-fx-background-size: 432px 824px;
-	-fx-max-height: 24px;
-	-fx-max-width: 32px;
-	-fx-min-height: 24px;
-	-fx-min-width: 32px;
-	background-size: 432px 824px;
-	max-height: 24px;
-	max-width: 32px;
-	min-height: 24px;
-	min-width: 32px;
-}
-
-.profile-stat
-{
-	-fx-font-size: 16px;
-	font-size: 16px;
-}
-
-.profile-info
-{
-	-fx-font-size: 13px;
-	font-size: 13px;
-}
-
-.scroll-pane
-{
-	-fx-background-color: transparent;
-	-fx-border-color: black;
-	-fx-border-radius: 6;
-	-fx-border-width: 3px;
-	-fx-fit-to-width: true;
-	-fx-max-height: 480px;
-	-fx-max-width: 480px;
-	-fx-min-height: 320px;
-	background-color: transparent;
-	border-color: black;
-	border-radius: 6;
-	border-width: 3px;
-	max-height: 480px;
-	max-width: 480px;
-	min-height: 320px;
-}
-
-.scroll-pane .viewport
+.context-menu,
+.sidebar-item
 {
 	-fx-background-color: white;
-	-fx-background-radius: 6;
+	-fx-background-radius: 0;
+	-fx-border-color: black;
+	-fx-border-radius: 0;
 	background-color: white;
-}
-
-.scroll-bar .decrement-button,
-.scroll-bar .increment-button,
-.scroll-bar:horizontal,
-.scroll-bar:vertical
-{
-	-fx-background-color: transparent;
-	background-color: transparent;
-}
-
-.scroll-bar:vertical .thumb,
-.scroll-bar:horizontal .thumb
-{
-	-fx-background-color: black;
-	-fx-background-radius: 6;
-	background-color: black;
-}
-
-.player-item,
-#playerContainer
-{
-	-fx-padding: 16;
-	padding: 16;
+	border-color: black;
+	border-radius: 0;
 }
 
 .country-cn
@@ -345,6 +153,40 @@
 {
 	-fx-background-position: 60% 20%;
 	background-position: 60% 20%;
+}
+
+.country-flags
+{
+	-fx-background-image: url("https://www.chess.com/bundles/web/images/sprites/flags-128.png");
+	background-image: url("https://www.chess.com/bundles/web/images/sprites/flags-128.png");
+}
+
+.country-flags-large
+{
+	-fx-background-size: 432px 824px;
+	-fx-max-height: 24px;
+	-fx-max-width: 32px;
+	-fx-min-height: 24px;
+	-fx-min-width: 32px;
+	background-size: 432px 824px;
+	max-height: 24px;
+	max-width: 32px;
+	min-height: 24px;
+	min-width: 32px;
+}
+
+.country-flags-medium
+{
+	-fx-background-size: 324px 618px;
+	-fx-max-height: 18px;
+	-fx-max-width: 24px;
+	-fx-min-height: 18px;
+	-fx-min-width: 24px;
+	background-size: 324px 618px;
+	max-height: 18px;
+	max-width: 24px;
+	min-height: 18px;
+	min-width: 24px;
 }
 
 .country-fr
@@ -399,4 +241,162 @@
 {
 	-fx-background-position: 0 80%;
 	background-position: 0 80%;
+}
+
+.h2
+{
+	-fx-font-size: 24px;
+	font-size: 24px;
+}
+
+.menu-button,
+.settings-help-button
+{
+	-fx-background-color: transparent;
+	-fx-border-color: transparent;
+	-fx-cursor: hand;
+	-fx-font-size: 24px;
+	-fx-padding: 6 0;
+	-fx-pref-width: 54px;
+	-fx-text-fill: black;
+	background-color: transparent;
+	border-color: transparent;
+	cursor: hand;
+	font-size: 24px;
+	padding: 6 0;
+}
+
+.menu-button:hover,
+.menu-button:pressed,
+.settings-help-button:hover,
+.settings-help-button:pressed
+{
+	-fx-background-color: rgba(0, 0, 0, 0.06);
+	-fx-background-radius: 27;
+	background-color: rgba(0, 0, 0, 0.06);
+}
+
+.password-field,
+.text-field
+{
+	-fx-background-color: white;
+	-fx-pref-width: 240px;
+	background-color: white;
+}
+
+.password-field,
+.text-field
+{
+	-fx-cursor: text;
+	cursor: text;
+}
+
+.player-info-box
+{
+	-fx-max-height: 80px;
+	-fx-max-width: 240px;
+	-fx-padding: 12px;
+	-fx-translate-x: 16px;
+	-fx-translate-y: -16px;
+	max-height: 80px;
+	max-width: 240px;
+	padding: 12px;
+}
+
+.player-item,
+#playerContainer
+{
+	-fx-padding: 16;
+	padding: 16;
+}
+
+.profile-container
+{
+	-fx-max-width: 320px;
+	-fx-padding: 16;
+	max-width: 320px;
+	padding: 16;
+}
+
+.profile-info
+{
+	-fx-font-size: 13px;
+	font-size: 13px;
+}
+
+.profile-stat
+{
+	-fx-font-size: 16px;
+	font-size: 16px;
+}
+
+.root
+{
+	-fx-background-color: white;
+	background-color: white;
+}
+
+.scroll-bar .decrement-button,
+.scroll-bar .increment-button,
+.scroll-bar:horizontal,
+.scroll-bar:vertical
+{
+	-fx-background-color: transparent;
+	background-color: transparent;
+}
+
+.scroll-bar:vertical .thumb,
+.scroll-bar:horizontal .thumb
+{
+	-fx-background-color: black;
+	-fx-background-radius: 6;
+	background-color: black;
+}
+
+.scroll-pane
+{
+	-fx-background-color: transparent;
+	-fx-border-color: black;
+	-fx-border-radius: 6;
+	-fx-border-width: 3px;
+	-fx-fit-to-width: true;
+	-fx-max-height: 480px;
+	-fx-max-width: 480px;
+	-fx-min-height: 320px;
+	background-color: transparent;
+	border-color: black;
+	border-radius: 6;
+	border-width: 3px;
+	max-height: 480px;
+	max-width: 480px;
+	min-height: 320px;
+}
+
+.scroll-pane .viewport
+{
+	-fx-background-color: white;
+	-fx-background-radius: 6;
+	background-color: white;
+}
+
+.sidebar
+{
+	-fx-border-color: black;
+	-fx-border-width: 0 3px 0 0;
+	border-color: black;
+	border-width: 0 3px 0 0;
+}
+
+.sidebar-item
+{
+	-fx-alignment: center-left;
+	-fx-border-width: 0 0 3px 0;
+	-fx-pref-width: 160px;
+	border-width: 0 0 3px 0;
+}
+
+.square-button
+{
+	-fx-pref-height: 42px;
+	-fx-pref-width: 42px;
 }
