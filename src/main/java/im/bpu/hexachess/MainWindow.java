@@ -1,5 +1,7 @@
 package im.bpu.hexachess;
 
+import im.bpu.hexachess.entity.Player;
+import im.bpu.hexachess.network.API;
 import im.bpu.hexachess.ui.HexPanel;
 
 import javafx.animation.TranslateTransition;
@@ -10,20 +12,51 @@ import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 public class MainWindow {
+	private static final String BASE_URL =
+		"https://www.chess.com/bundles/web/images/noavatar_l.gif";
 	private HexPanel hexPanel;
 	@FXML private Button settingsHelpButton;
 	@FXML private VBox sidebar;
 	@FXML private Canvas canvas;
+	@FXML private ImageView avatarIcon;
+	@FXML private Label handleLabel;
+	@FXML private Region countryFlagIcon;
+	@FXML private Label ratingLabel;
 	@FXML
 	private void initialize() {
 		hexPanel = new HexPanel(canvas, State.getState());
 		sidebar.setTranslateX(-160);
 		sidebar.setVisible(false);
+		loadPlayerItem();
+	}
+	private void loadPlayerItem() {
+		String handle = Settings.userHandle;
+		Player player = API.profile(handle);
+		if (player == null)
+			return;
+		int rating = player.getRating();
+		String location = player.getLocation();
+		String avatarUrl = (player.getAvatar() != null && !player.getAvatar().isEmpty())
+			? player.getAvatar()
+			: BASE_URL;
+		avatarIcon.setImage(new Image(avatarUrl, true));
+		handleLabel.setText(handle);
+		ratingLabel.setText("Rating: " + rating);
+		if (location != null && !location.isEmpty()) {
+			countryFlagIcon.getStyleClass().add("country-" + location);
+		} else {
+			countryFlagIcon.setManaged(false);
+			countryFlagIcon.setVisible(false);
+		}
 	}
 	@FXML
 	private void toggleSidebar() {
