@@ -11,11 +11,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.security.Key;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -165,8 +166,13 @@ public class Server {
 			String to = jsonNode.get("to").asText();
 			challenges.put(from, to);
 			if (from.equals(challenges.get(to))) {
-				String gameId = games.computeIfAbsent(
-					from + "-" + to, key -> UUID.randomUUID().toString().substring(0, 11));
+				String gameId = games.computeIfAbsent(from + "-" + to, key -> {
+					byte[] bytes = new byte[9];
+					SecureRandom rand = new SecureRandom();
+					rand.nextBytes(bytes);
+					return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes).substring(
+						0, 11);
+				});
 				games.put(to + "-" + from, gameId);
 				sendResponse(exchange, 200, gameId);
 			} else {

@@ -3,7 +3,8 @@ package im.bpu.hexachess;
 import im.bpu.hexachess.entity.Player;
 import im.bpu.hexachess.network.API;
 
-import java.util.UUID;
+import java.security.SecureRandom;
+import java.util.Base64;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -30,7 +31,11 @@ public class RegisterWindow {
 			passwordField.requestFocus();
 			return;
 		}
-		String playerId = UUID.randomUUID().toString().substring(0, 11);
+		byte[] bytes = new byte[9];
+		SecureRandom rand = new SecureRandom();
+		rand.nextBytes(bytes);
+		String playerId =
+			Base64.getUrlEncoder().withoutPadding().encodeToString(bytes).substring(0, 11);
 		String handle = handleField.getText();
 		Player player = new Player(
 			playerId, handle, emailField.getText(), passwordField.getText(), 1200, false, null);
