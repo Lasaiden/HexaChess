@@ -124,6 +124,7 @@
 						<list>javafx.scene.control.TextField</list>
 						<list>javafx.scene.image.ImageView</list>
 						<list>javafx.scene.layout.HBox</list>
+						<list>javafx.scene.layout.Priority</list>
 						<list>javafx.scene.layout.Region</list>
 						<list>javafx.scene.layout.StackPane</list>
 						<list>javafx.scene.layout.VBox</list>

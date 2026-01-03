@@ -14,7 +14,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
@@ -32,39 +31,36 @@ public class SearchWindow {
 			return;
 		List<Player> players = API.search(query);
 		for (Player player : players) {
-			String handle = player.getHandle();
-			int rating = player.getRating();
-			String location = player.getLocation();
-			String avatarUrl = (player.getAvatar() != null && !player.getAvatar().isEmpty())
-				? player.getAvatar()
-				: BASE_URL;
-			ImageView avatarIcon = new ImageView(new Image(avatarUrl, true));
-			avatarIcon.setFitHeight(42);
-			avatarIcon.setFitWidth(42);
-			avatarIcon.setPreserveRatio(true);
-			VBox avatarContainer = new VBox(avatarIcon);
-			avatarContainer.getStyleClass().add("avatar-container");
-			Label handleLabel = new Label(handle);
-			HBox handleCountryFlag = new HBox(handleLabel);
-			handleCountryFlag.setSpacing(8);
-			Label ratingLabel = new Label("Rating: " + rating);
-			if (location != null && !location.isEmpty()) {
-				Region countryFlagIcon = new Region();
-				countryFlagIcon.getStyleClass().addAll(
-					"country-flags-large", "country-" + location);
-				handleCountryFlag.getChildren().add(countryFlagIcon);
+			try {
+				FXMLLoader playerItemLoader =
+					new FXMLLoader(getClass().getResource("ui/playerItem.fxml"));
+				HBox playerItem = playerItemLoader.load();
+				String handle = player.getHandle();
+				int rating = player.getRating();
+				String location = player.getLocation();
+				String avatarUrl = (player.getAvatar() != null && !player.getAvatar().isEmpty())
+					? player.getAvatar()
+					: BASE_URL;
+				ImageView avatarIcon = (ImageView) playerItem.lookup("#avatarIcon");
+				Label handleLabel = (Label) playerItem.lookup("#handleLabel");
+				Region countryFlagIcon = (Region) playerItem.lookup("#countryFlagIcon");
+				Label ratingLabel = (Label) playerItem.lookup("#ratingLabel");
+				Button challengeButton = (Button) playerItem.lookup("#challengeButton");
+				avatarIcon.setImage(new Image(avatarUrl, true));
+				handleLabel.setText(handle);
+				ratingLabel.setText("Rating: " + rating);
+				if (location != null && !location.isEmpty()) {
+					countryFlagIcon.getStyleClass().add("country-" + location);
+				} else {
+					countryFlagIcon.setManaged(false);
+					countryFlagIcon.setVisible(false);
+				}
+				playerItem.setOnMouseClicked(event -> openProfile(handle));
+				challengeButton.setOnAction(event -> startMatchmaking(handle));
+				playerContainer.getChildren().add(playerItem);
+			} catch (Exception exception) {
+				exception.printStackTrace();
 			}
-			VBox playerInfo = new VBox(handleCountryFlag, ratingLabel);
-			Region spacer = new Region();
-			Button challengeButton = new Button("⚔");
-			HBox.setHgrow(spacer, Priority.ALWAYS);
-			HBox playerItem = new HBox(avatarContainer, playerInfo, spacer, challengeButton);
-			playerItem.setSpacing(12);
-			playerItem.getStyleClass().add("player-item");
-			playerItem.setOnMouseClicked(event -> openProfile(handle));
-			challengeButton.getStyleClass().add("square-button");
-			challengeButton.setOnAction(event -> startMatchmaking(handle));
-			playerContainer.getChildren().add(playerItem);
 		}
 	}
 	private void startMatchmaking(String target) {
