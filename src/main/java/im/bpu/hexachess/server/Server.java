@@ -45,6 +45,9 @@ public class Server {
 		server.createContext("/api/profile", new ProfileHandler());
 		server.createContext("/api/challenge", new ChallengeHandler());
 		server.createContext("/api/sync", new SyncHandler());
+		server.createContext("/api/achievements", new AchievementsHandler());
+		server.createContext("/api/puzzles", new PuzzlesHandler());
+		server.createContext("/api/tournaments", new TournamentsHandler());
 		server.setExecutor(null);
 		server.start();
 		System.out.println("HexaChess Server started on port " + PORT);
@@ -204,6 +207,65 @@ public class Server {
 		exchange.sendResponseHeaders(statusCode, bytes.length);
 		try (OutputStream os = exchange.getResponseBody()) {
 			os.write(bytes);
+		}
+	}
+	static class AchievementsHandler implements HttpHandler {
+		@Override
+		public void handle(HttpExchange exchange) throws IOException {
+			if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
+				sendResponse(exchange, 405, "Method Not Allowed");
+				return;
+			}
+			try {
+				im.bpu.hexachess.dao.AchievementDAO dao = new im.bpu.hexachess.dao.AchievementDAO();
+				List<im.bpu.hexachess.entity.Achievement> list = dao.readAll();
+				dao.close();
+				String response = mapper.writeValueAsString(list);
+				sendResponse(exchange, 200, response);
+			} catch (Exception exception) {
+				exception.printStackTrace();
+				sendResponse(exchange, 500, "Internal Server Error");
+			}
+		}
+	}
+
+	static class PuzzlesHandler implements HttpHandler {
+		@Override
+		public void handle(HttpExchange exchange) throws IOException {
+			if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
+				sendResponse(exchange, 405, "Method Not Allowed");
+				return;
+			}
+			try {
+				im.bpu.hexachess.dao.PuzzleDAO dao = new im.bpu.hexachess.dao.PuzzleDAO();
+				List<im.bpu.hexachess.entity.Puzzle> list = dao.readAll();
+				dao.close();
+				String response = mapper.writeValueAsString(list);
+				sendResponse(exchange, 200, response);
+			} catch (Exception exception) {
+				exception.printStackTrace();
+				sendResponse(exchange, 500, "Internal Server Error");
+			}
+		}
+	}
+
+	static class TournamentsHandler implements HttpHandler {
+		@Override
+		public void handle(HttpExchange exchange) throws IOException {
+			if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
+				sendResponse(exchange, 405, "Method Not Allowed");
+				return;
+			}
+			try {
+				im.bpu.hexachess.dao.TournamentDAO dao = new im.bpu.hexachess.dao.TournamentDAO();
+				List<im.bpu.hexachess.entity.Tournament> list = dao.readAll();
+				dao.close();
+				String response = mapper.writeValueAsString(list);
+				sendResponse(exchange, 200, response);
+			} catch (Exception exception) {
+				exception.printStackTrace();
+				sendResponse(exchange, 500, "Internal Server Error");
+			}
 		}
 	}
 }
