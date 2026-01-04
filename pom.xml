@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>im.bpu</groupId>
 	<artifactId>hexachess</artifactId>
-	<version>2026.01.02</version>
+	<version>2026.01.04</version>
 	<properties>
 		<maven.compiler.source>21</maven.compiler.source>
 		<maven.compiler.target>21</maven.compiler.target>
@@ -115,6 +115,7 @@
 						<list>im.bpu.hexachess.SearchWindow</list>
 						<list>im.bpu.hexachess.SettingsWindow</list>
 						<list>im.bpu.hexachess.StartWindow</list>
+						<list>io.jsonwebtoken.impl.security.KeysBridge</list>
 						<list>javafx.scene.canvas.Canvas</list>
 						<list>javafx.scene.control.Button</list>
 						<list>javafx.scene.control.ComboBox</list>
@@ -134,6 +135,12 @@
 		</plugins>
 	</build>
 	<profiles>
+		<profile>
+			<id>server</id>
+			<properties>
+				<main.class>im.bpu.hexachess.server.Server</main.class>
+			</properties>
+		</profile>
 		<profile>
 			<id>windows</id>
 			<activation>

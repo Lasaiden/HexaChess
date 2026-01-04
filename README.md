@@ -196,14 +196,23 @@ Start **Apache** and **MySQL**
 
 ## 🛠️ Build from Source
 
-### Linux
+### Server
+
+#### Linux
+
+```bash
+mvn clean gluonfx:build -Pserver
+```
+
+### Client
+
+#### Linux
 
 ```bash
 mvn clean gluonfx:build
-mvn gluonfx:package
 ```
 
-### Windows
+#### Windows
 
 Open `x64 Native Tools Command Prompt for VS 2022` instead of regular `cmd`
 
@@ -223,7 +232,7 @@ Open "target\gluonfx\log\process-link-*.log"
 
 Replace `IconGroup.obj` with `version.obj`, add quotes to paths containing spaces, and run the modified command
 
-#### Example
+##### Example
 
 ```cmd
 link target\gluonfx\x86_64-windows\gvm\hexachess\launcher.obj target\gluonfx\x86_64-windows\gvm\tmp\SVM-*\im.bpu.hexachess.main.obj src\windows\version.obj j2pkcs11.lib java.lib net.lib nio.lib prefs.lib zip.lib sunmscapi.lib extnet.lib jvm.lib libchelper.lib advapi32.lib iphlpapi.lib secur32.lib userenv.lib version.lib ws2_32.lib winhttp.lib ncrypt.lib crypt32.lib mswsock.lib /NODEFAULTLIB:libcmt.lib /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup comdlg32.lib dwmapi.lib gdi32.lib imm32.lib shell32.lib uiautomationcore.lib urlmon.lib winmm.lib glass.lib javafx_font.lib javafx_iio.lib prism_common.lib prism_d3d.lib /WHOLEARCHIVE:glass.lib /WHOLEARCHIVE:javafx_font.lib /WHOLEARCHIVE:javafx_iio.lib /WHOLEARCHIVE:prism_common.lib /WHOLEARCHIVE:prism_d3d.lib /OUT:target\gluonfx\x86_64-windows\hexachess.exe /LIBPATH:%USERPROFILE%\.gluon\substrate\javafxStaticSdk\21-ea+11.3\windows-x86_64\sdk\lib /LIBPATH:"%GRAALVM_HOME%"\lib\svm\clibraries\windows-amd64 /LIBPATH:"%GRAALVM_HOME%"\lib\static\windows-amd64
@@ -233,7 +242,7 @@ More details:
 
 - [How to add the version, description and copyright metadata in the generated executable using gluonfx:build?](https://stackoverflow.com/questions/75172666/howto-add-the-version-description-and-copyright-meta-data-in-the-generated-exec)
 
-### Android
+#### Android
 
 ```bash
 mvn clean gluonfx:build -Pandroid
