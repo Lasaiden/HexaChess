@@ -148,7 +148,7 @@ public class HexPanel {
 			deselect();
 	}
 	public void restart() {
-		if (isLockedIn)
+		if (isLockedIn || state.isMultiplayer)
 			return;
 		state.clear();
 		ai.setMaxDepth(Settings.maxDepth);
@@ -156,7 +156,7 @@ public class HexPanel {
 		deselect();
 	}
 	public void rewind() {
-		if (isLockedIn || state.history.isEmpty())
+		if (isLockedIn || state.isMultiplayer || state.history.isEmpty())
 			return;
 		state.board = state.history.pop();
 		renderer.setBoard(state.board);

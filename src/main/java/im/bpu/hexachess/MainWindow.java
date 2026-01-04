@@ -27,6 +27,8 @@ public class MainWindow {
 	@FXML private Button settingsHelpButton;
 	@FXML private VBox sidebar;
 	@FXML private Canvas canvas;
+	@FXML private Button restartButton;
+	@FXML private Button rewindButton;
 	@FXML private ImageView avatarIcon;
 	@FXML private Label handleLabel;
 	@FXML private Region countryFlagIcon;
@@ -37,11 +39,18 @@ public class MainWindow {
 	@FXML private Label opponentRatingLabel;
 	@FXML
 	private void initialize() {
-		hexPanel = new HexPanel(canvas, State.getState());
+		State state = State.getState();
+		hexPanel = new HexPanel(canvas, state);
 		sidebar.setTranslateX(-160);
 		sidebar.setVisible(false);
 		loadPlayerItem();
 		loadOpponentItem();
+		if (state.isMultiplayer) {
+			restartButton.setManaged(false);
+			restartButton.setVisible(false);
+			rewindButton.setManaged(false);
+			rewindButton.setVisible(false);
+		}
 	}
 	private void loadPlayerItem() {
 		String handle = Settings.userHandle;
@@ -114,10 +123,14 @@ public class MainWindow {
 	}
 	@FXML
 	private void restart() {
+		if (State.getState().isMultiplayer)
+			return;
 		hexPanel.restart();
 	}
 	@FXML
 	private void rewind() {
+		if (State.getState().isMultiplayer)
+			return;
 		hexPanel.rewind();
 	}
 	@FXML
