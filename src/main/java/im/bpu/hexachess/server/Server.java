@@ -228,7 +228,6 @@ public class Server {
 			}
 		}
 	}
-
 	static class PuzzlesHandler implements HttpHandler {
 		@Override
 		public void handle(HttpExchange exchange) throws IOException {
@@ -248,7 +247,6 @@ public class Server {
 			}
 		}
 	}
-
 	static class TournamentsHandler implements HttpHandler {
 		@Override
 		public void handle(HttpExchange exchange) throws IOException {

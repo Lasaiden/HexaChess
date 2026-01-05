@@ -181,20 +181,17 @@ public class MainWindow {
 			exception.printStackTrace();
 		}
 	}
-
-	
 	@FXML
-    private void openTournaments() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("ui/tournamentsWindow.fxml"));
-            loader.setController(new TournamentsWindow());
-            Parent root = loader.load();
-            sidebar.getScene().setRoot(root);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-    }
-	
+	private void openTournaments() {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("ui/tournamentsWindow.fxml"));
+			loader.setController(new TournamentsWindow());
+			Parent root = loader.load();
+			sidebar.getScene().setRoot(root);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+	}
 	@FXML
 	private void openProfile() {
 		try {

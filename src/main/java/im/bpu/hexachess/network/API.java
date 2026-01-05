@@ -1,7 +1,10 @@
 package im.bpu.hexachess.network;
 
 import im.bpu.hexachess.Config;
+import im.bpu.hexachess.entity.Achievement;
 import im.bpu.hexachess.entity.Player;
+import im.bpu.hexachess.entity.Puzzle;
+import im.bpu.hexachess.entity.Tournament;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -14,10 +17,6 @@ import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
-import im.bpu.hexachess.entity.Achievement;
-import im.bpu.hexachess.entity.Puzzle;
-import im.bpu.hexachess.entity.Tournament;
 
 public class API {
 	private static final String DEV_URL = Config.get("DEV_URL", "http://localhost:8800/api");
@@ -147,7 +146,6 @@ public class API {
 			return null;
 		}
 	}
-
 	public static List<Achievement> getAchievements() {
 		try {
 			HttpRequest.Builder requestBuilder =
@@ -160,7 +158,6 @@ public class API {
 		}
 		return Collections.emptyList();
 	}
-
 	public static List<Puzzle> getPuzzles() {
 		try {
 			HttpRequest.Builder requestBuilder =
@@ -173,7 +170,6 @@ public class API {
 		}
 		return Collections.emptyList();
 	}
-
 	public static List<Tournament> getTournaments() {
 		try {
 			HttpRequest.Builder requestBuilder =

@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList
+import java.util.ArrayList;
 
 public class TournamentDAO extends DAO<Tournament> {
 	@Override
@@ -94,7 +94,6 @@ public class TournamentDAO extends DAO<Tournament> {
 		}
 		return tournament;
 	}
-
 	public ArrayList<Tournament> readAll() {
 		java.util.ArrayList<Tournament> list = new java.util.ArrayList<>();
 		String request = "SELECT * FROM tournaments";
