@@ -12,6 +12,7 @@ public class Game {
 	private LocalDateTime startTime;
 	private LocalDateTime endTime;
 	private String victoryType;
+	public Game() {}
 	public Game(String gameId, String whitePlayerId, String blackPlayerId, String winnerId,
 		String tournamentId, String moves, LocalDateTime startTime, LocalDateTime endTime,
 		String victoryType) {

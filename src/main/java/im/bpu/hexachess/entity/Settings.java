@@ -6,6 +6,7 @@ public class Settings {
 	private boolean showLegalMoves;
 	private boolean autoPromoteQueen;
 	private int aiDifficultyLevel;
+	public Settings() {}
 	public Settings(String playerId, String theme, boolean showLegalMoves, boolean autoPromoteQueen,
 		int aiDifficultyLevel) {
 		this.playerId = playerId;

@@ -9,6 +9,7 @@ public class Puzzle {
 	private int rating;
 	private String theme;
 	private LocalDateTime createdAt;
+	public Puzzle() {}
 	public Puzzle(String puzzleId, String moves, String solutions, int rating, String theme,
 		LocalDateTime createdAt) {
 		this.puzzleId = puzzleId;

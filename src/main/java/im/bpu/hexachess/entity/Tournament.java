@@ -9,6 +9,7 @@ public class Tournament {
 	private LocalDateTime startTime;
 	private LocalDateTime endTime;
 	private String winnerId;
+	public Tournament() {}
 	public Tournament(String tournamentId, String name, String description, LocalDateTime startTime,
 		LocalDateTime endTime, String winnerId) {
 		this.tournamentId = tournamentId;
