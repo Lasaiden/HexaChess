@@ -10,12 +10,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.stage.Screen;
 
 public class TournamentsWindow {
+	@FXML private ScrollPane tournamentsPane;
 	@FXML private VBox tournamentContainer;
 	@FXML private Button backButton;
 	@FXML private Label statusLabel = new Label();
@@ -24,6 +27,12 @@ public class TournamentsWindow {
 	@FXML private Label descLabel = new Label();
 	@FXML
 	private void initialize() {
+		double width = Screen.getPrimary().getBounds().getWidth();
+		double height = Screen.getPrimary().getBounds().getHeight();
+		double aspectRatio = width / height;
+		if (aspectRatio < 1.5) {
+			tournamentsPane.setStyle("-fx-pref-width: 400px; -fx-max-width: 400px;");
+		}
 		List<Tournament> tournaments = API.tournaments();
 		if (tournaments.isEmpty()) {
 			statusLabel.setText("No tournaments found.");

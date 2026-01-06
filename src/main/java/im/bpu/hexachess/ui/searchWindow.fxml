@@ -11,7 +11,7 @@
 		<TextField fx:id="searchField" onAction="#handleSearch" />
 		<Button fx:id="searchButton" text="🔍" onAction="#handleSearch" styleClass="square-button" />
 	</HBox>
-	<ScrollPane>
+	<ScrollPane fx:id="searchPane">
 		<VBox fx:id="playerContainer" spacing="16" />
 	</ScrollPane>
 	<Button fx:id="backButton" text="Back" onAction="#openMain" />

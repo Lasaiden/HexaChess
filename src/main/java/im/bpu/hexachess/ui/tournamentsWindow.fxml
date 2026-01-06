@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns:fx="http://javafx.com/fxml" alignment="center" spacing="32">
 	<Label text="Tournaments" styleClass="h2" />
-	<ScrollPane>
+	<ScrollPane fx:id="tournamentsPane">
 		<VBox fx:id="tournamentContainer" alignment="center" spacing="16" />
 	</ScrollPane>
 	<Button fx:id="backButton" text="Back" onAction="#openMain" />
