@@ -15,7 +15,6 @@ import java.util.List;
 import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.stage.Screen;
 
 import static im.bpu.hexachess.Main.getAspectRatio;
 
