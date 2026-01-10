@@ -36,14 +36,13 @@ public class LoginWindow {
 		}
 		if (player != null) {
 			String playerId = player.getPlayerId();
-			SettingsManager.playerId = playerId;
-			SettingsManager.userHandle = handle;
-			SettingsManager.authToken = player.getToken();
+			SettingsManager.setPlayerId(playerId);
+			SettingsManager.setUserHandle(handle);
+			SettingsManager.setAuthToken(player.getToken());
 			Settings settings = API.settings(playerId);
 			if (settings != null) {
-				SettingsManager.maxDepth = settings.getAiDifficultyLevel();
+				SettingsManager.setMaxDepth(settings.getAiDifficultyLevel());
 			}
-			SettingsManager.save();
 			openMain();
 		} else {
 			errorLabel.setText("Invalid username or password");

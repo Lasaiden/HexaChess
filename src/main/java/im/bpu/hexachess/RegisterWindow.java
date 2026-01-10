@@ -57,8 +57,7 @@ public class RegisterWindow {
 		Player player = new Player(playerId, handle, email, password, 1200, false, null);
 		boolean registerSuccess = API.register(player);
 		if (registerSuccess) {
-			SettingsManager.userHandle = handle;
-			SettingsManager.save();
+			SettingsManager.setUserHandle(handle);
 			openMain();
 		} else {
 			statusLabel.setText("Error (Username taken or server error)");

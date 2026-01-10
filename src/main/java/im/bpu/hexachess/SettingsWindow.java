@@ -26,15 +26,15 @@ public class SettingsWindow {
 	private void openMain() {
 		String selected = maxDepthComboBox.getValue();
 		if (selected != null) {
-			switch (selected) {
-				case "Fast" -> SettingsManager.maxDepth = 1;
-				case "Default" -> SettingsManager.maxDepth = 3;
-				case "Slowest" -> SettingsManager.maxDepth = 5;
-			}
+			int depth = switch (selected) {
+				case "Fast" -> 1;
+				case "Slowest" -> 5;
+				default -> 3;
+			};
+			SettingsManager.setMaxDepth(depth);
 			Settings settings = new Settings(
 				SettingsManager.playerId, "default", true, false, SettingsManager.maxDepth);
 			API.settings(settings);
-			SettingsManager.save();
 		}
 		try {
 			FXMLLoader mainWindowLoader =
@@ -48,10 +48,9 @@ public class SettingsWindow {
 	}
 	@FXML
 	private void openStart() {
-		SettingsManager.playerId = null;
-		SettingsManager.userHandle = null;
-		SettingsManager.authToken = null;
-		SettingsManager.save();
+		SettingsManager.setPlayerId(null);
+		SettingsManager.setUserHandle(null);
+		SettingsManager.setAuthToken(null);
 		try {
 			FXMLLoader startWindowLoader =
 				new FXMLLoader(getClass().getResource("ui/startWindow.fxml"));
