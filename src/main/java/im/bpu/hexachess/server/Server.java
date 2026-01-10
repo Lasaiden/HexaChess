@@ -121,25 +121,36 @@ public class Server {
 	static class SettingsHandler implements HttpHandler {
 		@Override
 		public void handle(HttpExchange exchange) throws IOException {
-			if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
-				sendResponse(exchange, 405, "Method Not Allowed");
-				return;
-			}
-			try {
-				String query = exchange.getRequestURI().getQuery();
-				String playerId = query.split("=")[1];
-				SettingsDAO dao = new SettingsDAO();
-				Settings settings = dao.read(playerId);
-				if (settings == null) {
-					settings = new Settings(playerId);
-					dao.create(settings);
+			if ("GET".equalsIgnoreCase(exchange.getRequestMethod())) {
+				try {
+					String query = exchange.getRequestURI().getQuery();
+					String playerId = query.split("=")[1];
+					SettingsDAO dao = new SettingsDAO();
+					Settings settings = dao.read(playerId);
+					if (settings == null) {
+						settings = new Settings(playerId);
+						dao.create(settings);
+					}
+					dao.close();
+					String response = mapper.writeValueAsString(settings);
+					sendResponse(exchange, 200, response);
+				} catch (Exception exception) {
+					exception.printStackTrace();
+					sendResponse(exchange, 500, "Internal Server Error");
 				}
-				dao.close();
-				String response = mapper.writeValueAsString(settings);
-				sendResponse(exchange, 200, response);
-			} catch (Exception exception) {
-				exception.printStackTrace();
-				sendResponse(exchange, 500, "Internal Server Error");
+			} else if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+				try {
+					Settings settings = mapper.readValue(exchange.getRequestBody(), Settings.class);
+					SettingsDAO dao = new SettingsDAO();
+					dao.update(settings);
+					dao.close();
+					sendResponse(exchange, 200, "OK");
+				} catch (Exception exception) {
+					exception.printStackTrace();
+					sendResponse(exchange, 500, "Internal Server Error");
+				}
+			} else {
+				sendResponse(exchange, 405, "Method Not Allowed");
 			}
 		}
 	}

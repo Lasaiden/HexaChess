@@ -35,35 +35,39 @@ public class LoginWindow {
 			System.out.println("Connected as: " + (player != null ? player.getHandle() : "null"));
 		}
 		if (player != null) {
+			String playerId = player.getPlayerId();
+			SettingsManager.playerId = playerId;
 			SettingsManager.userHandle = handle;
 			SettingsManager.authToken = player.getToken();
-			String playerId = player.getPlayerId();
 			Settings settings = API.settings(playerId);
 			if (settings != null) {
 				SettingsManager.maxDepth = settings.getAiDifficultyLevel();
 			}
 			SettingsManager.save();
-			try {
-				FXMLLoader mainWindowLoader =
-					new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));
-				mainWindowLoader.setController(new MainWindow());
-				Parent root = mainWindowLoader.load();
-				handleField.getScene().setRoot(root);
-			} catch (Exception exception) {
-				exception.printStackTrace();
-			}
+			openMain();
 		} else {
 			errorLabel.setText("Invalid username or password");
 			errorLabel.setVisible(true);
 		}
 	}
+	private void openMain() {
+		try {
+			FXMLLoader mainWindowLoader =
+				new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));
+			mainWindowLoader.setController(new MainWindow());
+			Parent root = mainWindowLoader.load();
+			handleField.getScene().setRoot(root);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+	}
 	@FXML
 	private void openStart() {
 		try {
-			FXMLLoader mainWindowLoader =
+			FXMLLoader startWindowLoader =
 				new FXMLLoader(getClass().getResource("ui/startWindow.fxml"));
-			mainWindowLoader.setController(new StartWindow());
-			Parent root = mainWindowLoader.load();
+			startWindowLoader.setController(new StartWindow());
+			Parent root = startWindowLoader.load();
 			handleField.getScene().setRoot(root);
 		} catch (Exception exception) {
 			exception.printStackTrace();

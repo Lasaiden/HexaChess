@@ -88,6 +88,21 @@ public class API {
 		}
 		return null;
 	}
+	public static boolean settings(Settings settings) {
+		try {
+			String json = mapper.writeValueAsString(settings);
+			HttpRequest.Builder requestBuilder =
+				HttpRequest.newBuilder()
+					.header("Content-Type", "application/json")
+					.POST(HttpRequest.BodyPublishers.ofString(json))
+					.timeout(Duration.ofSeconds(6));
+			HttpResponse<String> response = sendWithFallback(requestBuilder, "/settings");
+			return response.statusCode() == 200;
+		} catch (Exception exception) {
+			exception.printStackTrace();
+			return false;
+		}
+	}
 	public static List<Player> search(String handle) {
 		try {
 			HttpRequest.Builder requestBuilder =

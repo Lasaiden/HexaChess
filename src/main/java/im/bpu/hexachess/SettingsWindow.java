@@ -1,5 +1,8 @@
 package im.bpu.hexachess;
 
+import im.bpu.hexachess.entity.Settings;
+import im.bpu.hexachess.network.API;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -28,6 +31,9 @@ public class SettingsWindow {
 				case "Default" -> SettingsManager.maxDepth = 3;
 				case "Slowest" -> SettingsManager.maxDepth = 5;
 			}
+			Settings settings = new Settings(
+				SettingsManager.playerId, "default", true, false, SettingsManager.maxDepth);
+			API.settings(settings);
 			SettingsManager.save();
 		}
 		try {
@@ -42,7 +48,9 @@ public class SettingsWindow {
 	}
 	@FXML
 	private void openStart() {
+		SettingsManager.playerId = null;
 		SettingsManager.userHandle = null;
+		SettingsManager.authToken = null;
 		SettingsManager.save();
 		try {
 			FXMLLoader startWindowLoader =

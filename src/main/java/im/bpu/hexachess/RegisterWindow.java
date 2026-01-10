@@ -43,18 +43,22 @@ public class RegisterWindow {
 		if (registerSuccess) {
 			SettingsManager.userHandle = handle;
 			SettingsManager.save();
-			try {
-				FXMLLoader mainWindowLoader =
-					new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));
-				mainWindowLoader.setController(new MainWindow());
-				Parent root = mainWindowLoader.load();
-				handleField.getScene().setRoot(root);
-			} catch (Exception exception) {
-				exception.printStackTrace();
-			}
+			openMain();
 		} else {
 			statusLabel.setText("Error (Username taken or server error)");
 			statusLabel.setVisible(true);
+		}
+	}
+	@FXML
+	private void openMain() {
+		try {
+			FXMLLoader mainWindowLoader =
+				new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));
+			mainWindowLoader.setController(new MainWindow());
+			Parent root = mainWindowLoader.load();
+			handleField.getScene().setRoot(root);
+		} catch (Exception exception) {
+			exception.printStackTrace();
 		}
 	}
 	@FXML
