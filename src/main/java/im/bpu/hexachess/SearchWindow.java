@@ -79,6 +79,8 @@ public class SearchWindow {
 	private void startMatchmaking(String target) {
 		new Thread(() -> {
 			String handle = SettingsManager.userHandle;
+			long dt = 500;
+			long maxDt = 6000;
 			while (true) {
 				String resp = API.challenge(handle, target);
 				if (resp != null && !resp.equals("Pending")) {
@@ -94,7 +96,8 @@ public class SearchWindow {
 					break;
 				}
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(dt);
+					dt = Math.min(maxDt, dt * 2);
 				} catch (Exception ignored) { // high-frequency polling operation
 				}
 			}

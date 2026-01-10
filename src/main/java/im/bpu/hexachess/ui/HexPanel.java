@@ -91,6 +91,8 @@ public class HexPanel {
 	private void startPolling() {
 		isLockedIn = true;
 		new Thread(() -> {
+			long dt = 500;
+			long maxDt = 6000;
 			while (true) {
 				String moveString = API.getMove(state.gameId);
 				if (moveString != null && !moveString.isEmpty()
@@ -111,7 +113,8 @@ public class HexPanel {
 					break;
 				}
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(dt);
+					dt = Math.min(maxDt, dt * 2);
 				} catch (Exception ignored) { // high-frequency polling operation
 				}
 			}
