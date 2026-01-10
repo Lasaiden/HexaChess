@@ -1,6 +1,6 @@
 package im.bpu.hexachess.ui;
 
-import im.bpu.hexachess.Settings;
+import im.bpu.hexachess.SettingsManager;
 import im.bpu.hexachess.SoundManager;
 import im.bpu.hexachess.State;
 import im.bpu.hexachess.model.AI;
@@ -30,7 +30,7 @@ public class HexPanel {
 	private String lastSyncedMoveString = "";
 	public HexPanel(Canvas canvas, State state) {
 		this.state = state;
-		this.ai.setMaxDepth(Settings.maxDepth);
+		this.ai.setMaxDepth(SettingsManager.maxDepth);
 		this.geometry = new HexGeometry(getAspectRatio() > 1.5 ? 32 : 24);
 		this.renderer = new HexRenderer(geometry, state.board);
 		this.canvas = canvas;
@@ -151,7 +151,7 @@ public class HexPanel {
 		if (isLockedIn || state.isMultiplayer)
 			return;
 		state.clear();
-		ai.setMaxDepth(Settings.maxDepth);
+		ai.setMaxDepth(SettingsManager.maxDepth);
 		renderer.setBoard(state.board);
 		deselect();
 	}

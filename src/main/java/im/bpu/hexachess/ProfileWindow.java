@@ -44,7 +44,7 @@ public class ProfileWindow {
 	@FXML private Button backButton;
 	@FXML
 	private void initialize() {
-		String handle = targetHandle != null ? targetHandle : Settings.userHandle;
+		String handle = targetHandle != null ? targetHandle : SettingsManager.userHandle;
 		Player player = API.profile(handle);
 		if (player == null)
 			return;

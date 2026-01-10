@@ -41,8 +41,8 @@ public class RegisterWindow {
 			playerId, handle, emailField.getText(), passwordField.getText(), 1200, false, null);
 		boolean registerSuccess = API.register(player);
 		if (registerSuccess) {
-			Settings.userHandle = handle;
-			Settings.save();
+			SettingsManager.userHandle = handle;
+			SettingsManager.save();
 			try {
 				FXMLLoader mainWindowLoader =
 					new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));

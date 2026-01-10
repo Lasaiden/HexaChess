@@ -11,7 +11,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
 		Parent root;
-		if (Settings.userHandle != null) {
+		if (SettingsManager.userHandle != null) {
 			FXMLLoader mainWindowLoader =
 				new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));
 			mainWindowLoader.setController(new MainWindow());

@@ -67,7 +67,7 @@ public class MainWindow {
 		*/
 	}
 	private void loadPlayerItem() {
-		String handle = Settings.userHandle;
+		String handle = SettingsManager.userHandle;
 		Player player = API.profile(handle);
 		if (player == null)
 			return;
@@ -89,7 +89,7 @@ public class MainWindow {
 	private void loadOpponentItem() {
 		State state = State.getState();
 		String handle = "Computer";
-		int rating = ((Settings.maxDepth - 1) / 2 % 3 + 1) * 1200;
+		int rating = ((SettingsManager.maxDepth - 1) / 2 % 3 + 1) * 1200;
 		String location = null;
 		String avatarUrl = BASE_URL;
 		if (state.isMultiplayer) {
@@ -184,7 +184,7 @@ public class MainWindow {
 	@FXML
 	private void openProfile() {
 		try {
-			ProfileWindow.targetHandle = Settings.userHandle;
+			ProfileWindow.targetHandle = SettingsManager.userHandle;
 			FXMLLoader profileWindowLoader =
 				new FXMLLoader(getClass().getResource("ui/profileWindow.fxml"));
 			profileWindowLoader.setController(new ProfileWindow());

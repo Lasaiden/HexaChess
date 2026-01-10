@@ -78,7 +78,7 @@ public class SearchWindow {
 	}
 	private void startMatchmaking(String target) {
 		new Thread(() -> {
-			String handle = Settings.userHandle;
+			String handle = SettingsManager.userHandle;
 			while (true) {
 				String resp = API.challenge(handle, target);
 				if (resp != null && !resp.equals("Pending")) {

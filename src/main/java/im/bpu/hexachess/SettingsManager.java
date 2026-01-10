@@ -2,8 +2,8 @@ package im.bpu.hexachess;
 
 import java.util.prefs.Preferences;
 
-public class Settings {
-	private static final Preferences prefs = Preferences.userNodeForPackage(Settings.class);
+public class SettingsManager {
+	private static final Preferences prefs = Preferences.userNodeForPackage(SettingsManager.class);
 	public static int maxDepth = prefs.getInt("maxDepth", 3);
 	public static String userHandle = prefs.get("userHandle", null);
 	public static String authToken = prefs.get("authToken", null);

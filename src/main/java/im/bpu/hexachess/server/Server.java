@@ -4,10 +4,12 @@ import im.bpu.hexachess.Config;
 import im.bpu.hexachess.dao.AchievementDAO;
 import im.bpu.hexachess.dao.PlayerDAO;
 import im.bpu.hexachess.dao.PuzzleDAO;
+import im.bpu.hexachess.dao.SettingsDAO;
 import im.bpu.hexachess.dao.TournamentDAO;
 import im.bpu.hexachess.entity.Achievement;
 import im.bpu.hexachess.entity.Player;
 import im.bpu.hexachess.entity.Puzzle;
+import im.bpu.hexachess.entity.Settings;
 import im.bpu.hexachess.entity.Tournament;
 
 import com.sun.net.httpserver.HttpExchange;
@@ -47,6 +49,7 @@ public class Server {
 		HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
 		server.createContext("/api/login", new LoginHandler());
 		server.createContext("/api/register", new RegisterHandler());
+		server.createContext("/api/settings", new SettingsHandler());
 		server.createContext("/api/search", new SearchHandler());
 		server.createContext("/api/profile", new ProfileHandler());
 		server.createContext("/api/achievements", new AchievementsHandler());
@@ -112,6 +115,31 @@ public class Server {
 			} catch (Exception exception) {
 				exception.printStackTrace();
 				sendResponse(exchange, 409, "Conflict: Username taken or server error");
+			}
+		}
+	}
+	static class SettingsHandler implements HttpHandler {
+		@Override
+		public void handle(HttpExchange exchange) throws IOException {
+			if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
+				sendResponse(exchange, 405, "Method Not Allowed");
+				return;
+			}
+			try {
+				String query = exchange.getRequestURI().getQuery();
+				String playerId = query.split("=")[1];
+				SettingsDAO dao = new SettingsDAO();
+				Settings settings = dao.read(playerId);
+				if (settings == null) {
+					settings = new Settings(playerId);
+					dao.create(settings);
+				}
+				dao.close();
+				String response = mapper.writeValueAsString(settings);
+				sendResponse(exchange, 200, response);
+			} catch (Exception exception) {
+				exception.printStackTrace();
+				sendResponse(exchange, 500, "Internal Server Error");
 			}
 		}
 	}

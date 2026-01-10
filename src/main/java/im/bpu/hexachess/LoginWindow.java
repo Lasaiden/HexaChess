@@ -1,6 +1,7 @@
 package im.bpu.hexachess;
 
 import im.bpu.hexachess.entity.Player;
+import im.bpu.hexachess.entity.Settings;
 import im.bpu.hexachess.network.API;
 
 import javafx.fxml.FXML;
@@ -34,9 +35,14 @@ public class LoginWindow {
 			System.out.println("Connected as: " + (player != null ? player.getHandle() : "null"));
 		}
 		if (player != null) {
-			Settings.userHandle = handle;
-			Settings.authToken = player.getToken();
-			Settings.save();
+			SettingsManager.userHandle = handle;
+			SettingsManager.authToken = player.getToken();
+			String playerId = player.getPlayerId();
+			Settings settings = API.settings(playerId);
+			if (settings != null) {
+				SettingsManager.maxDepth = settings.getAiDifficultyLevel();
+			}
+			SettingsManager.save();
 			try {
 				FXMLLoader mainWindowLoader =
 					new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));

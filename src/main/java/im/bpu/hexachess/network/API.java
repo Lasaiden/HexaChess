@@ -4,6 +4,7 @@ import im.bpu.hexachess.Config;
 import im.bpu.hexachess.entity.Achievement;
 import im.bpu.hexachess.entity.Player;
 import im.bpu.hexachess.entity.Puzzle;
+import im.bpu.hexachess.entity.Settings;
 import im.bpu.hexachess.entity.Tournament;
 
 import java.net.URI;
@@ -73,6 +74,19 @@ public class API {
 			exception.printStackTrace();
 			return false;
 		}
+	}
+	public static Settings settings(String playerId) {
+		try {
+			HttpRequest.Builder requestBuilder =
+				HttpRequest.newBuilder().GET().timeout(Duration.ofSeconds(6));
+			HttpResponse<String> response =
+				sendWithFallback(requestBuilder, "/settings?playerId=" + playerId);
+			if (response.statusCode() == 200)
+				return mapper.readValue(response.body(), Settings.class);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return null;
 	}
 	public static List<Player> search(String handle) {
 		try {

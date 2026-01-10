@@ -12,7 +12,7 @@ public class SettingsWindow {
 	@FXML
 	private void initialize() {
 		maxDepthComboBox.getItems().addAll("Fast", "Default", "Slowest");
-		switch (Settings.maxDepth) {
+		switch (SettingsManager.maxDepth) {
 			case 1 -> maxDepthComboBox.getSelectionModel().select("Fast");
 			case 3 -> maxDepthComboBox.getSelectionModel().select("Default");
 			case 5 -> maxDepthComboBox.getSelectionModel().select("Slowest");
@@ -24,11 +24,11 @@ public class SettingsWindow {
 		String selected = maxDepthComboBox.getValue();
 		if (selected != null) {
 			switch (selected) {
-				case "Fast" -> Settings.maxDepth = 1;
-				case "Default" -> Settings.maxDepth = 3;
-				case "Slowest" -> Settings.maxDepth = 5;
+				case "Fast" -> SettingsManager.maxDepth = 1;
+				case "Default" -> SettingsManager.maxDepth = 3;
+				case "Slowest" -> SettingsManager.maxDepth = 5;
 			}
-			Settings.save();
+			SettingsManager.save();
 		}
 		try {
 			FXMLLoader mainWindowLoader =
@@ -42,8 +42,8 @@ public class SettingsWindow {
 	}
 	@FXML
 	private void openStart() {
-		Settings.userHandle = null;
-		Settings.save();
+		SettingsManager.userHandle = null;
+		SettingsManager.save();
 		try {
 			FXMLLoader startWindowLoader =
 				new FXMLLoader(getClass().getResource("ui/startWindow.fxml"));
