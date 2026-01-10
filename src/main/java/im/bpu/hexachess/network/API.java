@@ -1,6 +1,7 @@
 package im.bpu.hexachess.network;
 
 import im.bpu.hexachess.Config;
+import im.bpu.hexachess.SettingsManager;
 import im.bpu.hexachess.entity.Achievement;
 import im.bpu.hexachess.entity.Player;
 import im.bpu.hexachess.entity.Puzzle;
@@ -30,6 +31,10 @@ public class API {
 	}
 	private static HttpResponse<String> sendWithFallback(
 		HttpRequest.Builder requestBuilder, String endpoint) throws Exception {
+		String authToken = SettingsManager.authToken;
+		if (authToken != null) {
+			requestBuilder.header("Authorization", "Bearer " + authToken);
+		}
 		try {
 			return sendRequest(requestBuilder, DEV_URL, endpoint);
 		} catch (Exception primaryException) {

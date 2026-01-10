@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.crypto.SecretKey;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -60,6 +61,22 @@ public class Server {
 		server.setExecutor(null);
 		server.start();
 		System.out.println("HexaChess Server started on port " + PORT);
+	}
+	private static String auth(HttpExchange exchange) {
+		String auth = exchange.getRequestHeaders().getFirst("Authorization");
+		if (auth == null || !auth.startsWith("Bearer "))
+			return null;
+		String authToken = auth.substring(7);
+		try {
+			return Jwts.parser()
+				.verifyWith((SecretKey) KEY)
+				.build()
+				.parseSignedClaims(authToken)
+				.getPayload()
+				.getSubject();
+		} catch (Exception ignored) { // high-frequency polling operation
+			return null;
+		}
 	}
 	static class LoginHandler implements HttpHandler {
 		@Override
@@ -127,6 +144,10 @@ public class Server {
 	static class SettingsHandler implements HttpHandler {
 		@Override
 		public void handle(HttpExchange exchange) throws IOException {
+			if (auth(exchange) == null) {
+				sendResponse(exchange, 401, "Unauthorized");
+				return;
+			}
 			if ("GET".equalsIgnoreCase(exchange.getRequestMethod())) {
 				try {
 					String query = exchange.getRequestURI().getQuery();
@@ -268,6 +289,10 @@ public class Server {
 	static class ChallengeHandler implements HttpHandler {
 		@Override
 		public void handle(HttpExchange exchange) throws IOException {
+			if (auth(exchange) == null) {
+				sendResponse(exchange, 401, "Unauthorized");
+				return;
+			}
 			if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
 				sendResponse(exchange, 405, "Method Not Allowed");
 				return;
@@ -294,6 +319,10 @@ public class Server {
 	static class SyncHandler implements HttpHandler {
 		@Override
 		public void handle(HttpExchange exchange) throws IOException {
+			if (auth(exchange) == null) {
+				sendResponse(exchange, 401, "Unauthorized");
+				return;
+			}
 			if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
 				ObjectNode jsonNode = mapper.readValue(exchange.getRequestBody(), ObjectNode.class);
 				String gameId = jsonNode.get("gameId").asText();
