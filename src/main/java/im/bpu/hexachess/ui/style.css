@@ -4,13 +4,6 @@
 	src: url("https://raw.githubusercontent.com/ryanoasis/nerd-fonts/refs/heads/master/patched-fonts/Noto/Sans-Mono/NotoSansMNerdFontMono-Bold.ttf");
 }
 
-#errorLabel,
-#statusLabel
-{
-	/* red */
-	-fx-text-fill: rgb(237, 53, 36);
-}
-
 #loginButton,
 #signOutButton,
 #signUpButton
@@ -408,4 +401,29 @@
 {
 	-fx-pref-height: 42px;
 	-fx-pref-width: 42px;
+}
+
+.text-danger
+{
+	/* l40-red */
+	-fx-text-fill: rgb(189, 30, 15);
+}
+
+.text-success
+{
+	/* l40-green */
+	-fx-text-fill: rgb(31, 173, 91);
+}
+
+.tournament-item-date,
+.tournament-item-description
+{
+	-fx-font-size: 13px;
+	font-size: 13px;
+}
+
+.tournament-item-name
+{
+	-fx-font-size: 18px;
+	font-size: 18px;
 }

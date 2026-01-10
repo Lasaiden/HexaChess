@@ -50,10 +50,10 @@ public class TournamentsWindow {
 					descriptionLabel.setText(tournament.getDescription());
 					if (tournament.getWinnerId() != null) {
 						statusLabel.setText("Winner ID: " + tournament.getWinnerId());
-						statusLabel.setStyle("-fx-text-fill: rgb(46, 139, 87);");
+						statusLabel.getStyleClass().add("text-success");
 					} else {
 						statusLabel.setText("Status: Ongoing / Open");
-						statusLabel.setStyle("-fx-text-fill: rgb(94, 15, 8);");
+						statusLabel.getStyleClass().add("text-danger");
 					}
 					tournamentContainer.getChildren().add(tournamentItem);
 				} catch (Exception exception) {

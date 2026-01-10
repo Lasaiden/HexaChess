@@ -6,10 +6,10 @@
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns:fx="http://javafx.com/fxml" spacing="8" styleClass="player-item">
 	<HBox alignment="center_left" spacing="10">
-		<Label fx:id="nameLabel" style="-fx-font-size: 18px; -fx-text-fill: black;" />
+		<Label fx:id="nameLabel" styleClass="tournament-item-name" />
 		<Region HBox.hgrow="ALWAYS" />
-		<Label fx:id="dateLabel" style="-fx-font-size: 12px;" />
+		<Label fx:id="dateLabel" styleClass="tournament-item-date" />
 	</HBox>
-	<Label fx:id="descriptionLabel" wrapText="true" style="-fx-font-weight: normal; -fx-font-size: 14px;" />
+	<Label fx:id="descriptionLabel" wrapText="true" styleClass="tournament-item-description" />
 	<Label fx:id="statusLabel" />
 </VBox>
