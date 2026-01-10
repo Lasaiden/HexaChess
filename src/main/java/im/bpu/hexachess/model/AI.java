@@ -16,6 +16,8 @@ public class AI {
 		if (depth == 0)
 			return -evaluate(board);
 		List<Move> moves = board.listMoves(!maximizingPlayer);
+		if (moves.isEmpty())
+			return maximizingPlayer ? Integer.MIN_VALUE : Integer.MAX_VALUE;
 		int bestEval = maximizingPlayer ? Integer.MIN_VALUE : Integer.MAX_VALUE;
 		for (Move move : moves) {
 			Board clone = new Board(board);
@@ -34,18 +36,16 @@ public class AI {
 		return bestEval;
 	}
 	public Move getBestMove(Board board) {
-		Move bestMove = null;
-		int alpha = Integer.MIN_VALUE;
-		int beta = Integer.MAX_VALUE;
-		bestMove = board.listMoves(false)
-					   .parallelStream()
-					   .max(Comparator.comparingInt(move -> {
-						   Board clone = new Board(board);
-						   clone.movePiece(move.from, move.to);
-						   return minimax(clone, maxDepth - 1, alpha, beta, false);
-					   }))
-					   .orElse(null);
-		return bestMove;
+		List<Move> moves = board.listMoves(false);
+		if (moves.isEmpty())
+			return null;
+		return moves.parallelStream()
+			.max(Comparator.comparingInt(move -> {
+				Board clone = new Board(board);
+				clone.movePiece(move.from, move.to);
+				return minimax(clone, maxDepth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
+			}))
+			.orElse(null);
 	}
 	public void setMaxDepth(int maxDepth) {
 		this.maxDepth = maxDepth;
