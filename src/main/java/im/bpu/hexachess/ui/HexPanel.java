@@ -71,13 +71,13 @@ public class HexPanel {
 		deselect();
 		isLockedIn = true;
 		if (state.isMultiplayer) {
-			new Thread(() -> {
+			Thread.ofVirtual().start(() -> {
 				API.sendMove(state.gameId, moveString);
 				lastSyncedMoveString = moveString;
 				startPolling();
-			}).start();
+			});
 		} else {
-			new Thread(() -> {
+			Thread.ofVirtual().start(() -> {
 				Move bestMove = ai.getBestMove(state.board);
 				Platform.runLater(() -> {
 					if (bestMove != null)
@@ -85,12 +85,12 @@ public class HexPanel {
 					isLockedIn = false;
 					repaint();
 				});
-			}).start();
+			});
 		}
 	}
 	private void startPolling() {
 		isLockedIn = true;
-		new Thread(() -> {
+		Thread.ofVirtual().start(() -> {
 			long dt = 500;
 			long maxDt = 6000;
 			while (true) {
@@ -118,7 +118,7 @@ public class HexPanel {
 				} catch (Exception ignored) { // high-frequency polling operation
 				}
 			}
-		}).start();
+		});
 	}
 	private void selectPiece(AxialCoordinate coord) {
 		selected = coord;

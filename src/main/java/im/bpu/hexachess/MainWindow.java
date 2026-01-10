@@ -5,7 +5,7 @@ import im.bpu.hexachess.network.API;
 import im.bpu.hexachess.ui.HexPanel;
 
 import javafx.animation.TranslateTransition;
-// import javafx.application.Platform;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Side;
@@ -67,53 +67,66 @@ public class MainWindow {
 		*/
 	}
 	private void loadPlayerItem() {
-		String handle = SettingsManager.userHandle;
-		Player player = API.profile(handle);
-		if (player == null)
-			return;
-		int rating = player.getRating();
-		String location = player.getLocation();
-		String avatarUrl = (player.getAvatar() != null && !player.getAvatar().isEmpty())
-			? player.getAvatar()
-			: BASE_URL;
-		avatarIcon.setImage(new Image(avatarUrl, true));
-		handleLabel.setText(handle);
-		ratingLabel.setText("Rating: " + rating);
-		if (location != null && !location.isEmpty()) {
-			countryFlagIcon.getStyleClass().add("country-" + location);
-		} else {
-			countryFlagIcon.setManaged(false);
-			countryFlagIcon.setVisible(false);
-		}
+		Thread.ofVirtual().start(() -> {
+			String handle = SettingsManager.userHandle;
+			Player player = API.profile(handle);
+			if (player == null)
+				return;
+			int rating = player.getRating();
+			String location = player.getLocation();
+			String avatarUrl = (player.getAvatar() != null && !player.getAvatar().isEmpty())
+				? player.getAvatar()
+				: BASE_URL;
+			Platform.runLater(() -> {
+				avatarIcon.setImage(new Image(avatarUrl, true));
+				handleLabel.setText(handle);
+				ratingLabel.setText("Rating: " + rating);
+				if (location != null && !location.isEmpty()) {
+					countryFlagIcon.getStyleClass().add("country-" + location);
+				} else {
+					countryFlagIcon.setManaged(false);
+					countryFlagIcon.setVisible(false);
+				}
+			});
+		});
 	}
 	private void loadOpponentItem() {
-		State state = State.getState();
-		String handle = "Computer";
-		int rating = ((SettingsManager.maxDepth - 1) / 2 % 3 + 1) * 1200;
-		String location = null;
-		String avatarUrl = BASE_URL;
-		if (state.isMultiplayer) {
-			if (state.opponentHandle != null) {
-				handle = state.opponentHandle;
-				Player opponent = API.profile(handle);
-				if (opponent != null) {
-					rating = opponent.getRating();
-					location = opponent.getLocation();
-					avatarUrl = (opponent.getAvatar() != null && !opponent.getAvatar().isEmpty())
-						? opponent.getAvatar()
-						: BASE_URL;
+		Thread.ofVirtual().start(() -> {
+			State state = State.getState();
+			String handle = "Computer";
+			int rating = ((SettingsManager.maxDepth - 1) / 2 % 3 + 1) * 1200;
+			String location = null;
+			String avatarUrl = BASE_URL;
+			if (state.isMultiplayer) {
+				if (state.opponentHandle != null) {
+					handle = state.opponentHandle;
+					Player opponent = API.profile(handle);
+					if (opponent != null) {
+						rating = opponent.getRating();
+						location = opponent.getLocation();
+						avatarUrl =
+							(opponent.getAvatar() != null && !opponent.getAvatar().isEmpty())
+							? opponent.getAvatar()
+							: BASE_URL;
+					}
 				}
 			}
-		}
-		opponentAvatarIcon.setImage(new Image(avatarUrl, true));
-		opponentHandleLabel.setText(handle);
-		opponentRatingLabel.setText("Rating: " + rating);
-		if (location != null && !location.isEmpty()) {
-			opponentCountryFlagIcon.getStyleClass().add("country-" + location);
-		} else {
-			opponentCountryFlagIcon.setManaged(false);
-			opponentCountryFlagIcon.setVisible(false);
-		}
+			String finalHandle = handle;
+			int finalRating = rating;
+			String finalLocation = location;
+			String finalAvatarUrl = avatarUrl;
+			Platform.runLater(() -> {
+				opponentAvatarIcon.setImage(new Image(finalAvatarUrl, true));
+				opponentHandleLabel.setText(finalHandle);
+				opponentRatingLabel.setText("Rating: " + finalRating);
+				if (finalLocation != null && !finalLocation.isEmpty()) {
+					opponentCountryFlagIcon.getStyleClass().add("country-" + finalLocation);
+				} else {
+					opponentCountryFlagIcon.setManaged(false);
+					opponentCountryFlagIcon.setVisible(false);
+				}
+			});
+		});
 	}
 	@FXML
 	private void toggleSidebar() {
