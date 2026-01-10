@@ -18,6 +18,8 @@ import javafx.scene.layout.VBox;
 import static im.bpu.hexachess.Main.getAspectRatio;
 
 public class TournamentsWindow {
+	private static final DateTimeFormatter DATE_TIME_FORMATTER =
+		DateTimeFormatter.ofPattern("MMM d yyyy HH:mm");
 	@FXML private ScrollPane tournamentsPane;
 	@FXML private VBox tournamentContainer;
 	@FXML private Button backButton;
@@ -50,8 +52,7 @@ public class TournamentsWindow {
 							Label statusLabel = (Label) tournamentItem.lookup("#statusLabel");
 							nameLabel.setText(tournament.getName());
 							if (startTime != null) {
-								dateLabel.setText(startTime.format(
-									DateTimeFormatter.ofPattern("MMM d yyyy HH:mm")));
+								dateLabel.setText(startTime.format(DATE_TIME_FORMATTER));
 							} else {
 								dateLabel.setText("TBD");
 							}

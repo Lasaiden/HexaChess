@@ -20,6 +20,8 @@ public class ProfileWindow {
 	private static final String BASE_URL =
 		"https://www.chess.com/bundles/web/images/noavatar_l.gif";
 	private static final Map<String, String> COUNTRIES = new HashMap<>();
+	private static final DateTimeFormatter DATE_TIME_FORMATTER =
+		DateTimeFormatter.ofPattern("MMM d yyyy");
 	static {
 		COUNTRIES.put("cn", "China");
 		COUNTRIES.put("de", "Germany");
@@ -65,8 +67,7 @@ public class ProfileWindow {
 			countryFlagIcon.setVisible(false);
 		}
 		if (joinedAt != null) {
-			joinedAtLabel.setText(
-				"Joined: " + joinedAt.format(DateTimeFormatter.ofPattern("MMM d yyyy")));
+			joinedAtLabel.setText("Joined: " + joinedAt.format(DATE_TIME_FORMATTER));
 		}
 		avatarIcon.setImage(new Image(avatarUrl, true));
 	}
