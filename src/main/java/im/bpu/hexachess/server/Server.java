@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
 import javax.crypto.SecretKey;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -59,7 +60,7 @@ public class Server {
 		server.createContext("/api/tournaments", new TournamentsHandler());
 		server.createContext("/api/challenge", new ChallengeHandler());
 		server.createContext("/api/sync", new SyncHandler());
-		server.setExecutor(null);
+		server.setExecutor(Executors.newCachedThreadPool());
 		server.start();
 		System.out.println("HexaChess Server started on port " + PORT);
 	}
