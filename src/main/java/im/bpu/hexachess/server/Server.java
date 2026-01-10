@@ -102,19 +102,25 @@ public class Server {
 			}
 			try {
 				Player player = mapper.readValue(exchange.getRequestBody(), Player.class);
+				String handle = player.getHandle();
+				PlayerDAO dao = new PlayerDAO();
+				if (dao.getPlayerByHandle(handle) != null) {
+					dao.close();
+					sendResponse(exchange, 409, "Conflict: Username taken");
+					return;
+				}
 				String password = player.getPasswordHash();
 				String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
 				player.setPasswordHash(passwordHash);
 				player.setRating(1200);
 				player.setVerified(false);
 				player.setJoinedAt(LocalDateTime.now());
-				PlayerDAO dao = new PlayerDAO();
 				dao.create(player);
 				dao.close();
 				sendResponse(exchange, 200, "OK");
 			} catch (Exception exception) {
 				exception.printStackTrace();
-				sendResponse(exchange, 409, "Conflict: Username taken or server error");
+				sendResponse(exchange, 500, "Internal Server Error");
 			}
 		}
 	}
