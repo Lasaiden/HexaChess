@@ -1,5 +1,6 @@
 package im.bpu.hexachess.model;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class AI {
@@ -34,18 +35,16 @@ public class AI {
 	}
 	public Move getBestMove(Board board) {
 		Move bestMove = null;
-		int bestEval = Integer.MIN_VALUE;
 		int alpha = Integer.MIN_VALUE;
 		int beta = Integer.MAX_VALUE;
-		for (Move move : board.listMoves(false)) {
-			Board clone = new Board(board);
-			clone.movePiece(move.from, move.to);
-			int eval = minimax(clone, maxDepth - 1, alpha, beta, false);
-			if (eval > bestEval) {
-				bestEval = eval;
-				bestMove = move;
-			}
-		}
+		bestMove = board.listMoves(false)
+					   .parallelStream()
+					   .max(Comparator.comparingInt(move -> {
+						   Board clone = new Board(board);
+						   clone.movePiece(move.from, move.to);
+						   return minimax(clone, maxDepth - 1, alpha, beta, false);
+					   }))
+					   .orElse(null);
 		return bestMove;
 	}
 	public void setMaxDepth(int maxDepth) {
