@@ -14,22 +14,23 @@ public class Board {
 		{-2, -3}, {-1, -3}, {3, 1}, {3, 2}, {2, 3}, {1, 3}, {-3, -1}, {-3, -2}};
 	private static final int[][] WHITE_PAWN_CAPTURES = {{0, -1}, {-1, 0}};
 	private static final int[][] BLACK_PAWN_CAPTURES = {{0, 1}, {1, 0}};
+	private static final int[][] KINGS = {{5, 4}};
+	private static final int[][] QUEENS = {{4, 5}};
+	private static final int[][] ROOKS = {{2, 5}, {5, 2}};
+	private static final int[][] BISHOPS = {{3, 3}, {4, 4}, {5, 5}};
+	private static final int[][] KNIGHTS = {{3, 5}, {5, 3}};
+	private static final int[][] PAWNS = {
+		{1, 1}, {1, 2}, {1, 3}, {1, 4}, {1, 5}, {2, 1}, {3, 1}, {4, 1}, {5, 1}};
 	Map<AxialCoordinate, Piece> pieces = new HashMap<>();
 	public boolean isWhiteTurn = true;
 	private AxialCoordinate enPassant;
 	public Board() {
-		int[][] kings = {{5, 4}};
-		int[][] queens = {{4, 5}};
-		int[][] rooks = {{2, 5}, {5, 2}};
-		int[][] bishops = {{3, 3}, {4, 4}, {5, 5}};
-		int[][] knights = {{3, 5}, {5, 3}};
-		int[][] pawns = {{1, 1}, {1, 2}, {1, 3}, {1, 4}, {1, 5}, {2, 1}, {3, 1}, {4, 1}, {5, 1}};
-		placeSymmetricPieces(kings, PieceType.KING, PieceType.QUEEN);
-		placeSymmetricPieces(queens, PieceType.QUEEN, PieceType.KING);
-		placeSymmetricPieces(rooks, PieceType.ROOK, PieceType.ROOK);
-		placeSymmetricPieces(bishops, PieceType.BISHOP, PieceType.BISHOP);
-		placeSymmetricPieces(knights, PieceType.KNIGHT, PieceType.KNIGHT);
-		placeSymmetricPieces(pawns, PieceType.PAWN, PieceType.PAWN);
+		placeSymmetricPieces(KINGS, PieceType.KING, PieceType.QUEEN);
+		placeSymmetricPieces(QUEENS, PieceType.QUEEN, PieceType.KING);
+		placeSymmetricPieces(ROOKS, PieceType.ROOK, PieceType.ROOK);
+		placeSymmetricPieces(BISHOPS, PieceType.BISHOP, PieceType.BISHOP);
+		placeSymmetricPieces(KNIGHTS, PieceType.KNIGHT, PieceType.KNIGHT);
+		placeSymmetricPieces(PAWNS, PieceType.PAWN, PieceType.PAWN);
 	}
 	public Board(Board other) {
 		pieces.putAll(other.pieces);

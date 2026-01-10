@@ -4,6 +4,8 @@ import java.util.Comparator;
 import java.util.List;
 
 public class AI {
+	private static final int MAX_BETA = Integer.MAX_VALUE;
+	private static final int MIN_ALPHA = Integer.MIN_VALUE;
 	private int maxDepth = 3;
 	// https://youtu.be/l-hh51ncgDI
 	private int evaluate(Board board) {
@@ -17,8 +19,8 @@ public class AI {
 			return -evaluate(board);
 		List<Move> moves = board.listMoves(!maximizingPlayer);
 		if (moves.isEmpty())
-			return maximizingPlayer ? Integer.MIN_VALUE : Integer.MAX_VALUE;
-		int bestEval = maximizingPlayer ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+			return maximizingPlayer ? MIN_ALPHA : MAX_BETA;
+		int bestEval = maximizingPlayer ? MIN_ALPHA : MAX_BETA;
 		for (Move move : moves) {
 			Board clone = new Board(board);
 			clone.movePiece(move.from, move.to);
@@ -43,7 +45,7 @@ public class AI {
 			.max(Comparator.comparingInt(move -> {
 				Board clone = new Board(board);
 				clone.movePiece(move.from, move.to);
-				return minimax(clone, maxDepth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
+				return minimax(clone, maxDepth - 1, MIN_ALPHA, MAX_BETA, false);
 			}))
 			.orElse(null);
 	}

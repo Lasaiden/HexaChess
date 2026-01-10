@@ -19,7 +19,7 @@ class HexGeometry {
 			HEX_SIN[i] = Math.sin(angle);
 		}
 	}
-	private double radius;
+	private final double radius;
 	HexGeometry(double radius) {
 		this.radius = radius;
 	}
