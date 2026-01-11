@@ -27,7 +27,7 @@ class HexRenderer {
 	private static final Color[] HEX_COLORS = {SANDYBROWN, NAVAJOWHITE, PERU};
 	private static final int[][] HEX_NEIGHBOR_OFFSETS = {
 		{-1, -1}, {0, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 0}};
-	private HexGeometry geometry;
+	private final HexGeometry geometry;
 	private Board board;
 	HexRenderer(HexGeometry geometry, Board board) {
 		this.geometry = geometry;

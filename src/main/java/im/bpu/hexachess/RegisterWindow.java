@@ -32,9 +32,9 @@ public class RegisterWindow {
 			passwordField.requestFocus();
 			return;
 		}
-		String handle = handleField.getText();
-		String email = emailField.getText();
-		String password = passwordField.getText();
+		final String handle = handleField.getText();
+		final String email = emailField.getText();
+		final String password = passwordField.getText();
 		if (handle.length() > 32) {
 			statusLabel.setText("32 characters max");
 			statusLabel.setVisible(true);
@@ -51,13 +51,13 @@ public class RegisterWindow {
 			return;
 		}
 		Thread.ofVirtual().start(() -> {
-			byte[] bytes = new byte[9];
-			SecureRandom rand = new SecureRandom();
+			final byte[] bytes = new byte[9];
+			final SecureRandom rand = new SecureRandom();
 			rand.nextBytes(bytes);
-			String playerId =
+			final String playerId =
 				Base64.getUrlEncoder().withoutPadding().encodeToString(bytes).substring(0, 11);
-			Player player = new Player(playerId, handle, email, password, 1200, false, null);
-			boolean registerSuccess = API.register(player);
+			final Player player = new Player(playerId, handle, email, password, 1200, false, null);
+			final boolean registerSuccess = API.register(player);
 			Platform.runLater(() -> {
 				if (registerSuccess) {
 					SettingsManager.setUserHandle(handle);

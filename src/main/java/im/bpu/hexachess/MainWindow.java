@@ -45,7 +45,7 @@ public class MainWindow {
 	*/
 	@FXML
 	private void initialize() {
-		State state = State.getState();
+		final State state = State.getState();
 		hexPanel = new HexPanel(canvas, state);
 		sidebar.setTranslateX(-160);
 		sidebar.setVisible(false);
@@ -68,13 +68,13 @@ public class MainWindow {
 	}
 	private void loadPlayerItem() {
 		Thread.ofVirtual().start(() -> {
-			String handle = SettingsManager.userHandle;
-			Player player = API.profile(handle);
+			final String handle = SettingsManager.userHandle;
+			final Player player = API.profile(handle);
 			if (player == null)
 				return;
-			int rating = player.getRating();
-			String location = player.getLocation();
-			String avatarUrl = (player.getAvatar() != null && !player.getAvatar().isEmpty())
+			final int rating = player.getRating();
+			final String location = player.getLocation();
+			final String avatarUrl = (player.getAvatar() != null && !player.getAvatar().isEmpty())
 				? player.getAvatar()
 				: BASE_URL;
 			Platform.runLater(() -> {
@@ -92,7 +92,7 @@ public class MainWindow {
 	}
 	private void loadOpponentItem() {
 		Thread.ofVirtual().start(() -> {
-			State state = State.getState();
+			final State state = State.getState();
 			String handle = "Computer";
 			int rating = ((SettingsManager.maxDepth - 1) / 2 % 3 + 1) * 1200;
 			String location = null;
@@ -100,7 +100,7 @@ public class MainWindow {
 			if (state.isMultiplayer) {
 				if (state.opponentHandle != null) {
 					handle = state.opponentHandle;
-					Player opponent = API.profile(handle);
+					final Player opponent = API.profile(handle);
 					if (opponent != null) {
 						rating = opponent.getRating();
 						location = opponent.getLocation();
@@ -111,10 +111,10 @@ public class MainWindow {
 					}
 				}
 			}
-			String finalHandle = handle;
-			int finalRating = rating;
-			String finalLocation = location;
-			String finalAvatarUrl = avatarUrl;
+			final String finalHandle = handle;
+			final int finalRating = rating;
+			final String finalLocation = location;
+			final String finalAvatarUrl = avatarUrl;
 			Platform.runLater(() -> {
 				opponentAvatarIcon.setImage(new Image(finalAvatarUrl, true));
 				opponentHandleLabel.setText(finalHandle);
@@ -130,9 +130,9 @@ public class MainWindow {
 	}
 	@FXML
 	private void toggleSidebar() {
-		boolean isClosed = !sidebar.isVisible();
-		Duration duration = Duration.millis(160);
-		TranslateTransition transition = new TranslateTransition(duration, sidebar);
+		final boolean isClosed = !sidebar.isVisible();
+		final Duration duration = Duration.millis(160);
+		final TranslateTransition transition = new TranslateTransition(duration, sidebar);
 		if (isClosed) {
 			transition.setToX(0);
 			sidebar.setVisible(true);
@@ -174,9 +174,9 @@ public class MainWindow {
 	}
 	@FXML
 	private void openHelpSettings() {
-		ContextMenu menu = new ContextMenu();
-		MenuItem settingsItem = new MenuItem("Settings");
-		MenuItem helpItem = new MenuItem("Help");
+		final ContextMenu menu = new ContextMenu();
+		final MenuItem settingsItem = new MenuItem("Settings");
+		final MenuItem helpItem = new MenuItem("Help");
 		settingsItem.setOnAction(event -> openSettings());
 		helpItem.setOnAction(event -> openSettings());
 		menu.getItems().addAll(settingsItem, helpItem);

@@ -14,57 +14,57 @@ class HexGeometry {
 	private static final double SQRT3 = Math.sqrt(3);
 	static {
 		for (int i = 0; i < 6; i++) {
-			double angle = Math.toRadians(60 * i);
+			final double angle = Math.toRadians(60 * i);
 			HEX_COS[i] = Math.cos(angle);
 			HEX_SIN[i] = Math.sin(angle);
 		}
 	}
 	private final double radius;
-	HexGeometry(double radius) {
+	HexGeometry(final double radius) {
 		this.radius = radius;
 	}
 	double getHexSize() {
 		return radius;
 	}
-	Point2D hexToPixel(int q, int r, double cx, double cy) {
-		double width = 2 * radius;
-		double height = SQRT3 * radius;
-		double quarterWidth = width * 3 / 4;
-		double halfHeight = height / 2;
-		double dx = quarterWidth * (q - r);
-		double dy = halfHeight * (q + r);
+	Point2D hexToPixel(final int q, final int r, final double cx, final double cy) {
+		final double width = 2 * radius;
+		final double height = SQRT3 * radius;
+		final double quarterWidth = width * 3 / 4;
+		final double halfHeight = height / 2;
+		final double dx = quarterWidth * (q - r);
+		final double dy = halfHeight * (q + r);
 		return new Point2D(cx + dx, cy + dy);
 	}
-	private AxialCoordinate hexRound(double q, double r) {
-		double s = -q - r;
+	private AxialCoordinate hexRound(final double q, final double r) {
+		final double s = -q - r;
 		int rq = (int) Math.round(q);
 		int rr = (int) Math.round(r);
-		int rs = (int) Math.round(s);
-		double dq = Math.abs(rq - q);
-		double dr = Math.abs(rr - r);
-		double ds = Math.abs(rs - s);
+		final int rs = (int) Math.round(s);
+		final double dq = Math.abs(rq - q);
+		final double dr = Math.abs(rr - r);
+		final double ds = Math.abs(rs - s);
 		if (dq > dr && dq > ds)
 			rq = -rr - rs;
 		else if (dr > ds)
 			rr = -rq - rs;
 		return new AxialCoordinate(rq, rr);
 	}
-	AxialCoordinate pixelToHex(double x, double y, double cx, double cy) {
-		double dx = x - cx;
-		double dy = y - cy;
-		double width = 2 * radius;
-		double height = SQRT3 * radius;
-		double quarterWidth = width * 3 / 4;
-		double halfHeight = height / 2;
-		double q = (dy / halfHeight + dx / quarterWidth) / 2;
-		double r = (dy / halfHeight - dx / quarterWidth) / 2;
+	AxialCoordinate pixelToHex(final double x, final double y, final double cx, final double cy) {
+		final double dx = x - cx;
+		final double dy = y - cy;
+		final double width = 2 * radius;
+		final double height = SQRT3 * radius;
+		final double quarterWidth = width * 3 / 4;
+		final double halfHeight = height / 2;
+		final double q = (dy / halfHeight + dx / quarterWidth) / 2;
+		final double r = (dy / halfHeight - dx / quarterWidth) / 2;
 		return hexRound(q, r);
 	}
-	Path createHexPath(Point2D center) {
-		Path path = new Path();
+	Path createHexPath(final Point2D center) {
+		final Path path = new Path();
 		for (int i = 0; i < 6; i++) {
-			double vx = center.getX() + radius * HEX_COS[i];
-			double vy = center.getY() + radius * HEX_SIN[i];
+			final double vx = center.getX() + radius * HEX_COS[i];
+			final double vy = center.getY() + radius * HEX_SIN[i];
 			if (i == 0)
 				path.getElements().add(new MoveTo(vx, vy));
 			else

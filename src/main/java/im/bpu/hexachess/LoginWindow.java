@@ -26,8 +26,8 @@ public class LoginWindow {
 			passwordField.requestFocus();
 			return;
 		}
-		String handle = handleField.getText();
-		String password = passwordField.getText();
+		final String handle = handleField.getText();
+		final String password = passwordField.getText();
 		Thread.ofVirtual().start(() -> {
 			Player player;
 			if ("root".equals(handle) && "password123".equals(password)) {
@@ -38,11 +38,11 @@ public class LoginWindow {
 					"Connected as: " + (player != null ? player.getHandle() : "null"));
 			}
 			if (player != null) {
-				String playerId = player.getPlayerId();
+				final String playerId = player.getPlayerId();
 				SettingsManager.setPlayerId(playerId);
 				SettingsManager.setUserHandle(handle);
 				SettingsManager.setAuthToken(player.getToken());
-				Settings settings = API.settings(playerId);
+				final Settings settings = API.settings(playerId);
 				if (settings != null) {
 					SettingsManager.setMaxDepth(settings.getAiDifficultyLevel());
 				}

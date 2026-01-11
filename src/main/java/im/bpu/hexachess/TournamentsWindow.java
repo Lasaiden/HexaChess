@@ -32,24 +32,24 @@ public class TournamentsWindow {
 																 // parsing precedence
 		}
 		Thread.ofVirtual().start(() -> {
-			List<Tournament> tournaments = API.tournaments();
+			final List<Tournament> tournaments = API.tournaments();
 			Platform.runLater(() -> {
 				if (tournaments.isEmpty()) {
-					Label emptyLabel = new Label("No tournaments found.");
+					final Label emptyLabel = new Label("No tournaments found.");
 					tournamentContainer.getChildren().add(emptyLabel);
 				} else {
-					for (Tournament tournament : tournaments) {
+					for (final Tournament tournament : tournaments) {
 						try {
-							FXMLLoader tournamentItemLoader =
+							final FXMLLoader tournamentItemLoader =
 								new FXMLLoader(getClass().getResource("ui/tournamentItem.fxml"));
-							VBox tournamentItem = tournamentItemLoader.load();
-							LocalDateTime startTime = tournament.getStartTime();
-							String winnerId = tournament.getWinnerId();
-							Label nameLabel = (Label) tournamentItem.lookup("#nameLabel");
-							Label dateLabel = (Label) tournamentItem.lookup("#dateLabel");
-							Label descriptionLabel =
+							final VBox tournamentItem = tournamentItemLoader.load();
+							final LocalDateTime startTime = tournament.getStartTime();
+							final String winnerId = tournament.getWinnerId();
+							final Label nameLabel = (Label) tournamentItem.lookup("#nameLabel");
+							final Label dateLabel = (Label) tournamentItem.lookup("#dateLabel");
+							final Label descriptionLabel =
 								(Label) tournamentItem.lookup("#descriptionLabel");
-							Label statusLabel = (Label) tournamentItem.lookup("#statusLabel");
+							final Label statusLabel = (Label) tournamentItem.lookup("#statusLabel");
 							nameLabel.setText(tournament.getName());
 							if (startTime != null) {
 								dateLabel.setText(startTime.format(DATE_TIME_FORMATTER));
@@ -76,10 +76,10 @@ public class TournamentsWindow {
 	@FXML
 	private void openMain() {
 		try {
-			FXMLLoader mainWindowLoader =
+			final FXMLLoader mainWindowLoader =
 				new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));
 			mainWindowLoader.setController(new MainWindow());
-			Parent root = mainWindowLoader.load();
+			final Parent root = mainWindowLoader.load();
 			backButton.getScene().setRoot(root);
 		} catch (Exception exception) {
 			exception.printStackTrace();

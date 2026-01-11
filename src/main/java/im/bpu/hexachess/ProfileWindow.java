@@ -46,20 +46,20 @@ public class ProfileWindow {
 	@FXML private Button backButton;
 	@FXML
 	private void initialize() {
-		String handle = targetHandle != null ? targetHandle : SettingsManager.userHandle;
-		Player player = API.profile(handle);
+		final String handle = targetHandle != null ? targetHandle : SettingsManager.userHandle;
+		final Player player = API.profile(handle);
 		if (player == null)
 			return;
-		int rating = player.getRating();
-		String location = player.getLocation();
-		LocalDateTime joinedAt = player.getJoinedAt();
-		String avatarUrl = (player.getAvatar() != null && !player.getAvatar().isEmpty())
+		final int rating = player.getRating();
+		final String location = player.getLocation();
+		final LocalDateTime joinedAt = player.getJoinedAt();
+		final String avatarUrl = (player.getAvatar() != null && !player.getAvatar().isEmpty())
 			? player.getAvatar()
 			: BASE_URL;
 		handleLabel.setText(handle);
 		ratingLabel.setText("Rating: " + rating);
 		if (location != null && !location.isEmpty()) {
-			String country = COUNTRIES.getOrDefault(location, location);
+			final String country = COUNTRIES.getOrDefault(location, location);
 			locationLabel.setText(country);
 			countryFlagIcon.getStyleClass().add("country-" + location);
 		} else {

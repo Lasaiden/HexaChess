@@ -23,6 +23,8 @@ import static im.bpu.hexachess.Main.getAspectRatio;
 public class SearchWindow {
 	private static final String BASE_URL =
 		"https://www.chess.com/bundles/web/images/noavatar_l.gif";
+	private static final long DT = 500;
+	private static final long MAX_DT = 6000;
 	@FXML private TextField searchField;
 	@FXML private ScrollPane searchPane;
 	@FXML private VBox playerContainer;
@@ -39,21 +41,21 @@ public class SearchWindow {
 	@FXML
 	private void handleSearch() {
 		playerContainer.getChildren().clear();
-		String query = searchField.getText();
+		final String query = searchField.getText();
 		if (query.isEmpty())
 			return;
 		Thread.ofVirtual().start(() -> {
-			List<Player> players = API.search(query);
+			final List<Player> players = API.search(query);
 			Platform.runLater(() -> {
 				for (Player player : players) {
 					try {
 						FXMLLoader playerItemLoader =
 							new FXMLLoader(getClass().getResource("ui/playerItem.fxml"));
 						HBox playerItem = playerItemLoader.load();
-						String handle = player.getHandle();
-						int rating = player.getRating();
-						String location = player.getLocation();
-						String avatarUrl =
+						final String handle = player.getHandle();
+						final int rating = player.getRating();
+						final String location = player.getLocation();
+						final String avatarUrl =
 							(player.getAvatar() != null && !player.getAvatar().isEmpty())
 							? player.getAvatar()
 							: BASE_URL;
@@ -83,11 +85,10 @@ public class SearchWindow {
 	}
 	private void startMatchmaking(String target) {
 		Thread.ofVirtual().start(() -> {
-			String handle = SettingsManager.userHandle;
-			long dt = 500;
-			long maxDt = 6000;
+			final String handle = SettingsManager.userHandle;
+			long dt = DT;
 			while (true) {
-				String resp = API.challenge(handle, target);
+				final String resp = API.challenge(handle, target);
 				if (resp != null && !resp.equals("Pending")) {
 					Platform.runLater(() -> {
 						State state = State.getState();
@@ -102,7 +103,7 @@ public class SearchWindow {
 				}
 				try {
 					Thread.sleep(dt);
-					dt = Math.min(maxDt, dt * 2);
+					dt = Math.min(MAX_DT, dt * 2);
 				} catch (Exception ignored) { // high-frequency polling operation
 				}
 			}

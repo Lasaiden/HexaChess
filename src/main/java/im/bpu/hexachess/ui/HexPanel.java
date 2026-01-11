@@ -19,6 +19,8 @@ import javafx.scene.canvas.GraphicsContext;
 import static im.bpu.hexachess.Main.getAspectRatio;
 
 public class HexPanel {
+	private static final long DT = 500;
+	private static final long MAX_DT = 6000;
 	private final State state;
 	private final AI ai = new AI();
 	private final HexGeometry geometry;
@@ -28,7 +30,7 @@ public class HexPanel {
 	private final Canvas canvas;
 	private boolean isLockedIn = false;
 	private String lastSyncedMoveString = "";
-	public HexPanel(Canvas canvas, State state) {
+	public HexPanel(final Canvas canvas, final State state) {
 		this.state = state;
 		this.ai.setMaxDepth(SettingsManager.maxDepth);
 		this.geometry = new HexGeometry(getAspectRatio() > 1.5 ? 32 : 24);
@@ -42,18 +44,18 @@ public class HexPanel {
 		// accumulate opacity to remove hex gaps
 		repaint();
 	}
-	private void drawBoard(GraphicsContext gc, double cx, double cy) {
+	private void drawBoard(final GraphicsContext gc, final double cx, final double cy) {
 		for (int q = -5; q <= 5; q++)
 			for (int r = -5; r <= 5; r++) {
-				AxialCoordinate coord = new AxialCoordinate(q, r);
+				final AxialCoordinate coord = new AxialCoordinate(q, r);
 				if (coord.isValid())
 					renderer.drawHex(gc, cx, cy, coord, selected, highlighted);
 			}
 	}
 	private void repaint() {
-		GraphicsContext gc = canvas.getGraphicsContext2D();
-		double cx = canvas.getWidth() / 2;
-		double cy = canvas.getHeight() / 2;
+		final GraphicsContext gc = canvas.getGraphicsContext2D();
+		final double cx = canvas.getWidth() / 2;
+		final double cy = canvas.getHeight() / 2;
 		drawBoard(gc, cx, cy);
 		renderer.drawBoardBorder(gc, cx, cy);
 	}
@@ -62,10 +64,10 @@ public class HexPanel {
 		highlighted.clear();
 		repaint();
 	}
-	private void executeMove(AxialCoordinate target) {
+	private void executeMove(final AxialCoordinate target) {
 		if (isLockedIn)
 			return;
-		String moveString = selected.q + "," + selected.r + "->" + target.q + "," + target.r;
+		final String moveString = selected.q + "," + selected.r + "->" + target.q + "," + target.r;
 		state.history.push(new Board(state.board));
 		state.board.movePiece(selected, target);
 		deselect();
@@ -78,7 +80,7 @@ public class HexPanel {
 			});
 		} else {
 			Thread.ofVirtual().start(() -> {
-				Move bestMove = ai.getBestMove(state.board);
+				final Move bestMove = ai.getBestMove(state.board);
 				Platform.runLater(() -> {
 					if (bestMove != null)
 						state.board.movePiece(bestMove.from, bestMove.to);
@@ -91,19 +93,18 @@ public class HexPanel {
 	private void startPolling() {
 		isLockedIn = true;
 		Thread.ofVirtual().start(() -> {
-			long dt = 500;
-			long maxDt = 6000;
+			long dt = DT;
 			while (true) {
-				String moveString = API.getMove(state.gameId);
+				final String moveString = API.getMove(state.gameId);
 				if (moveString != null && !moveString.isEmpty()
 					&& !moveString.equals(lastSyncedMoveString)) {
 					lastSyncedMoveString = moveString;
-					String[] moveStrings = moveString.split("->");
-					String[] fromString = moveStrings[0].split(",");
-					String[] toString = moveStrings[1].split(",");
-					AxialCoordinate from = new AxialCoordinate(
+					final String[] moveStrings = moveString.split("->");
+					final String[] fromString = moveStrings[0].split(",");
+					final String[] toString = moveStrings[1].split(",");
+					final AxialCoordinate from = new AxialCoordinate(
 						Integer.parseInt(fromString[0]), Integer.parseInt(fromString[1]));
-					AxialCoordinate to = new AxialCoordinate(
+					final AxialCoordinate to = new AxialCoordinate(
 						Integer.parseInt(toString[0]), Integer.parseInt(toString[1]));
 					Platform.runLater(() -> {
 						state.board.movePiece(from, to);
@@ -114,26 +115,26 @@ public class HexPanel {
 				}
 				try {
 					Thread.sleep(dt);
-					dt = Math.min(maxDt, dt * 2);
+					dt = Math.min(MAX_DT, dt * 2);
 				} catch (Exception ignored) { // high-frequency polling operation
 				}
 			}
 		});
 	}
-	private void selectPiece(AxialCoordinate coord) {
+	private void selectPiece(final AxialCoordinate coord) {
 		selected = coord;
 		highlighted.clear();
-		for (Move m : state.board.listMoves(state.board.isWhiteTurn))
-			if (m.from.equals(coord))
-				highlighted.add(m.to);
+		for (final Move move : state.board.listMoves(state.board.isWhiteTurn))
+			if (move.from.equals(coord))
+				highlighted.add(move.to);
 		repaint();
 	}
-	private void handleMouseClick(double x, double y) {
+	private void handleMouseClick(final double x, final double y) {
 		if (isLockedIn)
 			return;
-		double cx = canvas.getWidth() / 2;
-		double cy = canvas.getHeight() / 2;
-		AxialCoordinate clicked = geometry.pixelToHex(x, y, cx, cy);
+		final double cx = canvas.getWidth() / 2;
+		final double cy = canvas.getHeight() / 2;
+		final AxialCoordinate clicked = geometry.pixelToHex(x, y, cx, cy);
 		if (!clicked.isValid()) {
 			deselect();
 			return;
@@ -142,7 +143,7 @@ public class HexPanel {
 			executeMove(clicked);
 			return;
 		}
-		Piece piece = state.board.getPiece(clicked);
+		final Piece piece = state.board.getPiece(clicked);
 		if ((piece != null && piece.isWhite == state.board.isWhiteTurn)
 			&& (!state.isMultiplayer || piece.isWhite == state.isWhitePlayer)) {
 			SoundManager.playClick();
