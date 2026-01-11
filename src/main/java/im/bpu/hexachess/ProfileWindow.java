@@ -8,13 +8,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
+
+import static im.bpu.hexachess.Main.loadWindow;
 
 public class ProfileWindow {
 	private static final String BASE_URL =
@@ -73,14 +73,6 @@ public class ProfileWindow {
 	}
 	@FXML
 	private void openMain() {
-		try {
-			FXMLLoader mainWindowLoader =
-				new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));
-			mainWindowLoader.setController(new MainWindow());
-			Parent root = mainWindowLoader.load();
-			backButton.getScene().setRoot(root);
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
+		loadWindow("ui/mainWindow.fxml", new MainWindow(), backButton);
 	}
 }

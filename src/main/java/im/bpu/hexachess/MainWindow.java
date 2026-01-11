@@ -7,9 +7,7 @@ import im.bpu.hexachess.ui.HexPanel;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Side;
-import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
@@ -21,6 +19,8 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 // import javafx.scene.text.Font;
 import javafx.util.Duration;
+
+import static im.bpu.hexachess.Main.loadWindow;
 
 public class MainWindow {
 	private static final String BASE_URL =
@@ -164,7 +164,7 @@ public class MainWindow {
 	}
 	@FXML
 	private void openSettings() {
-		loadWindow("ui/settingsWindow.fxml", new SettingsWindow());
+		loadWindow("ui/settingsWindow.fxml", new SettingsWindow(), settingsHelpButton);
 	}
 	@FXML
 	private void openHelpSettings() {
@@ -178,25 +178,15 @@ public class MainWindow {
 	}
 	@FXML
 	private void openSearch() {
-		loadWindow("ui/searchWindow.fxml", new SearchWindow());
+		loadWindow("ui/searchWindow.fxml", new SearchWindow(), settingsHelpButton);
 	}
 	@FXML
 	private void openProfile() {
 		ProfileWindow.targetHandle = SettingsManager.userHandle;
-		loadWindow("ui/profileWindow.fxml", new ProfileWindow());
+		loadWindow("ui/profileWindow.fxml", new ProfileWindow(), settingsHelpButton);
 	}
 	@FXML
 	private void openTournaments() {
-		loadWindow("ui/tournamentsWindow.fxml", new TournamentsWindow());
-	}
-	private void loadWindow(String path, Object controller) {
-		try {
-			FXMLLoader windowLoader = new FXMLLoader(getClass().getResource(path));
-			windowLoader.setController(controller);
-			Parent root = windowLoader.load();
-			settingsHelpButton.getScene().setRoot(root);
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
+		loadWindow("ui/tournamentsWindow.fxml", new TournamentsWindow(), settingsHelpButton);
 	}
 }

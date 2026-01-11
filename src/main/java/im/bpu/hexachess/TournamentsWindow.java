@@ -9,13 +9,13 @@ import java.util.List;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 
 import static im.bpu.hexachess.Main.getAspectRatio;
+import static im.bpu.hexachess.Main.loadWindow;
 
 public class TournamentsWindow {
 	private static final double ASPECT_RATIO_THRESHOLD = 1.5;
@@ -66,7 +66,7 @@ public class TournamentsWindow {
 								statusLabel.getStyleClass().add("text-danger");
 							}
 							tournamentContainer.getChildren().add(tournamentItem);
-						} catch (Exception exception) {
+						} catch (final Exception exception) {
 							exception.printStackTrace();
 						}
 					}
@@ -76,16 +76,6 @@ public class TournamentsWindow {
 	}
 	@FXML
 	private void openMain() {
-		loadWindow("ui/mainWindow.fxml", new MainWindow());
-	}
-	private void loadWindow(String path, Object controller) {
-		try {
-			FXMLLoader windowLoader = new FXMLLoader(getClass().getResource(path));
-			windowLoader.setController(controller);
-			Parent root = windowLoader.load();
-			backButton.getScene().setRoot(root);
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
+		loadWindow("ui/mainWindow.fxml", new MainWindow(), backButton);
 	}
 }

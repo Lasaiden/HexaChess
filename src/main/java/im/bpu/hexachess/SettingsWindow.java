@@ -4,10 +4,10 @@ import im.bpu.hexachess.entity.Settings;
 import im.bpu.hexachess.network.API;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+
+import static im.bpu.hexachess.Main.loadWindow;
 
 public class SettingsWindow {
 	@FXML private ComboBox<String> maxDepthComboBox;
@@ -24,37 +24,27 @@ public class SettingsWindow {
 	}
 	@FXML
 	private void openMain() {
-		String selected = maxDepthComboBox.getValue();
+		final String selected = maxDepthComboBox.getValue();
 		if (selected != null) {
-			int depth = switch (selected) {
+			final int depth = switch (selected) {
 				case "Fast" -> 1;
 				case "Slowest" -> 5;
 				default -> 3;
 			};
 			SettingsManager.setMaxDepth(depth);
 			Thread.ofVirtual().start(() -> {
-				Settings settings = new Settings(
+				final Settings settings = new Settings(
 					SettingsManager.playerId, "default", true, false, SettingsManager.maxDepth);
 				API.settings(settings);
 			});
 		}
-		loadWindow("ui/mainWindow.fxml", new MainWindow());
+		loadWindow("ui/mainWindow.fxml", new MainWindow(), backButton);
 	}
 	@FXML
 	private void openStart() {
 		SettingsManager.setPlayerId(null);
 		SettingsManager.setUserHandle(null);
 		SettingsManager.setAuthToken(null);
-		loadWindow("ui/startWindow.fxml", new StartWindow());
-	}
-	private void loadWindow(String path, Object controller) {
-		try {
-			FXMLLoader windowLoader = new FXMLLoader(getClass().getResource(path));
-			windowLoader.setController(controller);
-			Parent root = windowLoader.load();
-			backButton.getScene().setRoot(root);
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
+		loadWindow("ui/startWindow.fxml", new StartWindow(), backButton);
 	}
 }

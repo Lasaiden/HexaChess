@@ -6,21 +6,21 @@ public class AxialCoordinate {
 	private static final int RADIUS = 5;
 	public final int q;
 	public final int r;
-	public AxialCoordinate(int q, int r) {
+	public AxialCoordinate(final int q, final int r) {
 		this.q = q;
 		this.r = r;
 	}
-	public AxialCoordinate add(int dq, int dr) {
+	public AxialCoordinate add(final int dq, final int dr) {
 		return new AxialCoordinate(q + dq, r + dr);
 	}
 	public boolean isValid() {
 		return Math.abs(q) <= RADIUS && Math.abs(r) <= RADIUS && Math.abs(q - r) <= RADIUS;
 	}
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj)
 			return true;
-		if (!(obj instanceof AxialCoordinate coord))
+		if (!(obj instanceof final AxialCoordinate coord))
 			return false;
 		return q == coord.q && r == coord.r;
 	}

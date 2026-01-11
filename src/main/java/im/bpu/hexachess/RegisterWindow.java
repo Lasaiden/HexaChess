@@ -7,11 +7,11 @@ import java.security.SecureRandom;
 import java.util.Base64;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+
+import static im.bpu.hexachess.Main.loadWindow;
 
 public class RegisterWindow {
 	private static final int MAX_HANDLE_LENGTH = 32;
@@ -75,20 +75,10 @@ public class RegisterWindow {
 	}
 	@FXML
 	private void openMain() {
-		loadWindow("ui/mainWindow.fxml", new MainWindow());
+		loadWindow("ui/mainWindow.fxml", new MainWindow(), handleField);
 	}
 	@FXML
 	private void openStart() {
-		loadWindow("ui/startWindow.fxml", new StartWindow());
-	}
-	private void loadWindow(String path, Object controller) {
-		try {
-			FXMLLoader windowLoader = new FXMLLoader(getClass().getResource(path));
-			windowLoader.setController(controller);
-			Parent root = windowLoader.load();
-			handleField.getScene().setRoot(root);
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
+		loadWindow("ui/startWindow.fxml", new StartWindow(), handleField);
 	}
 }

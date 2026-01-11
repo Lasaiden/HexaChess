@@ -7,7 +7,6 @@ import java.util.List;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -19,6 +18,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 import static im.bpu.hexachess.Main.getAspectRatio;
+import static im.bpu.hexachess.Main.loadWindow;
 
 public class SearchWindow {
 	private static final String BASE_URL =
@@ -49,11 +49,11 @@ public class SearchWindow {
 		Thread.ofVirtual().start(() -> {
 			final List<Player> players = API.search(query);
 			Platform.runLater(() -> {
-				for (Player player : players) {
+				for (final Player player : players) {
 					try {
-						FXMLLoader playerItemLoader =
+						final FXMLLoader playerItemLoader =
 							new FXMLLoader(getClass().getResource("ui/playerItem.fxml"));
-						HBox playerItem = playerItemLoader.load();
+						final HBox playerItem = playerItemLoader.load();
 						final String handle = player.getHandle();
 						final int rating = player.getRating();
 						final String location = player.getLocation();
@@ -61,11 +61,13 @@ public class SearchWindow {
 							(player.getAvatar() != null && !player.getAvatar().isEmpty())
 							? player.getAvatar()
 							: BASE_URL;
-						ImageView avatarIcon = (ImageView) playerItem.lookup("#avatarIcon");
-						Label handleLabel = (Label) playerItem.lookup("#handleLabel");
-						Region countryFlagIcon = (Region) playerItem.lookup("#countryFlagIcon");
-						Label ratingLabel = (Label) playerItem.lookup("#ratingLabel");
-						Button challengeButton = (Button) playerItem.lookup("#challengeButton");
+						final ImageView avatarIcon = (ImageView) playerItem.lookup("#avatarIcon");
+						final Label handleLabel = (Label) playerItem.lookup("#handleLabel");
+						final Region countryFlagIcon =
+							(Region) playerItem.lookup("#countryFlagIcon");
+						final Label ratingLabel = (Label) playerItem.lookup("#ratingLabel");
+						final Button challengeButton =
+							(Button) playerItem.lookup("#challengeButton");
 						avatarIcon.setImage(new Image(avatarUrl, true));
 						handleLabel.setText(handle);
 						ratingLabel.setText("Rating: " + rating);
@@ -78,14 +80,14 @@ public class SearchWindow {
 						playerItem.setOnMouseClicked(event -> openProfile(handle));
 						challengeButton.setOnAction(event -> startMatchmaking(handle));
 						playerContainer.getChildren().add(playerItem);
-					} catch (Exception exception) {
+					} catch (final Exception exception) {
 						exception.printStackTrace();
 					}
 				}
 			});
 		});
 	}
-	private void startMatchmaking(String target) {
+	private void startMatchmaking(final String target) {
 		Thread.ofVirtual().start(() -> {
 			final String handle = SettingsManager.userHandle;
 			long dt = DT;
@@ -93,7 +95,7 @@ public class SearchWindow {
 				final String resp = API.challenge(handle, target);
 				if (resp != null && !resp.equals("Pending")) {
 					Platform.runLater(() -> {
-						State state = State.getState();
+						final State state = State.getState();
 						state.clear();
 						state.isMultiplayer = true;
 						state.gameId = resp;
@@ -106,27 +108,17 @@ public class SearchWindow {
 				try {
 					Thread.sleep(dt);
 					dt = Math.min(MAX_DT, dt * BACKOFF_FACTOR);
-				} catch (Exception ignored) { // high-frequency polling operation
+				} catch (final Exception ignored) { // high-frequency polling operation
 				}
 			}
 		});
 	}
-	private void openProfile(String handle) {
+	private void openProfile(final String handle) {
 		ProfileWindow.targetHandle = handle;
-		loadWindow("ui/profileWindow.fxml", new ProfileWindow());
+		loadWindow("ui/profileWindow.fxml", new ProfileWindow(), backButton);
 	}
 	@FXML
 	private void openMain() {
-		loadWindow("ui/mainWindow.fxml", new MainWindow());
-	}
-	private void loadWindow(String path, Object controller) {
-		try {
-			FXMLLoader windowLoader = new FXMLLoader(getClass().getResource(path));
-			windowLoader.setController(controller);
-			Parent root = windowLoader.load();
-			backButton.getScene().setRoot(root);
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
+		loadWindow("ui/mainWindow.fxml", new MainWindow(), backButton);
 	}
 }

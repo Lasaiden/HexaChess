@@ -2,6 +2,7 @@ package im.bpu.hexachess;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
@@ -15,21 +16,21 @@ public class Main extends Application {
 	private static final double MOBILE_HEIGHT = 1200;
 	private static final String WINDOW_TITLE = "HexaChess";
 	@Override
-	public void start(Stage stage) throws Exception {
-		Parent root;
+	public void start(final Stage stage) throws Exception {
+		final Parent root;
 		if (SettingsManager.userHandle != null) {
-			FXMLLoader mainWindowLoader =
+			final FXMLLoader mainWindowLoader =
 				new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));
 			mainWindowLoader.setController(new MainWindow());
 			root = mainWindowLoader.load();
 		} else {
-			FXMLLoader startWindowLoader =
+			final FXMLLoader startWindowLoader =
 				new FXMLLoader(getClass().getResource("ui/startWindow.fxml"));
 			startWindowLoader.setController(new StartWindow());
 			root = startWindowLoader.load();
 		}
-		double width;
-		double height;
+		final double width;
+		final double height;
 		if (getAspectRatio() > ASPECT_RATIO_THRESHOLD) {
 			width = DESKTOP_WIDTH;
 			height = DESKTOP_HEIGHT;
@@ -37,19 +38,28 @@ public class Main extends Application {
 			width = MOBILE_WIDTH;
 			height = MOBILE_HEIGHT;
 		}
-		Scene scene = new Scene(root, width, height);
+		final Scene scene = new Scene(root, width, height);
 		scene.getStylesheets().add(getClass().getResource("ui/style.css").toExternalForm());
 		stage.setTitle(WINDOW_TITLE);
 		stage.setScene(scene);
 		stage.show();
 	}
 	public static double getAspectRatio() {
-		double width = Screen.getPrimary().getBounds().getWidth();
-		double height = Screen.getPrimary().getBounds().getHeight();
-		double aspectRatio = width / height;
+		final double width = Screen.getPrimary().getBounds().getWidth();
+		final double height = Screen.getPrimary().getBounds().getHeight();
+		final double aspectRatio = width / height;
 		return aspectRatio;
 	}
-	public static void main(String[] args) {
+	public static void loadWindow(final String path, final Object controller, final Node node) {
+		try {
+			final FXMLLoader loader = new FXMLLoader(Main.class.getResource(path));
+			loader.setController(controller);
+			node.getScene().setRoot(loader.load());
+		} catch (final Exception exception) {
+			exception.printStackTrace();
+		}
+	}
+	public static void main(final String[] args) {
 		launch(args);
 	}
 }

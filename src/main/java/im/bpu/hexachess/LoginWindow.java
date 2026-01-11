@@ -6,11 +6,11 @@ import im.bpu.hexachess.network.API;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+
+import static im.bpu.hexachess.Main.loadWindow;
 
 public class LoginWindow {
 	private static final String ROOT_HANDLE = "root";
@@ -34,7 +34,7 @@ public class LoginWindow {
 		final String handle = handleField.getText();
 		final String password = passwordField.getText();
 		Thread.ofVirtual().start(() -> {
-			Player player;
+			final Player player;
 			if (ROOT_HANDLE.equals(handle) && ROOT_PASSWORD.equals(password)) {
 				player = new Player(ROOT_ID, ROOT_HANDLE, ROOT_EMAIL, "", BASE_ELO, true, null);
 			} else {
@@ -62,20 +62,10 @@ public class LoginWindow {
 	}
 	@FXML
 	private void openMain() {
-		loadWindow("ui/mainWindow.fxml", new MainWindow());
+		loadWindow("ui/mainWindow.fxml", new MainWindow(), handleField);
 	}
 	@FXML
 	private void openStart() {
-		loadWindow("ui/startWindow.fxml", new StartWindow());
-	}
-	private void loadWindow(String path, Object controller) {
-		try {
-			FXMLLoader windowLoader = new FXMLLoader(getClass().getResource(path));
-			windowLoader.setController(controller);
-			Parent root = windowLoader.load();
-			handleField.getScene().setRoot(root);
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
+		loadWindow("ui/startWindow.fxml", new StartWindow(), handleField);
 	}
 }

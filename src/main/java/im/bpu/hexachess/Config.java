@@ -4,12 +4,12 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 public class Config {
 	private static final Dotenv DOTENV = Dotenv.configure().ignoreIfMissing().load();
-	public static String get(String key, String defaultValue) {
-		String environmentValue = System.getenv(key);
+	public static String get(final String key, final String defaultValue) {
+		final String environmentValue = System.getenv(key);
 		if (environmentValue != null) {
 			return environmentValue;
 		}
-		String dotenvValue = DOTENV.get(key);
+		final String dotenvValue = DOTENV.get(key);
 		if (dotenvValue != null) {
 			return dotenvValue;
 		}
