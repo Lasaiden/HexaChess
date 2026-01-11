@@ -12,6 +12,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.net.http.HttpTimeoutException;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
@@ -66,6 +67,7 @@ public class API {
 			HttpResponse<String> response = sendWithFallback(requestBuilder, "/login");
 			if (response.statusCode() == 200)
 				return MAPPER.readValue(response.body(), Player.class);
+		} catch (HttpTimeoutException ignored) {
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -81,10 +83,11 @@ public class API {
 					.timeout(TIMEOUT_DURATION);
 			HttpResponse<String> response = sendWithFallback(requestBuilder, "/register");
 			return response.statusCode() == 200;
+		} catch (HttpTimeoutException ignored) {
 		} catch (Exception exception) {
 			exception.printStackTrace();
-			return false;
 		}
+		return false;
 	}
 	public static Settings settings(String playerId) {
 		try {
@@ -94,6 +97,7 @@ public class API {
 				sendWithFallback(requestBuilder, "/settings?playerId=" + playerId);
 			if (response.statusCode() == 200)
 				return MAPPER.readValue(response.body(), Settings.class);
+		} catch (HttpTimeoutException ignored) {
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -109,10 +113,11 @@ public class API {
 					.timeout(TIMEOUT_DURATION);
 			HttpResponse<String> response = sendWithFallback(requestBuilder, "/settings");
 			return response.statusCode() == 200;
+		} catch (HttpTimeoutException ignored) {
 		} catch (Exception exception) {
 			exception.printStackTrace();
-			return false;
 		}
+		return false;
 	}
 	public static List<Player> search(String handle) {
 		try {
@@ -122,6 +127,7 @@ public class API {
 				sendWithFallback(requestBuilder, "/search?handle=" + handle);
 			if (response.statusCode() == 200)
 				return List.of(MAPPER.readValue(response.body(), Player[].class));
+		} catch (HttpTimeoutException ignored) {
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -137,6 +143,7 @@ public class API {
 				sendWithFallback(requestBuilder, "/profile?handle=" + handle);
 			if (response.statusCode() == 200)
 				return MAPPER.readValue(response.body(), Player.class);
+		} catch (HttpTimeoutException ignored) {
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -158,6 +165,7 @@ public class API {
 			HttpResponse<String> response = sendWithFallback(requestBuilder, endpoint);
 			if (response.statusCode() == 200)
 				return List.of(MAPPER.readValue(response.body(), clazz));
+		} catch (HttpTimeoutException ignored) {
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -176,9 +184,11 @@ public class API {
 					.timeout(TIMEOUT_DURATION);
 			HttpResponse<String> response = sendWithFallback(requestBuilder, "/challenge");
 			return response.body();
-		} catch (Exception ignored) { // high-frequency polling operation
-			return null;
+		} catch (HttpTimeoutException ignored) {
+		} catch (Exception exception) {
+			exception.printStackTrace();
 		}
+		return null;
 	}
 	public static void sendMove(String gameId, String move) {
 		try {
@@ -192,7 +202,9 @@ public class API {
 					.POST(HttpRequest.BodyPublishers.ofString(json))
 					.timeout(TIMEOUT_DURATION);
 			sendWithFallback(requestBuilder, "/sync");
-		} catch (Exception ignored) { // high-frequency polling operation
+		} catch (HttpTimeoutException ignored) {
+		} catch (Exception exception) {
+			exception.printStackTrace();
 		}
 	}
 	public static String getMove(String gameId) {
@@ -202,8 +214,10 @@ public class API {
 			HttpResponse<String> response =
 				sendWithFallback(requestBuilder, "/sync?gameId=" + gameId);
 			return response.body();
-		} catch (Exception ignored) { // high-frequency polling operation
-			return null;
+		} catch (HttpTimeoutException ignored) {
+		} catch (Exception exception) {
+			exception.printStackTrace();
 		}
+		return null;
 	}
 }
