@@ -14,6 +14,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 public class RegisterWindow {
+	private static final int MAX_HANDLE_LENGTH = 32;
+	private static final int MIN_PASSWORD_LENGTH = 8;
+	private static final int BASE_ELO = 1200;
 	@FXML private TextField handleField;
 	@FXML private TextField emailField;
 	@FXML private PasswordField passwordField;
@@ -35,8 +38,8 @@ public class RegisterWindow {
 		final String handle = handleField.getText();
 		final String email = emailField.getText();
 		final String password = passwordField.getText();
-		if (handle.length() > 32) {
-			statusLabel.setText("32 characters max");
+		if (handle.length() > MAX_HANDLE_LENGTH) {
+			statusLabel.setText(MAX_HANDLE_LENGTH + " characters max");
 			statusLabel.setVisible(true);
 			return;
 		}
@@ -45,8 +48,8 @@ public class RegisterWindow {
 			statusLabel.setVisible(true);
 			return;
 		}
-		if (password.length() < 8) {
-			statusLabel.setText("8 characters minimum");
+		if (password.length() < MIN_PASSWORD_LENGTH) {
+			statusLabel.setText(MIN_PASSWORD_LENGTH + " characters minimum");
 			statusLabel.setVisible(true);
 			return;
 		}
@@ -56,7 +59,8 @@ public class RegisterWindow {
 			rand.nextBytes(bytes);
 			final String playerId =
 				Base64.getUrlEncoder().withoutPadding().encodeToString(bytes).substring(0, 11);
-			final Player player = new Player(playerId, handle, email, password, 1200, false, null);
+			final Player player =
+				new Player(playerId, handle, email, password, BASE_ELO, false, null);
 			final boolean registerSuccess = API.register(player);
 			Platform.runLater(() -> {
 				if (registerSuccess) {
@@ -71,23 +75,17 @@ public class RegisterWindow {
 	}
 	@FXML
 	private void openMain() {
-		try {
-			FXMLLoader mainWindowLoader =
-				new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));
-			mainWindowLoader.setController(new MainWindow());
-			Parent root = mainWindowLoader.load();
-			handleField.getScene().setRoot(root);
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
+		loadWindow("ui/mainWindow.fxml", new MainWindow());
 	}
 	@FXML
 	private void openStart() {
+		loadWindow("ui/startWindow.fxml", new StartWindow());
+	}
+	private void loadWindow(String path, Object controller) {
 		try {
-			FXMLLoader startWindowLoader =
-				new FXMLLoader(getClass().getResource("ui/startWindow.fxml"));
-			startWindowLoader.setController(new StartWindow());
-			Parent root = startWindowLoader.load();
+			FXMLLoader windowLoader = new FXMLLoader(getClass().getResource(path));
+			windowLoader.setController(controller);
+			Parent root = windowLoader.load();
 			handleField.getScene().setRoot(root);
 		} catch (Exception exception) {
 			exception.printStackTrace();

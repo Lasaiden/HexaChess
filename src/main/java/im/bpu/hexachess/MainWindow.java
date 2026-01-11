@@ -29,7 +29,7 @@ public class MainWindow {
 	private static final double SIDEBAR_VISIBLE_X = 0;
 	private static final int SIDEBAR_DURATION_MS = 160;
 	private static final String COMPUTER_HANDLE = "Computer";
-	private static final int ELO_BASE = 1200;
+	private static final int BASE_ELO = 1200;
 	private HexPanel hexPanel;
 	@FXML private Button settingsHelpButton;
 	@FXML private VBox sidebar;
@@ -99,7 +99,7 @@ public class MainWindow {
 		Thread.ofVirtual().start(() -> {
 			final State state = State.getState();
 			String handle = COMPUTER_HANDLE;
-			int rating = ((SettingsManager.maxDepth - 1) / 2 % 3 + 1) * ELO_BASE;
+			int rating = ((SettingsManager.maxDepth - 1) / 2 % 3 + 1) * BASE_ELO;
 			String location = null;
 			String avatarUrl = BASE_URL;
 			if (state.isMultiplayer) {

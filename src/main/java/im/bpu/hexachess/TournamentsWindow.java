@@ -18,6 +18,7 @@ import javafx.scene.layout.VBox;
 import static im.bpu.hexachess.Main.getAspectRatio;
 
 public class TournamentsWindow {
+	private static final double ASPECT_RATIO_THRESHOLD = 1.5;
 	private static final DateTimeFormatter DATE_TIME_FORMATTER =
 		DateTimeFormatter.ofPattern("MMM d yyyy HH:mm");
 	@FXML private ScrollPane tournamentsPane;
@@ -25,7 +26,7 @@ public class TournamentsWindow {
 	@FXML private Button backButton;
 	@FXML
 	private void initialize() {
-		if (getAspectRatio() < 1.5) {
+		if (getAspectRatio() < ASPECT_RATIO_THRESHOLD) {
 			tournamentsPane.setStyle(
 				"-fx-pref-width: 400px; -fx-max-width: 400px;"); // CSS instead of JavaFX's
 																 // setPrefWidth/setMaxWidth due to
@@ -75,11 +76,13 @@ public class TournamentsWindow {
 	}
 	@FXML
 	private void openMain() {
+		loadWindow("ui/mainWindow.fxml", new MainWindow());
+	}
+	private void loadWindow(String path, Object controller) {
 		try {
-			final FXMLLoader mainWindowLoader =
-				new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));
-			mainWindowLoader.setController(new MainWindow());
-			final Parent root = mainWindowLoader.load();
+			FXMLLoader windowLoader = new FXMLLoader(getClass().getResource(path));
+			windowLoader.setController(controller);
+			Parent root = windowLoader.load();
 			backButton.getScene().setRoot(root);
 		} catch (Exception exception) {
 			exception.printStackTrace();

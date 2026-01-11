@@ -23,6 +23,7 @@ import static im.bpu.hexachess.Main.getAspectRatio;
 public class SearchWindow {
 	private static final String BASE_URL =
 		"https://www.chess.com/bundles/web/images/noavatar_l.gif";
+	private static final double ASPECT_RATIO_THRESHOLD = 1.5;
 	private static final long DT = 500;
 	private static final long MAX_DT = 6000;
 	@FXML private TextField searchField;
@@ -31,7 +32,7 @@ public class SearchWindow {
 	@FXML private Button backButton;
 	@FXML
 	private void initialize() {
-		if (getAspectRatio() < 1.5) {
+		if (getAspectRatio() < ASPECT_RATIO_THRESHOLD) {
 			searchPane.setStyle(
 				"-fx-pref-width: 400px; -fx-max-width: 400px;"); // CSS instead of JavaFX's
 																 // setPrefWidth/setMaxWidth due to
@@ -110,24 +111,18 @@ public class SearchWindow {
 		});
 	}
 	private void openProfile(String handle) {
-		try {
-			ProfileWindow.targetHandle = handle;
-			FXMLLoader profileWindowLoader =
-				new FXMLLoader(getClass().getResource("ui/profileWindow.fxml"));
-			profileWindowLoader.setController(new ProfileWindow());
-			Parent root = profileWindowLoader.load();
-			backButton.getScene().setRoot(root);
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
+		ProfileWindow.targetHandle = handle;
+		loadWindow("ui/profileWindow.fxml", new ProfileWindow());
 	}
 	@FXML
 	private void openMain() {
+		loadWindow("ui/mainWindow.fxml", new MainWindow());
+	}
+	private void loadWindow(String path, Object controller) {
 		try {
-			FXMLLoader mainWindowLoader =
-				new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));
-			mainWindowLoader.setController(new MainWindow());
-			Parent root = mainWindowLoader.load();
+			FXMLLoader windowLoader = new FXMLLoader(getClass().getResource(path));
+			windowLoader.setController(controller);
+			Parent root = windowLoader.load();
 			backButton.getScene().setRoot(root);
 		} catch (Exception exception) {
 			exception.printStackTrace();

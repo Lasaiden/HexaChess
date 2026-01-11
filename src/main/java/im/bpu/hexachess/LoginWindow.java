@@ -13,6 +13,11 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 public class LoginWindow {
+	private static final String ROOT_HANDLE = "root";
+	private static final String ROOT_PASSWORD = "password123";
+	private static final String ROOT_ID = "00000000000";
+	private static final String ROOT_EMAIL = "root@localhost";
+	private static final int BASE_ELO = 1200;
 	@FXML private TextField handleField;
 	@FXML private PasswordField passwordField;
 	@FXML private Label errorLabel;
@@ -30,8 +35,8 @@ public class LoginWindow {
 		final String password = passwordField.getText();
 		Thread.ofVirtual().start(() -> {
 			Player player;
-			if ("root".equals(handle) && "password123".equals(password)) {
-				player = new Player("00000000000", "root", "root@localhost", "", 1200, true, null);
+			if (ROOT_HANDLE.equals(handle) && ROOT_PASSWORD.equals(password)) {
+				player = new Player(ROOT_ID, ROOT_HANDLE, ROOT_EMAIL, "", BASE_ELO, true, null);
 			} else {
 				player = API.login(handle, password);
 				System.out.println(
@@ -55,24 +60,19 @@ public class LoginWindow {
 			}
 		});
 	}
+	@FXML
 	private void openMain() {
-		try {
-			FXMLLoader mainWindowLoader =
-				new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));
-			mainWindowLoader.setController(new MainWindow());
-			Parent root = mainWindowLoader.load();
-			handleField.getScene().setRoot(root);
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
+		loadWindow("ui/mainWindow.fxml", new MainWindow());
 	}
 	@FXML
 	private void openStart() {
+		loadWindow("ui/startWindow.fxml", new StartWindow());
+	}
+	private void loadWindow(String path, Object controller) {
 		try {
-			FXMLLoader startWindowLoader =
-				new FXMLLoader(getClass().getResource("ui/startWindow.fxml"));
-			startWindowLoader.setController(new StartWindow());
-			Parent root = startWindowLoader.load();
+			FXMLLoader windowLoader = new FXMLLoader(getClass().getResource(path));
+			windowLoader.setController(controller);
+			Parent root = windowLoader.load();
 			handleField.getScene().setRoot(root);
 		} catch (Exception exception) {
 			exception.printStackTrace();

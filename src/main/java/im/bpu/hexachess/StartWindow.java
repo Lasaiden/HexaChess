@@ -9,23 +9,17 @@ public class StartWindow {
 	@FXML private Button loginButton;
 	@FXML
 	private void openLogin() {
-		try {
-			FXMLLoader loginWindowLoader =
-				new FXMLLoader(getClass().getResource("ui/loginWindow.fxml"));
-			loginWindowLoader.setController(new LoginWindow());
-			Parent root = loginWindowLoader.load();
-			loginButton.getScene().setRoot(root);
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
+		loadWindow("ui/loginWindow.fxml", new LoginWindow());
 	}
 	@FXML
 	private void openRegister() {
+		loadWindow("ui/registerWindow.fxml", new RegisterWindow());
+	}
+	private void loadWindow(String path, Object controller) {
 		try {
-			FXMLLoader registerWindowLoader =
-				new FXMLLoader(getClass().getResource("ui/registerWindow.fxml"));
-			registerWindowLoader.setController(new RegisterWindow());
-			Parent root = registerWindowLoader.load();
+			FXMLLoader windowLoader = new FXMLLoader(getClass().getResource(path));
+			windowLoader.setController(controller);
+			Parent root = windowLoader.load();
 			loginButton.getScene().setRoot(root);
 		} catch (Exception exception) {
 			exception.printStackTrace();

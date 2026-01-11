@@ -38,26 +38,20 @@ public class SettingsWindow {
 				API.settings(settings);
 			});
 		}
-		try {
-			FXMLLoader mainWindowLoader =
-				new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));
-			mainWindowLoader.setController(new MainWindow());
-			Parent root = mainWindowLoader.load();
-			backButton.getScene().setRoot(root);
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
+		loadWindow("ui/mainWindow.fxml", new MainWindow());
 	}
 	@FXML
 	private void openStart() {
 		SettingsManager.setPlayerId(null);
 		SettingsManager.setUserHandle(null);
 		SettingsManager.setAuthToken(null);
+		loadWindow("ui/startWindow.fxml", new StartWindow());
+	}
+	private void loadWindow(String path, Object controller) {
 		try {
-			FXMLLoader startWindowLoader =
-				new FXMLLoader(getClass().getResource("ui/startWindow.fxml"));
-			startWindowLoader.setController(new StartWindow());
-			Parent root = startWindowLoader.load();
+			FXMLLoader windowLoader = new FXMLLoader(getClass().getResource(path));
+			windowLoader.setController(controller);
+			Parent root = windowLoader.load();
 			backButton.getScene().setRoot(root);
 		} catch (Exception exception) {
 			exception.printStackTrace();
