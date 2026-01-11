@@ -64,6 +64,16 @@ public class MainWindow {
 			rewindButton.setManaged(false);
 			rewindButton.setVisible(false);
 		}
+		if (state.isDeveloperMode) {
+			Platform.runLater(() -> {
+				settingsHelpButton.applyCss();
+				Font font = settingsHelpButton.getFont();
+				fontFamilyLabel.setText("Family: " + font.getFamily());
+				fontNameLabel.setText("Name: " + font.getName());
+				fontFamilyLabel.getParent().setVisible(true);
+				fontFamilyLabel.getParent().setManaged(true);
+			});
+		}
 	}
 	private void loadPlayerItem() {
 		Thread.ofVirtual().start(() -> {
@@ -180,8 +190,8 @@ public class MainWindow {
 					Font font = settingsHelpButton.getFont();
 					fontFamilyLabel.setText("Family: " + font.getFamily());
 					fontNameLabel.setText("Name: " + font.getName());
-					fontFamilyLabel.getParent().setVisible(true);
-					fontFamilyLabel.getParent().setManaged(true);
+					fontFamilyLabel.getParent().setVisible(State.getState().isDeveloperMode);
+					fontFamilyLabel.getParent().setManaged(State.getState().isDeveloperMode);
 				});
 				hexPanel.repaint();
 			}
