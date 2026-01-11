@@ -62,7 +62,7 @@ public class HexPanel {
 					renderer.drawHex(gc, cx, cy, coord, selected, highlighted);
 			}
 	}
-	private void repaint() {
+	public void repaint() {
 		final GraphicsContext gc = canvas.getGraphicsContext2D();
 		final double cx = canvas.getWidth() / 2;
 		final double cy = canvas.getHeight() / 2;

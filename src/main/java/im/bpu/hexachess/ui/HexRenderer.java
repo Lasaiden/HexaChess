@@ -1,5 +1,6 @@
 package im.bpu.hexachess.ui;
 
+import im.bpu.hexachess.State;
 import im.bpu.hexachess.model.AxialCoordinate;
 import im.bpu.hexachess.model.Board;
 import im.bpu.hexachess.model.Piece;
@@ -68,7 +69,6 @@ class HexRenderer {
 		else
 			drawPieceFallback(gc, x, y, piece);
 	}
-	/*
 	private void drawCoordinates(
 		final GraphicsContext gc, final double x, final double y, final AxialCoordinate coord) {
 		final double size = geometry.getHexSize();
@@ -79,7 +79,6 @@ class HexRenderer {
 		gc.setTextBaseline(VPos.CENTER);
 		gc.fillText(label, x, y - TEXT_Y_OFFSET);
 	}
-	*/
 	private void drawPath(final GraphicsContext gc, final Path path) {
 		gc.beginPath();
 		for (final PathElement elem : path.getElements()) {
@@ -109,7 +108,8 @@ class HexRenderer {
 		final Piece piece = board.getPiece(coord);
 		if (piece != null)
 			drawPiece(gc, center.getX(), center.getY(), piece);
-		// drawCoordinates(gc, center.getX(), center.getY(), coord);
+		if (State.getState().isDeveloperMode)
+			drawCoordinates(gc, center.getX(), center.getY(), coord);
 	}
 	private void drawCellBorder(
 		final GraphicsContext gc, final double cx, final double cy, final int q, final int r) {

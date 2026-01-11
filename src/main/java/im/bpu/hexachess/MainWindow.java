@@ -18,7 +18,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-// import javafx.scene.text.Font;
+import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 import static im.bpu.hexachess.Main.loadWindow;
@@ -31,7 +31,10 @@ public class MainWindow {
 	private static final int SIDEBAR_DURATION_MS = 160;
 	private static final String COMPUTER_HANDLE = "Computer";
 	private static final int BASE_ELO = 1200;
+	private static final long DEV_MODE_MS = 2000;
 	private HexPanel hexPanel;
+	private int restartClickCount = 0;
+	private long startRestartClickTime = 0;
 	@FXML private Button settingsHelpButton;
 	@FXML private VBox sidebar;
 	@FXML private Canvas canvas;
@@ -47,10 +50,8 @@ public class MainWindow {
 	@FXML private Label opponentHandleLabel;
 	@FXML private Region opponentCountryFlagIcon;
 	@FXML private Label opponentRatingLabel;
-	/*
 	@FXML private Label fontFamilyLabel;
 	@FXML private Label fontNameLabel;
-	*/
 	@FXML
 	private void initialize() {
 		final State state = State.getState();
@@ -63,14 +64,6 @@ public class MainWindow {
 			rewindButton.setManaged(false);
 			rewindButton.setVisible(false);
 		}
-		/*
-		Platform.runLater(() -> {
-			settingsHelpButton.applyCss();
-			Font font = settingsHelpButton.getFont();
-			fontFamilyLabel.setText("Family: " + font.getFamily());
-			fontNameLabel.setText("Name: " + font.getName());
-		});
-		*/
 	}
 	private void loadPlayerItem() {
 		Thread.ofVirtual().start(() -> {
@@ -170,8 +163,29 @@ public class MainWindow {
 	}
 	@FXML
 	private void restart() {
-		if (!State.getState().isMultiplayer)
+		if (!State.getState().isMultiplayer) {
 			hexPanel.restart();
+			final long startTime = System.currentTimeMillis();
+			if (restartClickCount == 0 || (startTime - startRestartClickTime > DEV_MODE_MS)) {
+				restartClickCount = 1;
+				startRestartClickTime = startTime;
+			} else {
+				restartClickCount++;
+			}
+			if (restartClickCount >= 7) {
+				restartClickCount = 0;
+				State.getState().isDeveloperMode = !State.getState().isDeveloperMode;
+				Platform.runLater(() -> {
+					settingsHelpButton.applyCss();
+					Font font = settingsHelpButton.getFont();
+					fontFamilyLabel.setText("Family: " + font.getFamily());
+					fontNameLabel.setText("Name: " + font.getName());
+					fontFamilyLabel.getParent().setVisible(true);
+					fontFamilyLabel.getParent().setManaged(true);
+				});
+				hexPanel.repaint();
+			}
+		}
 	}
 	@FXML
 	private void rewind() {

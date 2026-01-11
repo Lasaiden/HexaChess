@@ -10,6 +10,7 @@ public class State {
 	public Stack<Board> history;
 	public boolean isWhitePlayer = true;
 	public boolean isMultiplayer = false;
+	public boolean isDeveloperMode = false;
 	public String gameId = null;
 	public String opponentHandle = null;
 	private State() {
