@@ -24,6 +24,7 @@ public class HexPanel {
 	private static final double MOBILE_RADIUS = 24;
 	private static final long DT = 500;
 	private static final long MAX_DT = 6000;
+	private static final int BACKOFF_FACTOR = 2;
 	private final State state;
 	private final AI ai = new AI();
 	private final HexGeometry geometry;
@@ -124,7 +125,7 @@ public class HexPanel {
 				}
 				try {
 					Thread.sleep(dt);
-					dt = Math.min(MAX_DT, dt * 2);
+					dt = Math.min(MAX_DT, dt * BACKOFF_FACTOR);
 				} catch (Exception ignored) { // high-frequency polling operation
 				}
 			}

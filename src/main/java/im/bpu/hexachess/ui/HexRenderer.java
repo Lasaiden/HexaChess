@@ -27,6 +27,11 @@ class HexRenderer {
 	private static final Color[] HEX_COLORS = {SANDYBROWN, NAVAJOWHITE, PERU};
 	private static final int[][] HEX_NEIGHBOR_OFFSETS = {
 		{-1, -1}, {0, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 0}};
+	private static final double PIECE_IMAGE_SCALE = 1.5;
+	private static final double FONT_SIZE_SCALE = 0.666;
+	private static final int TEXT_Y_OFFSET = 1;
+	private static final int BORDER_LINE_WIDTH = 3;
+	private static final int RADIUS = 5;
 	private final HexGeometry geometry;
 	private Board board;
 	HexRenderer(HexGeometry geometry, Board board) {
@@ -34,7 +39,7 @@ class HexRenderer {
 		this.board = board;
 	}
 	private void drawPieceImage(GraphicsContext gc, double x, double y, Image image) {
-		double size = geometry.getHexSize() * 1.5;
+		double size = geometry.getHexSize() * PIECE_IMAGE_SCALE;
 		double offset = size / 2;
 		gc.drawImage(image, x - offset, y - offset, size, size);
 	}
@@ -47,11 +52,11 @@ class HexRenderer {
 		gc.setLineWidth(2);
 		gc.strokeOval(x - offset, y - offset, size, size);
 		gc.setFill(piece.isWhite ? Color.BLACK : Color.WHITE);
-		gc.setFont(Font.font(size * 0.666));
+		gc.setFont(Font.font(size * FONT_SIZE_SCALE));
 		String label = String.valueOf(Character.toUpperCase(piece.type.code));
 		gc.setTextAlign(TextAlignment.CENTER);
 		gc.setTextBaseline(VPos.CENTER);
-		gc.fillText(label, x, y - 1);
+		gc.fillText(label, x, y - TEXT_Y_OFFSET);
 	}
 	private void drawPiece(GraphicsContext gc, double x, double y, Piece piece) {
 		Image image = PieceImageLoader.get((piece.isWhite ? "w" : "b") + piece.type.code);
@@ -64,11 +69,11 @@ class HexRenderer {
 	private void drawCoordinates(GraphicsContext gc, double x, double y, AxialCoordinate coord) {
 		double size = geometry.getHexSize();
 		gc.setFill(Color.RED);
-		gc.setFont(Font.font(size * 0.666));
+		gc.setFont(Font.font(size * FONT_SIZE_SCALE));
 		String label = coord.q + "," + coord.r;
 		gc.setTextAlign(TextAlignment.CENTER);
 		gc.setTextBaseline(VPos.CENTER);
-		gc.fillText(label, x, y - 1);
+		gc.fillText(label, x, y - TEXT_Y_OFFSET);
 	}
 	*/
 	private void drawPath(GraphicsContext gc, Path path) {
@@ -123,9 +128,9 @@ class HexRenderer {
 	}
 	void drawBoardBorder(GraphicsContext gc, double cx, double cy) {
 		gc.setStroke(Color.BLACK);
-		gc.setLineWidth(3);
-		for (int q = -5; q <= 5; q++)
-			for (int r = -5; r <= 5; r++) drawCellBorder(gc, cx, cy, q, r);
+		gc.setLineWidth(BORDER_LINE_WIDTH);
+		for (int q = -RADIUS; q <= RADIUS; q++)
+			for (int r = -RADIUS; r <= RADIUS; r++) drawCellBorder(gc, cx, cy, q, r);
 	}
 	void setBoard(Board board) {
 		this.board = board;

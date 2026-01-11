@@ -26,6 +26,7 @@ public class SearchWindow {
 	private static final double ASPECT_RATIO_THRESHOLD = 1.5;
 	private static final long DT = 500;
 	private static final long MAX_DT = 6000;
+	private static final int BACKOFF_FACTOR = 2;
 	@FXML private TextField searchField;
 	@FXML private ScrollPane searchPane;
 	@FXML private VBox playerContainer;
@@ -104,7 +105,7 @@ public class SearchWindow {
 				}
 				try {
 					Thread.sleep(dt);
-					dt = Math.min(MAX_DT, dt * 2);
+					dt = Math.min(MAX_DT, dt * BACKOFF_FACTOR);
 				} catch (Exception ignored) { // high-frequency polling operation
 				}
 			}

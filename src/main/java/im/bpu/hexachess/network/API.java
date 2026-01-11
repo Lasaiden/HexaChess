@@ -21,8 +21,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class API {
-	private static final String DEV_URL = Config.get("DEV_URL", "http://localhost:8800/api");
-	private static final String PROD_URL = Config.get("PROD_URL", "https://hexachess.bpu.im/api");
+	private static final String DEFAULT_DEV_URL = "http://localhost:8800/api";
+	private static final String DEFAULT_PROD_URL = "https://hexachess.bpu.im/api";
+	private static final String DEV_URL = Config.get("DEV_URL", DEFAULT_DEV_URL);
+	private static final String PROD_URL = Config.get("PROD_URL", DEFAULT_PROD_URL);
 	private static final Duration TIMEOUT_DURATION = Duration.ofSeconds(6);
 	private static final HttpClient CLIENT =
 		HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
