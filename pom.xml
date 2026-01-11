@@ -119,6 +119,9 @@
 					<target>${gluonfx.target}</target>
 					<mainClass>${main.class}</mainClass>
 					<reflectionList>
+						<list>com.mysql.cj.conf.url.SingleConnectionUrl</list>
+						<list>com.mysql.cj.log.StandardLogger</list>
+						<list>com.mysql.cj.protocol.StandardSocketFactory</list>
 						<list>im.bpu.hexachess.LoginWindow</list>
 						<list>im.bpu.hexachess.MainWindow</list>
 						<list>im.bpu.hexachess.ProfileWindow</list>
@@ -133,7 +136,18 @@
 						<list>im.bpu.hexachess.entity.Puzzle</list>
 						<list>im.bpu.hexachess.entity.Settings</list>
 						<list>im.bpu.hexachess.entity.Tournament</list>
+						<list>io.jsonwebtoken.impl.DefaultClaimsBuilder$Supplier</list>
+						<list>io.jsonwebtoken.impl.DefaultJwtBuilder$Supplier</list>
+						<list>io.jsonwebtoken.impl.DefaultJwtHeaderBuilder$Supplier</list>
+						<list>io.jsonwebtoken.impl.DefaultJwtParserBuilder$Supplier</list>
+						<list>io.jsonwebtoken.impl.io.StandardCompressionAlgorithms</list>
+						<list>io.jsonwebtoken.impl.security.DefaultKeyOperationBuilder$Supplier</list>
+						<list>io.jsonwebtoken.impl.security.DefaultKeyOperationPolicyBuilder$Supplier</list>
 						<list>io.jsonwebtoken.impl.security.KeysBridge</list>
+						<list>io.jsonwebtoken.impl.security.StandardEncryptionAlgorithms</list>
+						<list>io.jsonwebtoken.impl.security.StandardKeyAlgorithms</list>
+						<list>io.jsonwebtoken.impl.security.StandardKeyOperations</list>
+						<list>io.jsonwebtoken.impl.security.StandardSecureDigestAlgorithms</list>
 						<list>javafx.scene.canvas.Canvas</list>
 						<list>javafx.scene.control.Button</list>
 						<list>javafx.scene.control.ComboBox</list>
@@ -148,6 +162,9 @@
 						<list>javafx.scene.layout.StackPane</list>
 						<list>javafx.scene.layout.VBox</list>
 					</reflectionList>
+					<resourcesList>
+						<list>com/mysql/cj/LocalizedErrorMessages.properties</list>
+					</resourcesList>
 				</configuration>
 			</plugin>
 		</plugins>
