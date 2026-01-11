@@ -48,14 +48,24 @@ public class ProfileWindow {
 	private void initialize() {
 		final String handle = targetHandle != null ? targetHandle : SettingsManager.userHandle;
 		final Player player = API.profile(handle);
-		if (player == null)
+		if (player == null) {
+			final String offline = "Offline";
+			avatarIcon.setImage(new Image(BASE_URL, true));
+			handleLabel.setText(handle);
+			ratingLabel.setText("Rating: " + offline);
+			locationLabel.setText(offline);
+			joinedAtLabel.setText("Joined: " + offline);
+			countryFlagIcon.setManaged(false);
+			countryFlagIcon.setVisible(false);
 			return;
+		}
 		final int rating = player.getRating();
 		final String location = player.getLocation();
 		final LocalDateTime joinedAt = player.getJoinedAt();
 		final String avatarUrl = (player.getAvatar() != null && !player.getAvatar().isEmpty())
 			? player.getAvatar()
 			: BASE_URL;
+		avatarIcon.setImage(new Image(avatarUrl, true));
 		handleLabel.setText(handle);
 		ratingLabel.setText("Rating: " + rating);
 		if (location != null && !location.isEmpty()) {
@@ -69,7 +79,6 @@ public class ProfileWindow {
 		if (joinedAt != null) {
 			joinedAtLabel.setText("Joined: " + joinedAt.format(DATE_TIME_FORMATTER));
 		}
-		avatarIcon.setImage(new Image(avatarUrl, true));
 	}
 	@FXML
 	private void openMain() {

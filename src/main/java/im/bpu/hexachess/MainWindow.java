@@ -75,8 +75,15 @@ public class MainWindow {
 		Thread.ofVirtual().start(() -> {
 			final String handle = SettingsManager.userHandle;
 			final Player player = API.profile(handle);
-			if (player == null)
+			if (player == null) {
+				final String offline = "Offline";
+				avatarIcon.setImage(new Image(BASE_URL, true));
+				handleLabel.setText(handle);
+				ratingLabel.setText("Rating: " + offline);
+				countryFlagIcon.setManaged(false);
+				countryFlagIcon.setVisible(false);
 				return;
+			}
 			final int rating = player.getRating();
 			final String location = player.getLocation();
 			final String avatarUrl = (player.getAvatar() != null && !player.getAvatar().isEmpty())

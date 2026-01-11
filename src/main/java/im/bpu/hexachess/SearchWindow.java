@@ -49,39 +49,45 @@ public class SearchWindow {
 		Thread.ofVirtual().start(() -> {
 			final List<Player> players = API.search(query);
 			Platform.runLater(() -> {
-				for (final Player player : players) {
-					try {
-						final FXMLLoader playerItemLoader =
-							new FXMLLoader(getClass().getResource("ui/playerItem.fxml"));
-						final HBox playerItem = playerItemLoader.load();
-						final String handle = player.getHandle();
-						final int rating = player.getRating();
-						final String location = player.getLocation();
-						final String avatarUrl =
-							(player.getAvatar() != null && !player.getAvatar().isEmpty())
-							? player.getAvatar()
-							: BASE_URL;
-						final ImageView avatarIcon = (ImageView) playerItem.lookup("#avatarIcon");
-						final Label handleLabel = (Label) playerItem.lookup("#handleLabel");
-						final Region countryFlagIcon =
-							(Region) playerItem.lookup("#countryFlagIcon");
-						final Label ratingLabel = (Label) playerItem.lookup("#ratingLabel");
-						final Button challengeButton =
-							(Button) playerItem.lookup("#challengeButton");
-						avatarIcon.setImage(new Image(avatarUrl, true));
-						handleLabel.setText(handle);
-						ratingLabel.setText("Rating: " + rating);
-						if (location != null && !location.isEmpty()) {
-							countryFlagIcon.getStyleClass().add("country-" + location);
-						} else {
-							countryFlagIcon.setManaged(false);
-							countryFlagIcon.setVisible(false);
+				if (players.isEmpty()) {
+					final Label emptyLabel = new Label("No players found.");
+					playerContainer.getChildren().add(emptyLabel);
+				} else {
+					for (final Player player : players) {
+						try {
+							final FXMLLoader playerItemLoader =
+								new FXMLLoader(getClass().getResource("ui/playerItem.fxml"));
+							final HBox playerItem = playerItemLoader.load();
+							final String handle = player.getHandle();
+							final int rating = player.getRating();
+							final String location = player.getLocation();
+							final String avatarUrl =
+								(player.getAvatar() != null && !player.getAvatar().isEmpty())
+								? player.getAvatar()
+								: BASE_URL;
+							final ImageView avatarIcon =
+								(ImageView) playerItem.lookup("#avatarIcon");
+							final Label handleLabel = (Label) playerItem.lookup("#handleLabel");
+							final Region countryFlagIcon =
+								(Region) playerItem.lookup("#countryFlagIcon");
+							final Label ratingLabel = (Label) playerItem.lookup("#ratingLabel");
+							final Button challengeButton =
+								(Button) playerItem.lookup("#challengeButton");
+							avatarIcon.setImage(new Image(avatarUrl, true));
+							handleLabel.setText(handle);
+							ratingLabel.setText("Rating: " + rating);
+							if (location != null && !location.isEmpty()) {
+								countryFlagIcon.getStyleClass().add("country-" + location);
+							} else {
+								countryFlagIcon.setManaged(false);
+								countryFlagIcon.setVisible(false);
+							}
+							playerItem.setOnMouseClicked(event -> openProfile(handle));
+							challengeButton.setOnAction(event -> startMatchmaking(handle));
+							playerContainer.getChildren().add(playerItem);
+						} catch (final Exception exception) {
+							exception.printStackTrace();
 						}
-						playerItem.setOnMouseClicked(event -> openProfile(handle));
-						challengeButton.setOnAction(event -> startMatchmaking(handle));
-						playerContainer.getChildren().add(playerItem);
-					} catch (final Exception exception) {
-						exception.printStackTrace();
 					}
 				}
 			});
