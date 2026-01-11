@@ -55,6 +55,7 @@ public class LoginWindow {
 			} else {
 				Platform.runLater(() -> {
 					errorLabel.setText("Invalid username or password");
+					errorLabel.setManaged(true);
 					errorLabel.setVisible(true);
 				});
 			}

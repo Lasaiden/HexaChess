@@ -78,9 +78,8 @@ public class SearchWindow {
 							ratingLabel.setText("Rating: " + rating);
 							if (location != null && !location.isEmpty()) {
 								countryFlagIcon.getStyleClass().add("country-" + location);
-							} else {
-								countryFlagIcon.setManaged(false);
-								countryFlagIcon.setVisible(false);
+								countryFlagIcon.setManaged(true);
+								countryFlagIcon.setVisible(true);
 							}
 							playerItem.setOnMouseClicked(event -> openProfile(handle));
 							challengeButton.setOnAction(event -> startMatchmaking(handle));

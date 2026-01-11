@@ -40,16 +40,19 @@ public class RegisterWindow {
 		final String password = passwordField.getText();
 		if (handle.length() > MAX_HANDLE_LENGTH) {
 			statusLabel.setText(MAX_HANDLE_LENGTH + " characters max");
+			statusLabel.setManaged(true);
 			statusLabel.setVisible(true);
 			return;
 		}
 		if (!email.contains("@") || !email.contains(".")) {
 			statusLabel.setText("That's not an email");
+			statusLabel.setManaged(true);
 			statusLabel.setVisible(true);
 			return;
 		}
 		if (password.length() < MIN_PASSWORD_LENGTH) {
 			statusLabel.setText(MIN_PASSWORD_LENGTH + " characters minimum");
+			statusLabel.setManaged(true);
 			statusLabel.setVisible(true);
 			return;
 		}
@@ -68,6 +71,7 @@ public class RegisterWindow {
 					openMain();
 				} else {
 					statusLabel.setText("Error (Username taken or server error)");
+					statusLabel.setManaged(true);
 					statusLabel.setVisible(true);
 				}
 			});

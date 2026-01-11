@@ -82,8 +82,6 @@ public class MainWindow {
 					avatarIcon.setImage(new Image(BASE_URL, true));
 					handleLabel.setText(handle);
 					ratingLabel.setText("Rating: " + offline);
-					countryFlagIcon.setManaged(false);
-					countryFlagIcon.setVisible(false);
 					playerItem.setManaged(true);
 					playerItem.setVisible(true);
 				});
@@ -100,9 +98,8 @@ public class MainWindow {
 				ratingLabel.setText("Rating: " + rating);
 				if (location != null && !location.isEmpty()) {
 					countryFlagIcon.getStyleClass().add("country-" + location);
-				} else {
-					countryFlagIcon.setManaged(false);
-					countryFlagIcon.setVisible(false);
+					countryFlagIcon.setManaged(true);
+					countryFlagIcon.setVisible(true);
 				}
 				playerItem.setManaged(true);
 				playerItem.setVisible(true);
@@ -140,9 +137,8 @@ public class MainWindow {
 				opponentRatingLabel.setText("Rating: " + finalRating);
 				if (finalLocation != null && !finalLocation.isEmpty()) {
 					opponentCountryFlagIcon.getStyleClass().add("country-" + finalLocation);
-				} else {
-					opponentCountryFlagIcon.setManaged(false);
-					opponentCountryFlagIcon.setVisible(false);
+					opponentCountryFlagIcon.setManaged(true);
+					opponentCountryFlagIcon.setVisible(true);
 				}
 				opponentItem.setManaged(true);
 				opponentItem.setVisible(true);
@@ -156,10 +152,14 @@ public class MainWindow {
 		final TranslateTransition transition = new TranslateTransition(duration, sidebar);
 		if (isClosed) {
 			transition.setToX(SIDEBAR_VISIBLE_X);
+			sidebar.setManaged(true);
 			sidebar.setVisible(true);
 		} else {
 			transition.setToX(SIDEBAR_HIDDEN_X);
-			transition.setOnFinished(event -> sidebar.setVisible(false));
+			transition.setOnFinished(event -> {
+				sidebar.setManaged(false);
+				sidebar.setVisible(false);
+			});
 		}
 		transition.play();
 	}
