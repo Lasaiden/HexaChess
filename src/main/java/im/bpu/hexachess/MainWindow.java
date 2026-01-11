@@ -4,6 +4,7 @@ import im.bpu.hexachess.entity.Player;
 import im.bpu.hexachess.network.API;
 import im.bpu.hexachess.ui.HexPanel;
 
+import java.io.File;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -95,8 +96,11 @@ public class MainWindow {
 			final String handle = SettingsManager.userHandle;
 			final Player player = API.profile(handle);
 			if (player == null) {
+				final String avatarFileName = BASE_URL.substring(BASE_URL.lastIndexOf('/') + 1);
+				final File avatarFile = CacheManager.save("avatars", avatarFileName, BASE_URL);
+				final Image avatarImage = new Image(avatarFile.toURI().toString());
 				Platform.runLater(() -> {
-					avatarIcon.setImage(new Image(BASE_URL, true));
+					avatarIcon.setImage(avatarImage);
 					handleLabel.setText(handle);
 					ratingLabel.setText("Rating: Offline");
 					playerItem.setManaged(true);
@@ -109,8 +113,10 @@ public class MainWindow {
 			final String avatarUrl = (player.getAvatar() != null && !player.getAvatar().isEmpty())
 				? player.getAvatar()
 				: BASE_URL;
+			final File avatarFile = CacheManager.save("avatars", handle, avatarUrl);
+			final Image avatarImage = new Image(avatarFile.toURI().toString());
 			Platform.runLater(() -> {
-				avatarIcon.setImage(new Image(avatarUrl, true));
+				avatarIcon.setImage(avatarImage);
 				handleLabel.setText(handle);
 				ratingLabel.setText("Rating: " + rating);
 				if (location != null && !location.isEmpty()) {
@@ -144,9 +150,10 @@ public class MainWindow {
 			final String finalHandle = handle;
 			final int finalRating = rating;
 			final String finalLocation = location;
-			final String finalAvatarUrl = avatarUrl;
+			final File avatarFile = CacheManager.save("avatars", handle, avatarUrl);
+			final Image avatarImage = new Image(avatarFile.toURI().toString());
 			Platform.runLater(() -> {
-				opponentAvatarIcon.setImage(new Image(finalAvatarUrl, true));
+				opponentAvatarIcon.setImage(avatarImage);
 				opponentHandleLabel.setText(finalHandle);
 				opponentRatingLabel.setText("Rating: " + finalRating);
 				if (finalLocation != null && !finalLocation.isEmpty()) {

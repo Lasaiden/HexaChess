@@ -3,6 +3,7 @@ package im.bpu.hexachess;
 import im.bpu.hexachess.entity.Player;
 import im.bpu.hexachess.network.API;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -52,9 +53,21 @@ public class ProfileWindow {
 		final String handle = targetHandle != null ? targetHandle : SettingsManager.userHandle;
 		Thread.ofVirtual().start(() -> {
 			final Player player = API.profile(handle);
+			final File avatarFile;
+			if (player == null) {
+				final String avatarFileName = BASE_URL.substring(BASE_URL.lastIndexOf('/') + 1);
+				avatarFile = CacheManager.save("avatars", avatarFileName, BASE_URL);
+			} else {
+				final String avatarUrl =
+					(player.getAvatar() != null && !player.getAvatar().isEmpty())
+					? player.getAvatar()
+					: BASE_URL;
+				avatarFile = CacheManager.save("avatars", handle, avatarUrl);
+			}
+			final Image avatarImage = new Image(avatarFile.toURI().toString());
 			Platform.runLater(() -> {
 				if (player == null) {
-					avatarIcon.setImage(new Image(BASE_URL, true));
+					avatarIcon.setImage(avatarImage);
 					handleLabel.setText(handle);
 					ratingLabel.setText("Rating: Offline");
 					locationLabel.setText("Offline");
@@ -63,11 +76,7 @@ public class ProfileWindow {
 					final int rating = player.getRating();
 					final String location = player.getLocation();
 					final LocalDateTime joinedAt = player.getJoinedAt();
-					final String avatarUrl =
-						(player.getAvatar() != null && !player.getAvatar().isEmpty())
-						? player.getAvatar()
-						: BASE_URL;
-					avatarIcon.setImage(new Image(avatarUrl, true));
+					avatarIcon.setImage(avatarImage);
 					handleLabel.setText(handle);
 					ratingLabel.setText("Rating: " + rating);
 					if (location != null && !location.isEmpty()) {

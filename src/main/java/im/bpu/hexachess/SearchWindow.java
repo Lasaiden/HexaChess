@@ -3,6 +3,7 @@ package im.bpu.hexachess;
 import im.bpu.hexachess.entity.Player;
 import im.bpu.hexachess.network.API;
 
+import java.io.File;
 import java.util.List;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -75,7 +76,9 @@ public class SearchWindow {
 							final Label ratingLabel = (Label) playerItem.lookup("#ratingLabel");
 							final Button challengeButton =
 								(Button) playerItem.lookup("#challengeButton");
-							avatarIcon.setImage(new Image(avatarUrl, true));
+							final File avatarFile = CacheManager.save("avatars", handle, avatarUrl);
+							final Image avatarImage = new Image(avatarFile.toURI().toString());
+							avatarIcon.setImage(avatarImage);
 							handleLabel.setText(handle);
 							ratingLabel.setText("Rating: " + rating);
 							if (location != null && !location.isEmpty()) {

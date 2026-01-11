@@ -1,7 +1,11 @@
 package im.bpu.hexachess.ui;
 
+import im.bpu.hexachess.CacheManager;
+
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import javafx.application.Platform;
 import javafx.scene.image.Image;
 
 class PieceImageLoader {
@@ -13,18 +17,21 @@ class PieceImageLoader {
 	private static final String[] TYPES = {"p", "r", "n", "b", "q", "k"};
 	private static boolean loaded = false;
 	private static void loadImage(String key, int[] loadedCount, Runnable onload) {
-		Image image = new Image(BASE_URL + key + ".png", true);
-		image.progressProperty().addListener((observable, oldValue, newValue) -> {
-			if (!image.isError() && newValue.doubleValue() == 1.0) {
+		Thread.ofVirtual().start(() -> {
+			final String pieceFileName = key + ".png";
+			final File pieceFile =
+				CacheManager.save("images", pieceFileName, BASE_URL + pieceFileName);
+			final Image pieceImage = new Image(pieceFile.toURI().toString());
+			Platform.runLater(() -> {
+				IMAGES.put(key, pieceImage);
 				loadedCount[0]++;
 				if (loadedCount[0] == TOTAL_IMAGES) {
 					loaded = true;
 					if (onload != null)
 						onload.run();
 				}
-			}
+			});
 		});
-		IMAGES.put(key, image);
 	}
 	static void loadImages(Runnable onload) {
 		if (loaded) {

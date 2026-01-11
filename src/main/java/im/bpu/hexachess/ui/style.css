@@ -1,9 +1,3 @@
-@font-face
-{
-	font-family: "NotoSansM NFM";
-	src: url("https://raw.githubusercontent.com/ryanoasis/nerd-fonts/refs/heads/master/patched-fonts/Noto/Sans-Mono/NotoSansMNerdFontMono-Bold.ttf");
-}
-
 #loginButton,
 #signOutButton,
 #signUpButton
