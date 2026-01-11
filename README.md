@@ -323,7 +323,19 @@ Open `src/main/java/im/bpu/hexachess/Main.java` and run.
 
 ## 🐛 Bugs
 
-- The game continues despite checkmate, stalemate, or threefold repetition.
+- The game continues despite checkmate, stalemate, or threefold repetition. Hide the canvas and show appropriate messages.
+- The multiplayer black player view is not rotated. Adapt the black view using:
+```java
+gc.save();
+gc.rotate(180);
+gc.drawImage(image, -x - offset, -y - offset, size, size);
+gc.restore();
+```
+and
+```java
+canvas.getTransforms().add(new Rotate(180, canvas.getWidth() / 2, canvas.getHeight() / 2));
+```
+- Pressed challenge changes the background of the player item.
 
 ## ⛔ Known Limitations
 
@@ -331,14 +343,15 @@ Open `src/main/java/im/bpu/hexachess/Main.java` and run.
 
 ## 🚧 TODO
 
+- [ ] **Requirements**: Follow the project requirements PDF.
 - [ ] **Android Fonts**: Ensure proper bold font and button icon rendering.
-- [ ] **Android Icon**: Fix smaller icon in launcher.
+- [ ] **Android Icon**: Fix the smaller icon in the launcher.
 - [ ] **Windows Installer**: Fix name, version, and add update functionality.
 - [ ] **Player Profile**: Edit profile, change password, upload avatar.
 - [ ] **PVP Mode**: Offline player vs. player mode. Allow playing against self via /challenge.
 - [ ] **Multiplayer Mode**: Online player vs. player mode.
 - [ ] **Timer/Clock**
-- [ ] **Database Integration**
+- [ ] **Database Integration**: Save played games, etc.
 - [ ] **Theme Support**: Light/Dark mode.
 - [ ] **Sound Effects**: Add audio feedback for moves and game events.
 - [ ] **Animations**
@@ -352,11 +365,14 @@ Open `src/main/java/im/bpu/hexachess/Main.java` and run.
 - [ ] **Translations**: Add more languages.
 - [ ] **Password Recovery**
 - [ ] **Email Verification**
+- [ ] **Cache Deletion**
+- [ ] **API Caching**
+- [ ] **Synthesized/Chiptune Audio**: Replace audio with generated sound.
 - [ ] **Raw Config**: Modify to not use `io.github.cdimascio.dotenv.Dotenv`.
 - [ ] **Raw Server**: Modify to not use `com.sun.net.httpserver`.
 - [ ] **Different Screen Sizes**: Adapt UI for various screen dimensions.
 - [ ] **Enemy Movements**: Highlight enemy possible moves (in red).
-- [ ] **Game Settings**: Implement configurable game options (e.g., white/black, aim assist).
+- [ ] **Game Settings**: Implement configurable game options (e.g., white/black preferred color, aim assist).
 - [ ] **Aim Assist**: Highlight better moves with darker color shades.
 - [ ] **Improve Performance**: Use multithreading/parallel execution.
 - [ ] **LLM Chess Player**: Add a large language model-based chess player for fun :) (and hallucinations (domain expansion, illegal moves, self-capture, etc.)).
