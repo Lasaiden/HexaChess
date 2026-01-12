@@ -22,8 +22,10 @@ import static im.bpu.hexachess.Main.getAspectRatio;
 import static im.bpu.hexachess.Main.loadWindow;
 
 public class SearchWindow {
-	private static final String BASE_URL =
+	private static final String AVATAR_URL =
 		"https://www.chess.com/bundles/web/images/noavatar_l.gif";
+	private static final String FLAGS_URL =
+		"https://www.chess.com/bundles/web/images/sprites/flags-128.png";
 	private static final double ASPECT_RATIO_THRESHOLD = 1.5;
 	private static final long DT = 500;
 	private static final long MAX_DT = 6000;
@@ -67,7 +69,7 @@ public class SearchWindow {
 							final String avatarUrl =
 								(player.getAvatar() != null && !player.getAvatar().isEmpty())
 								? player.getAvatar()
-								: BASE_URL;
+								: AVATAR_URL;
 							final ImageView avatarIcon =
 								(ImageView) playerItem.lookup("#avatarIcon");
 							final Label handleLabel = (Label) playerItem.lookup("#handleLabel");
@@ -78,10 +80,16 @@ public class SearchWindow {
 								(Button) playerItem.lookup("#challengeButton");
 							final File avatarFile = CacheManager.save("avatars", handle, avatarUrl);
 							final Image avatarImage = new Image(avatarFile.toURI().toString());
+							final String flagsFileName =
+								FLAGS_URL.substring(FLAGS_URL.lastIndexOf('/') + 1);
+							final File flagsFile =
+								CacheManager.save("images", flagsFileName, FLAGS_URL);
 							avatarIcon.setImage(avatarImage);
 							handleLabel.setText(handle);
 							ratingLabel.setText("Rating: " + rating);
 							if (location != null && !location.isEmpty()) {
+								countryFlagIcon.setStyle("-fx-background-image: url('"
+									+ flagsFile.toURI().toString() + "');");
 								countryFlagIcon.getStyleClass().add("country-" + location);
 								countryFlagIcon.setManaged(true);
 								countryFlagIcon.setVisible(true);

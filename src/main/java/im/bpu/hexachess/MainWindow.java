@@ -26,8 +26,10 @@ import javafx.util.Duration;
 import static im.bpu.hexachess.Main.loadWindow;
 
 public class MainWindow {
-	private static final String BASE_URL =
+	private static final String AVATAR_URL =
 		"https://www.chess.com/bundles/web/images/noavatar_l.gif";
+	private static final String FLAGS_URL =
+		"https://www.chess.com/bundles/web/images/sprites/flags-128.png";
 	private static final double SIDEBAR_HIDDEN_X = -160;
 	private static final double SIDEBAR_VISIBLE_X = 0;
 	private static final int SIDEBAR_DURATION_MS = 160;
@@ -96,8 +98,8 @@ public class MainWindow {
 			final String handle = SettingsManager.userHandle;
 			final Player player = API.profile(handle);
 			if (player == null) {
-				final String avatarFileName = BASE_URL.substring(BASE_URL.lastIndexOf('/') + 1);
-				final File avatarFile = CacheManager.save("avatars", avatarFileName, BASE_URL);
+				final String avatarFileName = AVATAR_URL.substring(AVATAR_URL.lastIndexOf('/') + 1);
+				final File avatarFile = CacheManager.save("avatars", avatarFileName, AVATAR_URL);
 				final Image avatarImage = new Image(avatarFile.toURI().toString());
 				Platform.runLater(() -> {
 					avatarIcon.setImage(avatarImage);
@@ -112,14 +114,18 @@ public class MainWindow {
 			final String location = player.getLocation();
 			final String avatarUrl = (player.getAvatar() != null && !player.getAvatar().isEmpty())
 				? player.getAvatar()
-				: BASE_URL;
+				: AVATAR_URL;
 			final File avatarFile = CacheManager.save("avatars", handle, avatarUrl);
 			final Image avatarImage = new Image(avatarFile.toURI().toString());
+			final String flagsFileName = FLAGS_URL.substring(FLAGS_URL.lastIndexOf('/') + 1);
+			final File flagsFile = CacheManager.save("images", flagsFileName, FLAGS_URL);
 			Platform.runLater(() -> {
 				avatarIcon.setImage(avatarImage);
 				handleLabel.setText(handle);
 				ratingLabel.setText("Rating: " + rating);
 				if (location != null && !location.isEmpty()) {
+					countryFlagIcon.setStyle(
+						"-fx-background-image: url('" + flagsFile.toURI().toString() + "');");
 					countryFlagIcon.getStyleClass().add("country-" + location);
 					countryFlagIcon.setManaged(true);
 					countryFlagIcon.setVisible(true);
@@ -135,7 +141,7 @@ public class MainWindow {
 			String handle = COMPUTER_HANDLE;
 			int rating = ((SettingsManager.maxDepth - 1) / 2 % 3 + 1) * BASE_ELO;
 			String location = null;
-			String avatarUrl = BASE_URL;
+			String avatarUrl = AVATAR_URL;
 			if (state.isMultiplayer && state.opponentHandle != null) {
 				handle = state.opponentHandle;
 				final Player opponent = API.profile(handle);
@@ -144,7 +150,7 @@ public class MainWindow {
 					location = opponent.getLocation();
 					avatarUrl = (opponent.getAvatar() != null && !opponent.getAvatar().isEmpty())
 						? opponent.getAvatar()
-						: BASE_URL;
+						: AVATAR_URL;
 				}
 			}
 			final String finalHandle = handle;
@@ -152,11 +158,15 @@ public class MainWindow {
 			final String finalLocation = location;
 			final File avatarFile = CacheManager.save("avatars", handle, avatarUrl);
 			final Image avatarImage = new Image(avatarFile.toURI().toString());
+			final String flagsFileName = FLAGS_URL.substring(FLAGS_URL.lastIndexOf('/') + 1);
+			final File flagsFile = CacheManager.save("images", flagsFileName, FLAGS_URL);
 			Platform.runLater(() -> {
 				opponentAvatarIcon.setImage(avatarImage);
 				opponentHandleLabel.setText(finalHandle);
 				opponentRatingLabel.setText("Rating: " + finalRating);
 				if (finalLocation != null && !finalLocation.isEmpty()) {
+					opponentCountryFlagIcon.setStyle(
+						"-fx-background-image: url('" + flagsFile.toURI().toString() + "');");
 					opponentCountryFlagIcon.getStyleClass().add("country-" + finalLocation);
 					opponentCountryFlagIcon.setManaged(true);
 					opponentCountryFlagIcon.setVisible(true);

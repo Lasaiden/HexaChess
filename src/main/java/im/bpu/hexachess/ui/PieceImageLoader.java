@@ -9,7 +9,7 @@ import javafx.application.Platform;
 import javafx.scene.image.Image;
 
 class PieceImageLoader {
-	private static final String BASE_URL =
+	private static final String PIECE_URL =
 		"https://images.chesscomfiles.com/chess-themes/pieces/classic/300/";
 	private static final int TOTAL_IMAGES = 12;
 	private static final Map<String, Image> IMAGES = new HashMap<>();
@@ -20,7 +20,7 @@ class PieceImageLoader {
 		Thread.ofVirtual().start(() -> {
 			final String pieceFileName = key + ".png";
 			final File pieceFile =
-				CacheManager.save("images", pieceFileName, BASE_URL + pieceFileName);
+				CacheManager.save("images", pieceFileName, PIECE_URL + pieceFileName);
 			final Image pieceImage = new Image(pieceFile.toURI().toString());
 			Platform.runLater(() -> {
 				IMAGES.put(key, pieceImage);

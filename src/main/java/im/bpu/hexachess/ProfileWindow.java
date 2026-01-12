@@ -20,8 +20,10 @@ import javafx.scene.layout.Region;
 import static im.bpu.hexachess.Main.loadWindow;
 
 public class ProfileWindow {
-	private static final String BASE_URL =
+	private static final String AVATAR_URL =
 		"https://www.chess.com/bundles/web/images/noavatar_l.gif";
+	private static final String FLAGS_URL =
+		"https://www.chess.com/bundles/web/images/sprites/flags-128.png";
 	private static final Map<String, String> COUNTRIES = new HashMap<>();
 	private static final DateTimeFormatter DATE_TIME_FORMATTER =
 		DateTimeFormatter.ofPattern("MMM d yyyy");
@@ -55,16 +57,18 @@ public class ProfileWindow {
 			final Player player = API.profile(handle);
 			final File avatarFile;
 			if (player == null) {
-				final String avatarFileName = BASE_URL.substring(BASE_URL.lastIndexOf('/') + 1);
-				avatarFile = CacheManager.save("avatars", avatarFileName, BASE_URL);
+				final String avatarFileName = AVATAR_URL.substring(AVATAR_URL.lastIndexOf('/') + 1);
+				avatarFile = CacheManager.save("avatars", avatarFileName, AVATAR_URL);
 			} else {
 				final String avatarUrl =
 					(player.getAvatar() != null && !player.getAvatar().isEmpty())
 					? player.getAvatar()
-					: BASE_URL;
+					: AVATAR_URL;
 				avatarFile = CacheManager.save("avatars", handle, avatarUrl);
 			}
 			final Image avatarImage = new Image(avatarFile.toURI().toString());
+			final String flagsFileName = FLAGS_URL.substring(FLAGS_URL.lastIndexOf('/') + 1);
+			final File flagsFile = CacheManager.save("images", flagsFileName, FLAGS_URL);
 			Platform.runLater(() -> {
 				if (player == null) {
 					avatarIcon.setImage(avatarImage);
@@ -82,6 +86,8 @@ public class ProfileWindow {
 					if (location != null && !location.isEmpty()) {
 						final String country = COUNTRIES.getOrDefault(location, location);
 						locationLabel.setText(country);
+						countryFlagIcon.setStyle(
+							"-fx-background-image: url('" + flagsFile.toURI().toString() + "');");
 						countryFlagIcon.getStyleClass().add("country-" + location);
 						countryFlagIcon.setManaged(true);
 						countryFlagIcon.setVisible(true);

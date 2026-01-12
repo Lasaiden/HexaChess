@@ -155,12 +155,6 @@
 	background-position: 60% 20%;
 }
 
-.country-flags
-{
-	-fx-background-image: url("https://www.chess.com/bundles/web/images/sprites/flags-128.png");
-	background-image: url("https://www.chess.com/bundles/web/images/sprites/flags-128.png");
-}
-
 .country-flags-large
 {
 	-fx-background-size: 432px 824px;

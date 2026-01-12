@@ -12,7 +12,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-	private static final String BASE_URL =
+	private static final String FONT_URL =
 		"https://raw.githubusercontent.com/ryanoasis/nerd-fonts/refs/heads/master/patched-fonts/"
 		+ "Noto/Sans-Mono/NotoSansMNerdFontMono-Bold.ttf";
 	private static final double ASPECT_RATIO_THRESHOLD = 1.5;
@@ -24,11 +24,12 @@ public class Main extends Application {
 	@Override
 	public void start(final Stage stage) throws Exception {
 		try {
-			final String fontFileName = BASE_URL.substring(BASE_URL.lastIndexOf("/") + 1);
-			final File fontFile = CacheManager.save("fonts", fontFileName, BASE_URL);
-			final FileInputStream fontFileInputStream = new FileInputStream(fontFile);
+			final String fontFileName = FONT_URL.substring(FONT_URL.lastIndexOf("/") + 1);
+			final File fontFile = CacheManager.save("fonts", fontFileName, FONT_URL);
 			if (fontFile.exists()) {
-				Font.loadFont(fontFileInputStream, 16);
+				try (final FileInputStream fontFileInputStream = new FileInputStream(fontFile)) {
+					Font.loadFont(fontFileInputStream, 16);
+				}
 			}
 		} catch (Exception exception) {
 			exception.printStackTrace();
