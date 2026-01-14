@@ -112,7 +112,7 @@
 {
 	/* green */
 	-fx-background-color: rgb(46, 218, 119);
-	background-color: rgb(46, 218, 119)
+	background-color: rgb(46, 218, 119);
 }
 
 .progress-bar>.track
