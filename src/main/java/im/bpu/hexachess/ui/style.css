@@ -463,6 +463,11 @@
 	-fx-text-fill: rgb(31, 173, 91);
 }
 
+.tooltip
+{
+	-fx-background-radius: 0;
+}
+
 .tournament-item-date,
 .tournament-item-description
 {
