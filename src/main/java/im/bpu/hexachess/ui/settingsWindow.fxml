@@ -14,6 +14,8 @@
 				<Tooltip fx:id="aiDifficultyLevelTooltip" />
 			</tooltip>
 		</ComboBox>
+		<Label text="Theme" />
+		<ComboBox fx:id="themeComboBox" prefWidth="160" />
 		<Label text="Volume" />
 		<Slider fx:id="volumeSlider" max="1" maxWidth="200" min="0" />
 	</VBox>

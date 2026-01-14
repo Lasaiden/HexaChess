@@ -14,11 +14,13 @@ import static im.bpu.hexachess.Main.loadWindow;
 public class SettingsWindow {
 	@FXML private ComboBox<String> maxDepthComboBox;
 	@FXML private Tooltip aiDifficultyLevelTooltip;
+	@FXML private ComboBox<String> themeComboBox;
 	@FXML private Slider volumeSlider;
 	@FXML private Button backButton;
 	@FXML
 	private void initialize() {
 		setupAiDifficultyLevel();
+		setupTheme();
 		setupVolume();
 	}
 	private void setupAiDifficultyLevel() {
@@ -28,6 +30,10 @@ public class SettingsWindow {
 		updateAiDifficultyLevelTooltip(aiDifficultyLevel);
 		maxDepthComboBox.valueProperty().addListener(
 			(observable, oldValue, newValue) -> updateAiDifficultyLevelTooltip(newValue));
+	}
+	private void setupTheme() {
+		themeComboBox.getItems().addAll("Light", "Dark");
+		themeComboBox.getSelectionModel().select(SettingsManager.theme);
 	}
 	private void setupVolume() {
 		volumeSlider.setValue(SettingsManager.volume);
@@ -57,12 +63,16 @@ public class SettingsWindow {
 	}
 	@FXML
 	private void openMain() {
-		final String selected = maxDepthComboBox.getValue();
-		if (selected != null) {
-			SettingsManager.setMaxDepth(mapAiDifficultyLevelToMaxDepth(selected));
+		final String selectedAiDifficultyLevel = maxDepthComboBox.getValue();
+		final String selectedTheme = themeComboBox.getValue();
+		if (selectedAiDifficultyLevel != null)
+			SettingsManager.setMaxDepth(mapAiDifficultyLevelToMaxDepth(selectedAiDifficultyLevel));
+		if (selectedTheme != null)
+			SettingsManager.setTheme(selectedTheme);
+		if (SettingsManager.playerId != null) {
 			Thread.ofVirtual().start(() -> {
-				final Settings settings = new Settings(
-					SettingsManager.playerId, "default", true, false, SettingsManager.maxDepth);
+				final Settings settings = new Settings(SettingsManager.playerId,
+					SettingsManager.theme.toLowerCase(), true, false, SettingsManager.maxDepth);
 				API.settings(settings);
 			});
 		}

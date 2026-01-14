@@ -7,6 +7,7 @@ public class SettingsManager {
 		Preferences.userNodeForPackage(SettingsManager.class);
 	public static int maxDepth = PREFERENCES.getInt("maxDepth", 3);
 	public static double volume = PREFERENCES.getDouble("volume", 1.0);
+	public static String theme = PREFERENCES.get("theme", "Light");
 	public static String playerId = PREFERENCES.get("playerId", null);
 	public static String userHandle = PREFERENCES.get("userHandle", null);
 	public static String authToken = PREFERENCES.get("authToken", null);
@@ -20,6 +21,12 @@ public class SettingsManager {
 		if (volume != value) {
 			volume = value;
 			PREFERENCES.putDouble("volume", value);
+		}
+	}
+	public static void setTheme(String value) {
+		if (!theme.equals(value)) {
+			theme = value;
+			PREFERENCES.put("theme", value);
 		}
 	}
 	public static void setPlayerId(String value) {

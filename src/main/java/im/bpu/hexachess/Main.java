@@ -56,7 +56,7 @@ public class Main extends Application {
 			height = MOBILE_HEIGHT;
 		}
 		final Scene scene = new Scene(root, width, height);
-		scene.getStylesheets().add(getClass().getResource("ui/style.css").toExternalForm());
+		applyTheme(scene);
 		stage.setTitle(WINDOW_TITLE);
 		stage.setScene(scene);
 		stage.show();
@@ -67,11 +67,19 @@ public class Main extends Application {
 		final double aspectRatio = width / height;
 		return aspectRatio;
 	}
+	public static void applyTheme(Scene scene) {
+		scene.getStylesheets().clear();
+		scene.getStylesheets().add(Main.class.getResource("ui/style.css").toExternalForm());
+		String themeFileName = "ui/" + SettingsManager.theme.toLowerCase() + ".css";
+		scene.getStylesheets().add(Main.class.getResource(themeFileName).toExternalForm());
+	}
 	public static void loadWindow(final String path, final Object controller, final Node node) {
 		try {
 			final FXMLLoader loader = new FXMLLoader(Main.class.getResource(path));
 			loader.setController(controller);
-			node.getScene().setRoot(loader.load());
+			Scene scene = node.getScene();
+			scene.setRoot(loader.load());
+			applyTheme(scene);
 		} catch (final Exception exception) {
 			exception.printStackTrace();
 		}
