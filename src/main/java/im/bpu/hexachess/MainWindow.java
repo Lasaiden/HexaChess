@@ -21,6 +21,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.Screen;
 import javafx.util.Duration;
 
 import static im.bpu.hexachess.Main.loadWindow;
@@ -58,8 +59,12 @@ public class MainWindow {
 	@FXML private Region opponentCountryFlagIcon;
 	@FXML private Label opponentRatingLabel;
 	@FXML private ProgressBar opponentProgressBar;
+	@FXML private VBox devModeContainer;
 	@FXML private Label fontFamilyLabel;
 	@FXML private Label fontNameLabel;
+	@FXML private Label screenWidthLabel;
+	@FXML private Label screenHeightLabel;
+	@FXML private Label aspectRatioLabel;
 	@FXML
 	private void initialize() {
 		final State state = State.getState();
@@ -94,12 +99,19 @@ public class MainWindow {
 		}
 		if (state.isDeveloperMode) {
 			Platform.runLater(() -> {
-				settingsHelpButton.applyCss();
-				Font font = settingsHelpButton.getFont();
-				fontFamilyLabel.setText("Family: " + font.getFamily());
-				fontNameLabel.setText("Name: " + font.getName());
-				fontFamilyLabel.getParent().setVisible(true);
-				fontFamilyLabel.getParent().setManaged(true);
+				final Font font = settingsHelpButton.getFont();
+				final String fontFamily = font.getFamily();
+				final String fontName = font.getName();
+				final double width = Screen.getPrimary().getBounds().getWidth();
+				final double height = Screen.getPrimary().getBounds().getHeight();
+				final double aspectRatio = width / height;
+				fontFamilyLabel.setText("Family: " + fontFamily);
+				fontNameLabel.setText("Name: " + fontName);
+				screenWidthLabel.setText("Width: " + (int) width);
+				screenHeightLabel.setText("Height: " + (int) height);
+				aspectRatioLabel.setText("Aspect Ratio: " + aspectRatio);
+				devModeContainer.setManaged(true);
+				devModeContainer.setVisible(true);
 			});
 		}
 	}
@@ -227,12 +239,19 @@ public class MainWindow {
 				restartClickCount = 0;
 				State.getState().isDeveloperMode = !State.getState().isDeveloperMode;
 				Platform.runLater(() -> {
-					settingsHelpButton.applyCss();
-					Font font = settingsHelpButton.getFont();
-					fontFamilyLabel.setText("Family: " + font.getFamily());
-					fontNameLabel.setText("Name: " + font.getName());
-					fontFamilyLabel.getParent().setVisible(State.getState().isDeveloperMode);
-					fontFamilyLabel.getParent().setManaged(State.getState().isDeveloperMode);
+					final Font font = settingsHelpButton.getFont();
+					final String fontFamily = font.getFamily();
+					final String fontName = font.getName();
+					final double width = Screen.getPrimary().getBounds().getWidth();
+					final double height = Screen.getPrimary().getBounds().getHeight();
+					final double aspectRatio = width / height;
+					fontFamilyLabel.setText("Family: " + fontFamily);
+					fontNameLabel.setText("Name: " + fontName);
+					screenWidthLabel.setText("Width: " + (int) width);
+					screenHeightLabel.setText("Height: " + (int) height);
+					aspectRatioLabel.setText("Aspect Ratio: " + aspectRatio);
+					devModeContainer.setManaged(State.getState().isDeveloperMode);
+					devModeContainer.setVisible(State.getState().isDeveloperMode);
 				});
 				hexPanel.repaint();
 			}

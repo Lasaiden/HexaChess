@@ -9,9 +9,12 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <StackPane xmlns:fx="http://javafx.com/fxml" alignment="top_left">
-	<VBox StackPane.alignment="top_right" alignment="top_right" managed="false" visible="false">
+	<VBox fx:id="devModeContainer" StackPane.alignment="top_right" alignment="top_right" managed="false" visible="false">
 		<Label fx:id="fontFamilyLabel" />
 		<Label fx:id="fontNameLabel" />
+		<Label fx:id="screenWidthLabel" />
+		<Label fx:id="screenHeightLabel" />
+		<Label fx:id="aspectRatioLabel" />
 	</VBox>
 	<VBox StackPane.alignment="center" alignment="center" onMouseClicked="#onBoardClicked">
 		<StackPane prefWidth="666" prefHeight="666">
