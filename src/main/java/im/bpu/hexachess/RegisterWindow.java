@@ -24,7 +24,6 @@ public class RegisterWindow {
 	@FXML private Label statusLabel;
 	@FXML
 	private void handleRegister() {
-		final ResourceBundle bundle = Main.getBundle();
 		if (handleField.getText().isEmpty()) {
 			handleField.requestFocus();
 			return;
@@ -37,6 +36,7 @@ public class RegisterWindow {
 			passwordField.requestFocus();
 			return;
 		}
+		final ResourceBundle bundle = Main.getBundle();
 		final String handle = handleField.getText();
 		final String email = emailField.getText();
 		final String password = passwordField.getText();

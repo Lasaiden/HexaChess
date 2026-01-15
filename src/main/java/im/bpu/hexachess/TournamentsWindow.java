@@ -65,7 +65,8 @@ public class TournamentsWindow {
 									bundle.getString("tournaments.winner") + ": " + winnerId);
 								statusLabel.getStyleClass().add("text-success");
 							} else {
-								statusLabel.setText(bundle.getString("tournaments.status"));
+								statusLabel.setText(
+									bundle.getString("tournaments.status.ongoingopen"));
 								statusLabel.getStyleClass().add("text-danger");
 							}
 							tournamentItem.setOnMouseClicked(

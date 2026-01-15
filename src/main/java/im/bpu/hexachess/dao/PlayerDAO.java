@@ -22,8 +22,9 @@ public class PlayerDAO extends DAO<Player> {
 	private static final String GET_PLAYER_BY_HANDLE = "SELECT * FROM players WHERE handle = ?";
 	private static final String SEARCH_PLAYERS = "SELECT * FROM players WHERE handle LIKE ?";
 	private static final String UPDATE_PASSWORD =
-		"UPDATE players SET password = ? WHERE handle = ?";
-	private static final String CHECK_PASSWORD = "SELECT password FROM players WHERE handle = ?";
+		"UPDATE players SET password_hash = ? WHERE handle = ?";
+	private static final String CHECK_PASSWORD =
+		"SELECT password_hash FROM players WHERE handle = ?";
 	@Override
 	public Player create(Player player) {
 		try (PreparedStatement pstmt = connect.prepareStatement(CREATE)) {
@@ -150,7 +151,7 @@ public class PlayerDAO extends DAO<Player> {
 			pstmt.setString(1, handle);
 			try (ResultSet rs = pstmt.executeQuery()) {
 				if (rs.next()) {
-					return rs.getString("password").equals(password);
+					return rs.getString("password_hash").equals(password);
 				}
 			}
 		} catch (SQLException exception) {

@@ -246,18 +246,7 @@ public class API {
 		}
 		return false;
 	}
-	public static List<Player> getTournamentParticipants(String tournamentId) {
-		try {
-			HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().GET();
-			HttpResponse<String> response =
-				sendWithFallback(requestBuilder, "/participants?id=" + tournamentId);
-			if (response.statusCode() == 200) {
-				return List.of(MAPPER.readValue(response.body(), Player[].class));
-			}
-		} catch (HttpTimeoutException ignored) {
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
-		return Collections.emptyList();
+	public static List<Player> participants(String tournamentId) {
+		return fetch("/participants?id=" + tournamentId, Player[].class);
 	}
 }

@@ -4,9 +4,10 @@ import im.bpu.hexachess.entity.Tournament;
 import im.bpu.hexachess.network.API;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 // import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
@@ -20,6 +21,8 @@ public class TournamentWindow {
 	@FXML private Label dateLabel;
 	@FXML private Label statusLabel;
 	@FXML private Label descriptionLabel;
+	@FXML private Button joinButton;
+	@FXML private Button participantsButton;
 	@FXML private Button backButton;
 	@FXML
 	private void initialize() {
@@ -27,36 +30,42 @@ public class TournamentWindow {
 			openTournaments();
 			return;
 		}
+		final ResourceBundle bundle = Main.getBundle();
 		nameLabel.setText(targetTournament.getName());
 		descriptionLabel.setText(targetTournament.getDescription());
 		if (targetTournament.getStartTime() != null) {
 			dateLabel.setText(targetTournament.getStartTime().format(DATE_TIME_FORMATTER));
 		} else {
-			dateLabel.setText("Date: TBD");
+			dateLabel.setText(bundle.getString("tournaments.tbd"));
 		}
 		if (targetTournament.getWinnerId() != null) {
-			statusLabel.setText("Winner: " + targetTournament.getWinnerId());
-			statusLabel.setStyle("-fx-text-fill: #2E8B57;");
+			statusLabel.setText(
+				bundle.getString("tournaments.winner") + ": " + targetTournament.getWinnerId());
+			statusLabel.getStyleClass().add("text-success");
 		} else {
-			statusLabel.setText("Status: Open for registration");
-			statusLabel.setStyle("-fx-text-fill: #b03a2e;");
+			statusLabel.setText(bundle.getString("tournaments.status.openforregistration"));
+			statusLabel.getStyleClass().add("text-danger");
 		}
+		joinButton.setText(bundle.getString("tournament.join"));
+		participantsButton.setText(bundle.getString("tournament.participants"));
 	}
 	@FXML
 	private void handleParticipate() {
-		if (API.joinTournament(targetTournament.getTournamentId())) {
-			Alert alert = new Alert(Alert.AlertType.INFORMATION);
-			alert.setTitle("Success");
-			alert.setHeaderText(null);
-			alert.setContentText("You have successfully joined the tournament!");
-			alert.showAndWait();
-		} else {
-			Alert alert = new Alert(Alert.AlertType.ERROR);
-			alert.setTitle("Error");
-			alert.setHeaderText(null);
-			alert.setContentText("Could not join. Maybe you are already registered?");
-			alert.showAndWait();
-		}
+		Thread.ofVirtual().start(() -> {
+			final String tournamentId = targetTournament.getTournamentId();
+			final boolean joinSuccess = API.joinTournament(tournamentId);
+			final ResourceBundle bundle = Main.getBundle();
+			Platform.runLater(() -> {
+				statusLabel.getStyleClass().clear();
+				if (joinSuccess) {
+					statusLabel.setText(bundle.getString("tournament.success"));
+					statusLabel.getStyleClass().add("text-success");
+				} else {
+					statusLabel.setText(bundle.getString("tournament.error"));
+					statusLabel.getStyleClass().add("text-danger");
+				}
+			});
+		});
 	}
 	@FXML
 	private void handleViewParticipants() {
