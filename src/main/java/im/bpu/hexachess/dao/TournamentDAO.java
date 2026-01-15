@@ -1,13 +1,13 @@
 package im.bpu.hexachess.dao;
 
-import im.bpu.hexachess.entity.Tournament;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+
+import im.bpu.hexachess.entity.Tournament;
 
 public class TournamentDAO extends DAO<Tournament> {
 	private static final String CREATE =
@@ -106,5 +106,17 @@ public class TournamentDAO extends DAO<Tournament> {
 			exception.printStackTrace();
 		}
 		return tournaments;
+	}
+
+	public boolean addParticipant(String tournamentId, String playerId) {
+		String sql = "INSERT INTO tournament_participants (tournament_id, player_id) VALUES (?, ?)";
+		try (java.sql.PreparedStatement pstmt = connect.prepareStatement(sql)) {
+			pstmt.setString(1, tournamentId);
+			pstmt.setString(2, playerId);
+			pstmt.executeUpdate();
+			return true;
+		} catch (java.sql.SQLException exception) {
+			return false;
+		}
 	}
 }
