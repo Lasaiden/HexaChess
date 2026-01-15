@@ -245,4 +245,19 @@ public class API {
 			return false;
 		}
 	}
+	
+	public static java.util.List<im.bpu.hexachess.entity.Player> getTournamentParticipants(String tournamentId) {
+		try {
+			java.net.http.HttpRequest.Builder requestBuilder =
+				java.net.http.HttpRequest.newBuilder().GET();
+			java.net.http.HttpResponse<String> response = sendWithFallback(requestBuilder, "/tournaments/participants?id=" + tournamentId);
+			
+			if (response.statusCode() == 200) {
+				return java.util.List.of(MAPPER.readValue(response.body(), im.bpu.hexachess.entity.Player[].class));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return java.util.Collections.emptyList();
+	}
 }
