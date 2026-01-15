@@ -48,8 +48,8 @@ public class Server {
 	}
 	private static final Key KEY = Keys.hmacShaKeyFor(
 		Config.get("KEY", "hexachess_secret_key_with_a_minimum_of_32_bytes").getBytes());
-	public static void main(String[] args) throws IOException {
-		HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
+	public static void main(final String[] args) throws IOException {
+		final HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
 		server.createContext("/api/login", new LoginHandler());
 		server.createContext("/api/register", new RegisterHandler());
 		server.createContext("/api/settings", new SettingsHandler());
@@ -65,11 +65,11 @@ public class Server {
 		server.start();
 		System.out.println("HexaChess Server started on port " + PORT);
 	}
-	private static String auth(HttpExchange exchange) {
-		String authHeader = exchange.getRequestHeaders().getFirst("Authorization");
+	private static String auth(final HttpExchange exchange) {
+		final String authHeader = exchange.getRequestHeaders().getFirst("Authorization");
 		if (authHeader == null || !authHeader.startsWith("Bearer "))
 			return null;
-		String authToken = authHeader.substring(7);
+		final String authToken = authHeader.substring(7);
 		try {
 			return Jwts.parser()
 				.verifyWith((SecretKey) KEY)
@@ -77,12 +77,12 @@ public class Server {
 				.parseSignedClaims(authToken)
 				.getPayload()
 				.getSubject();
-		} catch (Exception ignored) { // high-frequency polling operation
+		} catch (final Exception ignored) { // high-frequency polling operation
 			return null;
 		}
 	}
-	private static boolean isUserInGame(String handle, String gameId) {
-		for (Entry<String, String> game : GAMES.entrySet()) {
+	private static boolean isUserInGame(final String handle, final String gameId) {
+		for (final Entry<String, String> game : GAMES.entrySet()) {
 			if (game.getValue().equals(gameId) && game.getKey().contains(handle)) {
 				return true;
 			}
@@ -91,21 +91,22 @@ public class Server {
 	}
 	static class LoginHandler implements HttpHandler {
 		@Override
-		public void handle(HttpExchange exchange) throws IOException {
+		public void handle(final HttpExchange exchange) throws IOException {
 			if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
 				sendResponse(exchange, 405, "Method Not Allowed");
 				return;
 			}
 			try {
-				ObjectNode jsonNode = MAPPER.readValue(exchange.getRequestBody(), ObjectNode.class);
+				final ObjectNode jsonNode =
+					MAPPER.readValue(exchange.getRequestBody(), ObjectNode.class);
 				if (jsonNode == null || !jsonNode.has("handle") || !jsonNode.has("password")) {
 					sendResponse(exchange, 400, "Bad Request");
 					return;
 				}
-				String handle = jsonNode.get("handle").asText();
-				String password = jsonNode.get("password").asText();
-				PlayerDAO playerDAO = new PlayerDAO();
-				Player player = playerDAO.getPlayerByHandle(handle);
+				final String handle = jsonNode.get("handle").asText();
+				final String password = jsonNode.get("password").asText();
+				final PlayerDAO playerDAO = new PlayerDAO();
+				final Player player = playerDAO.getPlayerByHandle(handle);
 				if (player != null && BCrypt.checkpw(password, player.getPasswordHash())) {
 					player.setPasswordHash(null);
 					player.setToken(Jwts.builder()
@@ -113,12 +114,12 @@ public class Server {
 							.signWith(KEY)
 							.subject(handle)
 							.compact());
-					String response = MAPPER.writeValueAsString(player);
+					final String response = MAPPER.writeValueAsString(player);
 					sendResponse(exchange, 200, response);
 				} else {
 					sendResponse(exchange, 401, "Unauthorized");
 				}
-			} catch (Exception exception) {
+			} catch (final Exception exception) {
 				exception.printStackTrace();
 				sendResponse(exchange, 500, "Internal Server Error");
 			}
@@ -126,20 +127,20 @@ public class Server {
 	}
 	static class RegisterHandler implements HttpHandler {
 		@Override
-		public void handle(HttpExchange exchange) throws IOException {
+		public void handle(final HttpExchange exchange) throws IOException {
 			if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
 				sendResponse(exchange, 405, "Method Not Allowed");
 				return;
 			}
 			try {
-				Player player = MAPPER.readValue(exchange.getRequestBody(), Player.class);
+				final Player player = MAPPER.readValue(exchange.getRequestBody(), Player.class);
 				if (player == null) {
 					sendResponse(exchange, 400, "Bad Request");
 					return;
 				}
-				String handle = player.getHandle();
-				String email = player.getEmail();
-				String password = player.getPasswordHash();
+				final String handle = player.getHandle();
+				final String email = player.getEmail();
+				final String password = player.getPasswordHash();
 				boolean isWeakPassword = true;
 				if (password != null && password.length() >= 8) {
 					boolean hasDigit = false;
@@ -147,7 +148,7 @@ public class Server {
 					boolean hasUpperCase = false;
 					boolean hasSpecialCharacter = false;
 					for (int i = 0; i < password.length(); i++) {
-						char character = password.charAt(i);
+						final char character = password.charAt(i);
 						if (Character.isDigit(character))
 							hasDigit = true;
 						else if (Character.isLowerCase(character))
@@ -171,19 +172,19 @@ public class Server {
 					sendResponse(exchange, 422, "Unprocessable Content");
 					return;
 				}
-				PlayerDAO playerDAO = new PlayerDAO();
+				final PlayerDAO playerDAO = new PlayerDAO();
 				if (playerDAO.getPlayerByHandle(handle) != null) {
 					sendResponse(exchange, 409, "Conflict: Username taken");
 					return;
 				}
-				String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
+				final String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
 				player.setPasswordHash(passwordHash);
 				player.setRating(1200);
 				player.setVerified(false);
 				player.setJoinedAt(LocalDateTime.now());
 				playerDAO.create(player);
 				sendResponse(exchange, 200, "OK");
-			} catch (Exception exception) {
+			} catch (final Exception exception) {
 				exception.printStackTrace();
 				sendResponse(exchange, 500, "Internal Server Error");
 			}
@@ -191,56 +192,57 @@ public class Server {
 	}
 	static class SettingsHandler implements HttpHandler {
 		@Override
-		public void handle(HttpExchange exchange) throws IOException {
-			String handle = auth(exchange);
+		public void handle(final HttpExchange exchange) throws IOException {
+			final String handle = auth(exchange);
 			if (handle == null) {
 				sendResponse(exchange, 401, "Unauthorized");
 				return;
 			}
 			if ("GET".equalsIgnoreCase(exchange.getRequestMethod())) {
 				try {
-					String query = exchange.getRequestURI().getQuery();
+					final String query = exchange.getRequestURI().getQuery();
 					if (query == null || !query.contains("playerId=")) {
 						sendResponse(exchange, 400, "Bad Request");
 						return;
 					}
-					String playerId = query.split("=")[1];
-					PlayerDAO playerDAO = new PlayerDAO();
-					Player player = playerDAO.read(playerId);
+					final String playerId = query.split("=")[1];
+					final PlayerDAO playerDAO = new PlayerDAO();
+					final Player player = playerDAO.read(playerId);
 					if (player == null || !player.getHandle().equals(handle)) {
 						sendResponse(exchange, 403, "Forbidden");
 						return;
 					}
-					SettingsDAO settingsDAO = new SettingsDAO();
+					final SettingsDAO settingsDAO = new SettingsDAO();
 					Settings settings = settingsDAO.read(playerId);
 					if (settings == null) {
 						settings = new Settings(playerId);
 						settingsDAO.create(settings);
 					}
-					String response = MAPPER.writeValueAsString(settings);
+					final String response = MAPPER.writeValueAsString(settings);
 					sendResponse(exchange, 200, response);
-				} catch (Exception exception) {
+				} catch (final Exception exception) {
 					exception.printStackTrace();
 					sendResponse(exchange, 500, "Internal Server Error");
 				}
 			} else if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
 				try {
-					Settings settings = MAPPER.readValue(exchange.getRequestBody(), Settings.class);
+					final Settings settings =
+						MAPPER.readValue(exchange.getRequestBody(), Settings.class);
 					if (settings == null) {
 						sendResponse(exchange, 400, "Bad Request");
 						return;
 					}
-					String playerId = settings.getPlayerId();
-					PlayerDAO playerDAO = new PlayerDAO();
-					Player player = playerDAO.read(playerId);
+					final String playerId = settings.getPlayerId();
+					final PlayerDAO playerDAO = new PlayerDAO();
+					final Player player = playerDAO.read(playerId);
 					if (player == null || !player.getHandle().equals(handle)) {
 						sendResponse(exchange, 403, "Forbidden");
 						return;
 					}
-					SettingsDAO settingsDAO = new SettingsDAO();
+					final SettingsDAO settingsDAO = new SettingsDAO();
 					settingsDAO.update(settings);
 					sendResponse(exchange, 200, "OK");
-				} catch (Exception exception) {
+				} catch (final Exception exception) {
 					exception.printStackTrace();
 					sendResponse(exchange, 500, "Internal Server Error");
 				}
@@ -251,20 +253,21 @@ public class Server {
 	}
 	static class SearchHandler implements HttpHandler {
 		@Override
-		public void handle(HttpExchange exchange) throws IOException {
+		public void handle(final HttpExchange exchange) throws IOException {
 			if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
 				sendResponse(exchange, 405, "Method Not Allowed");
 				return;
 			}
 			try {
-				String query = exchange.getRequestURI().getQuery();
-				String handle = (query != null && query.contains("=")) ? query.split("=")[1] : "";
-				PlayerDAO playerDAO = new PlayerDAO();
-				List<Player> players = playerDAO.searchPlayers(handle);
-				for (Player player : players) player.setPasswordHash(null);
-				String response = MAPPER.writeValueAsString(players);
+				final String query = exchange.getRequestURI().getQuery();
+				final String handle =
+					(query != null && query.contains("=")) ? query.split("=")[1] : "";
+				final PlayerDAO playerDAO = new PlayerDAO();
+				final List<Player> players = playerDAO.searchPlayers(handle);
+				for (final Player player : players) player.setPasswordHash(null);
+				final String response = MAPPER.writeValueAsString(players);
 				sendResponse(exchange, 200, response);
-			} catch (Exception exception) {
+			} catch (final Exception exception) {
 				exception.printStackTrace();
 				sendResponse(exchange, 500, "Internal Server Error");
 			}
@@ -272,28 +275,28 @@ public class Server {
 	}
 	static class ProfileHandler implements HttpHandler {
 		@Override
-		public void handle(HttpExchange exchange) throws IOException {
+		public void handle(final HttpExchange exchange) throws IOException {
 			if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
 				sendResponse(exchange, 405, "Method Not Allowed");
 				return;
 			}
 			try {
-				String query = exchange.getRequestURI().getQuery();
+				final String query = exchange.getRequestURI().getQuery();
 				if (query == null || !query.contains("handle=")) {
 					sendResponse(exchange, 400, "Bad Request");
 					return;
 				}
-				String handle = query.split("=")[1];
-				PlayerDAO playerDAO = new PlayerDAO();
-				Player player = playerDAO.getPlayerByHandle(handle);
+				final String handle = query.split("=")[1];
+				final PlayerDAO playerDAO = new PlayerDAO();
+				final Player player = playerDAO.getPlayerByHandle(handle);
 				if (player != null) {
 					player.setPasswordHash(null);
-					String response = MAPPER.writeValueAsString(player);
+					final String response = MAPPER.writeValueAsString(player);
 					sendResponse(exchange, 200, response);
 				} else {
 					sendResponse(exchange, 404, "Not Found");
 				}
-			} catch (Exception exception) {
+			} catch (final Exception exception) {
 				exception.printStackTrace();
 				sendResponse(exchange, 500, "Internal Server Error");
 			}
@@ -301,17 +304,17 @@ public class Server {
 	}
 	static class AchievementsHandler implements HttpHandler {
 		@Override
-		public void handle(HttpExchange exchange) throws IOException {
+		public void handle(final HttpExchange exchange) throws IOException {
 			if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
 				sendResponse(exchange, 405, "Method Not Allowed");
 				return;
 			}
 			try {
-				AchievementDAO achievementDAO = new AchievementDAO();
-				List<Achievement> achievements = achievementDAO.readAll();
-				String response = MAPPER.writeValueAsString(achievements);
+				final AchievementDAO achievementDAO = new AchievementDAO();
+				final List<Achievement> achievements = achievementDAO.readAll();
+				final String response = MAPPER.writeValueAsString(achievements);
 				sendResponse(exchange, 200, response);
-			} catch (Exception exception) {
+			} catch (final Exception exception) {
 				exception.printStackTrace();
 				sendResponse(exchange, 500, "Internal Server Error");
 			}
@@ -319,17 +322,17 @@ public class Server {
 	}
 	static class PuzzlesHandler implements HttpHandler {
 		@Override
-		public void handle(HttpExchange exchange) throws IOException {
+		public void handle(final HttpExchange exchange) throws IOException {
 			if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
 				sendResponse(exchange, 405, "Method Not Allowed");
 				return;
 			}
 			try {
-				PuzzleDAO puzzleDAO = new PuzzleDAO();
-				List<Puzzle> puzzles = puzzleDAO.readAll();
-				String response = MAPPER.writeValueAsString(puzzles);
+				final PuzzleDAO puzzleDAO = new PuzzleDAO();
+				final List<Puzzle> puzzles = puzzleDAO.readAll();
+				final String response = MAPPER.writeValueAsString(puzzles);
 				sendResponse(exchange, 200, response);
-			} catch (Exception exception) {
+			} catch (final Exception exception) {
 				exception.printStackTrace();
 				sendResponse(exchange, 500, "Internal Server Error");
 			}
@@ -337,17 +340,17 @@ public class Server {
 	}
 	static class TournamentsHandler implements HttpHandler {
 		@Override
-		public void handle(HttpExchange exchange) throws IOException {
+		public void handle(final HttpExchange exchange) throws IOException {
 			if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
 				sendResponse(exchange, 405, "Method Not Allowed");
 				return;
 			}
 			try {
-				TournamentDAO tournamentDAO = new TournamentDAO();
-				List<Tournament> tournaments = tournamentDAO.readAll();
-				String response = MAPPER.writeValueAsString(tournaments);
+				final TournamentDAO tournamentDAO = new TournamentDAO();
+				final List<Tournament> tournaments = tournamentDAO.readAll();
+				final String response = MAPPER.writeValueAsString(tournaments);
 				sendResponse(exchange, 200, response);
-			} catch (Exception exception) {
+			} catch (final Exception exception) {
 				exception.printStackTrace();
 				sendResponse(exchange, 500, "Internal Server Error");
 			}
@@ -355,8 +358,8 @@ public class Server {
 	}
 	static class ChallengeHandler implements HttpHandler {
 		@Override
-		public void handle(HttpExchange exchange) throws IOException {
-			String handle = auth(exchange);
+		public void handle(final HttpExchange exchange) throws IOException {
+			final String handle = auth(exchange);
 			if (handle == null) {
 				sendResponse(exchange, 401, "Unauthorized");
 				return;
@@ -365,18 +368,19 @@ public class Server {
 				sendResponse(exchange, 405, "Method Not Allowed");
 				return;
 			}
-			ObjectNode jsonNode = MAPPER.readValue(exchange.getRequestBody(), ObjectNode.class);
+			final ObjectNode jsonNode =
+				MAPPER.readValue(exchange.getRequestBody(), ObjectNode.class);
 			if (jsonNode == null || !jsonNode.has("to")) {
 				sendResponse(exchange, 400, "Bad Request");
 				return;
 			}
-			String from = handle;
-			String to = jsonNode.get("to").asText();
+			final String from = handle;
+			final String to = jsonNode.get("to").asText();
 			CHALLENGES.put(from, to);
 			if (from.equals(CHALLENGES.get(to))) {
-				String gameId = GAMES.computeIfAbsent(from + "-" + to, key -> {
-					byte[] bytes = new byte[9];
-					SecureRandom rand = new SecureRandom();
+				final String gameId = GAMES.computeIfAbsent(from + "-" + to, key -> {
+					final byte[] bytes = new byte[9];
+					final SecureRandom rand = new SecureRandom();
 					rand.nextBytes(bytes);
 					return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes).substring(
 						0, 11);
@@ -390,46 +394,47 @@ public class Server {
 	}
 	static class SyncHandler implements HttpHandler {
 		@Override
-		public void handle(HttpExchange exchange) throws IOException {
-			String handle = auth(exchange);
+		public void handle(final HttpExchange exchange) throws IOException {
+			final String handle = auth(exchange);
 			if (handle == null) {
 				sendResponse(exchange, 401, "Unauthorized");
 				return;
 			}
 			if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
-				ObjectNode jsonNode = MAPPER.readValue(exchange.getRequestBody(), ObjectNode.class);
+				final ObjectNode jsonNode =
+					MAPPER.readValue(exchange.getRequestBody(), ObjectNode.class);
 				if (jsonNode == null || !jsonNode.has("gameId") || !jsonNode.has("move")) {
 					sendResponse(exchange, 400, "Bad Request");
 					return;
 				}
-				String gameId = jsonNode.get("gameId").asText();
+				final String gameId = jsonNode.get("gameId").asText();
 				if (!isUserInGame(handle, gameId)) {
 					sendResponse(exchange, 403, "Forbidden");
 					return;
 				}
-				String move = jsonNode.get("move").asText();
+				final String move = jsonNode.get("move").asText();
 				MOVES.put(gameId, move);
 				sendResponse(exchange, 200, "OK");
 			} else {
-				String query = exchange.getRequestURI().getQuery();
+				final String query = exchange.getRequestURI().getQuery();
 				if (query == null || !query.contains("gameId=")) {
 					sendResponse(exchange, 400, "Bad Request");
 					return;
 				}
-				String gameId = query.split("=")[1];
+				final String gameId = query.split("=")[1];
 				if (!isUserInGame(handle, gameId)) {
 					sendResponse(exchange, 403, "Forbidden");
 					return;
 				}
-				String move = MOVES.getOrDefault(gameId, "");
+				final String move = MOVES.getOrDefault(gameId, "");
 				sendResponse(exchange, 200, move);
 			}
 		}
 	}
 	static class JoinHandler implements HttpHandler {
 		@Override
-		public void handle(HttpExchange exchange) throws IOException {
-			String handle = auth(exchange);
+		public void handle(final HttpExchange exchange) throws IOException {
+			final String handle = auth(exchange);
 			if (handle == null) {
 				sendResponse(exchange, 401, "Unauthorized");
 				return;
@@ -439,13 +444,14 @@ public class Server {
 				return;
 			}
 			try {
-				ObjectNode jsonNode = MAPPER.readValue(exchange.getRequestBody(), ObjectNode.class);
-				String tournamentId = jsonNode.get("tournamentId").asText();
-				PlayerDAO playerDAO = new PlayerDAO();
-				Player player = playerDAO.getPlayerByHandle(handle);
+				final ObjectNode jsonNode =
+					MAPPER.readValue(exchange.getRequestBody(), ObjectNode.class);
+				final String tournamentId = jsonNode.get("tournamentId").asText();
+				final PlayerDAO playerDAO = new PlayerDAO();
+				final Player player = playerDAO.getPlayerByHandle(handle);
 				if (player != null) {
-					String playerId = player.getPlayerId();
-					TournamentDAO tournamentDAO = new TournamentDAO();
+					final String playerId = player.getPlayerId();
+					final TournamentDAO tournamentDAO = new TournamentDAO();
 					if (tournamentDAO.addParticipant(tournamentId, playerId)) {
 						sendResponse(exchange, 200, "OK");
 					} else {
@@ -454,18 +460,18 @@ public class Server {
 				} else {
 					sendResponse(exchange, 404, "Player Not Found");
 				}
-			} catch (Exception exception) {
+			} catch (final Exception exception) {
 				exception.printStackTrace();
 				sendResponse(exchange, 500, "Internal Server Error");
 			}
 		}
 	}
-	private static void sendResponse(HttpExchange exchange, int statusCode, String response)
-		throws IOException {
-		byte[] bytes = response.getBytes();
+	private static void sendResponse(final HttpExchange exchange, final int statusCode,
+		final String response) throws IOException {
+		final byte[] bytes = response.getBytes();
 		exchange.getResponseHeaders().set("Content-Type", "application/json");
 		exchange.sendResponseHeaders(statusCode, bytes.length);
-		try (OutputStream os = exchange.getResponseBody()) {
+		try (final OutputStream os = exchange.getResponseBody()) {
 			os.write(bytes);
 		}
 	}

@@ -28,8 +28,8 @@ public class TournamentDAO extends DAO<Tournament> {
 		"SELECT p.* FROM players p JOIN participants tp ON p.player_id = tp.player_id WHERE "
 		+ "tp.tournament_id = ?";
 	@Override
-	public Tournament create(Tournament tournament) {
-		try (PreparedStatement pstmt = connect.prepareStatement(CREATE)) {
+	public Tournament create(final Tournament tournament) {
+		try (final PreparedStatement pstmt = connect.prepareStatement(CREATE)) {
 			pstmt.setString(1, tournament.getTournamentId());
 			pstmt.setString(2, tournament.getName());
 			pstmt.setString(3, tournament.getDescription());
@@ -44,14 +44,14 @@ public class TournamentDAO extends DAO<Tournament> {
 				pstmt.setTimestamp(5, null);
 			pstmt.setString(6, tournament.getWinnerId());
 			pstmt.executeUpdate();
-		} catch (SQLException exception) {
+		} catch (final SQLException exception) {
 			exception.printStackTrace();
 		}
 		return tournament;
 	}
 	@Override
-	public Tournament update(Tournament tournament) {
-		try (PreparedStatement pstmt = connect.prepareStatement(UPDATE)) {
+	public Tournament update(final Tournament tournament) {
+		try (final PreparedStatement pstmt = connect.prepareStatement(UPDATE)) {
 			pstmt.setString(1, tournament.getName());
 			pstmt.setString(2, tournament.getDescription());
 			if (tournament.getStartTime() != null)
@@ -65,23 +65,23 @@ public class TournamentDAO extends DAO<Tournament> {
 			pstmt.setString(5, tournament.getWinnerId());
 			pstmt.setString(6, tournament.getTournamentId());
 			pstmt.executeUpdate();
-		} catch (SQLException exception) {
+		} catch (final SQLException exception) {
 			exception.printStackTrace();
 		}
 		return tournament;
 	}
 	@Override
-	public void delete(Tournament tournament) {
-		try (PreparedStatement pstmt = connect.prepareStatement(DELETE)) {
+	public void delete(final Tournament tournament) {
+		try (final PreparedStatement pstmt = connect.prepareStatement(DELETE)) {
 			pstmt.setString(1, tournament.getTournamentId());
 			pstmt.executeUpdate();
-		} catch (SQLException exception) {
+		} catch (final SQLException exception) {
 			exception.printStackTrace();
 		}
 	}
-	private Tournament resultSetToTournament(ResultSet rs) throws SQLException {
-		Tournament tournament = new Tournament(rs.getString("tournament_id"), rs.getString("name"),
-			rs.getString("description"),
+	private Tournament resultSetToTournament(final ResultSet rs) throws SQLException {
+		final Tournament tournament = new Tournament(rs.getString("tournament_id"),
+			rs.getString("name"), rs.getString("description"),
 			rs.getTimestamp("start_time") != null ? rs.getTimestamp("start_time").toLocalDateTime()
 												  : null,
 			rs.getTimestamp("end_time") != null ? rs.getTimestamp("end_time").toLocalDateTime()
@@ -89,53 +89,53 @@ public class TournamentDAO extends DAO<Tournament> {
 			rs.getString("winner_id"));
 		return tournament;
 	}
-	public Tournament read(String tournamentId) {
+	public Tournament read(final String tournamentId) {
 		Tournament tournament = null;
-		try (PreparedStatement pstmt = connect.prepareStatement(READ)) {
+		try (final PreparedStatement pstmt = connect.prepareStatement(READ)) {
 			pstmt.setString(1, tournamentId);
-			try (ResultSet rs = pstmt.executeQuery()) {
+			try (final ResultSet rs = pstmt.executeQuery()) {
 				if (rs.next()) {
 					tournament = resultSetToTournament(rs);
 				}
 			}
-		} catch (SQLException exception) {
+		} catch (final SQLException exception) {
 			exception.printStackTrace();
 		}
 		return tournament;
 	}
 	public ArrayList<Tournament> readAll() {
-		ArrayList<Tournament> tournaments = new ArrayList<>();
-		try (Statement stmt = connect.createStatement();
-			ResultSet rs = stmt.executeQuery(READ_ALL)) {
+		final ArrayList<Tournament> tournaments = new ArrayList<>();
+		try (final Statement stmt = connect.createStatement();
+			final ResultSet rs = stmt.executeQuery(READ_ALL)) {
 			while (rs.next()) {
 				tournaments.add(resultSetToTournament(rs));
 			}
-		} catch (SQLException exception) {
+		} catch (final SQLException exception) {
 			exception.printStackTrace();
 		}
 		return tournaments;
 	}
-	public boolean addParticipant(String tournamentId, String playerId) {
-		try (PreparedStatement pstmt = connect.prepareStatement(ADD_PARTICIPANT)) {
+	public boolean addParticipant(final String tournamentId, final String playerId) {
+		try (final PreparedStatement pstmt = connect.prepareStatement(ADD_PARTICIPANT)) {
 			pstmt.setString(1, tournamentId);
 			pstmt.setString(2, playerId);
 			pstmt.executeUpdate();
 			return true;
-		} catch (SQLException exception) {
+		} catch (final SQLException exception) {
 			exception.printStackTrace();
 		}
 		return false;
 	}
-	public ArrayList<Player> getParticipants(String tournamentId) {
-		ArrayList<Player> players = new ArrayList<>();
-		try (PreparedStatement pstmt = connect.prepareStatement(GET_PARTICIPANTS)) {
+	public ArrayList<Player> getParticipants(final String tournamentId) {
+		final ArrayList<Player> players = new ArrayList<>();
+		try (final PreparedStatement pstmt = connect.prepareStatement(GET_PARTICIPANTS)) {
 			pstmt.setString(1, tournamentId);
-			try (ResultSet rs = pstmt.executeQuery()) {
+			try (final ResultSet rs = pstmt.executeQuery()) {
 				while (rs.next()) {
 					players.add(resultSetToPlayer(rs));
 				}
 			}
-		} catch (SQLException exception) {
+		} catch (final SQLException exception) {
 			exception.printStackTrace();
 		}
 		return players;
