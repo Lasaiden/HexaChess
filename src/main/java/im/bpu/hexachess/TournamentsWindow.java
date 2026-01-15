@@ -1,11 +1,13 @@
 package im.bpu.hexachess;
 
-import im.bpu.hexachess.entity.Tournament;
-import im.bpu.hexachess.network.API;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+
+import static im.bpu.hexachess.Main.getAspectRatio;
+import static im.bpu.hexachess.Main.loadWindow;
+import im.bpu.hexachess.entity.Tournament;
+import im.bpu.hexachess.network.API;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,9 +15,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
-
-import static im.bpu.hexachess.Main.getAspectRatio;
-import static im.bpu.hexachess.Main.loadWindow;
 
 public class TournamentsWindow {
 	private static final double ASPECT_RATIO_THRESHOLD = 1.5;
@@ -65,6 +64,7 @@ public class TournamentsWindow {
 								statusLabel.setText("Status: Ongoing / Open");
 								statusLabel.getStyleClass().add("text-danger");
 							}
+							tournamentItem.setOnMouseClicked(event -> openTournamentPage(tournament));
 							tournamentContainer.getChildren().add(tournamentItem);
 						} catch (final Exception exception) {
 							exception.printStackTrace();
@@ -74,6 +74,12 @@ public class TournamentsWindow {
 			});
 		});
 	}
+
+	private void openTournamentPage(Tournament tournament) {
+        TournamentWindow.targetTournament = tournament;
+        loadWindow("ui/tournamentWindow.fxml", new TournamentWindow(), backButton);
+    }
+	
 	@FXML
 	private void openMain() {
 		loadWindow("ui/mainWindow.fxml", new MainWindow(), backButton);
