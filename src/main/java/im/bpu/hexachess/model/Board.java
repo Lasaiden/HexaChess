@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Board {
 	private static final int[][] ROOK_DIRECTIONS = {
@@ -21,9 +22,9 @@ public class Board {
 	private static final int[][] KNIGHTS = {{3, 5}, {5, 3}};
 	private static final int[][] PAWNS = {
 		{1, 1}, {1, 2}, {1, 3}, {1, 4}, {1, 5}, {2, 1}, {3, 1}, {4, 1}, {5, 1}};
-	final Map<AxialCoordinate, Piece> pieces = new HashMap<>();
 	public boolean isWhiteTurn = true;
 	private AxialCoordinate enPassant;
+	final Map<AxialCoordinate, Piece> pieces = new HashMap<>();
 	public Board() {
 		placeSymmetricPieces(KINGS, PieceType.KING, PieceType.QUEEN);
 		placeSymmetricPieces(QUEENS, PieceType.QUEEN, PieceType.KING);
@@ -148,5 +149,48 @@ public class Board {
 			placePiece(pos[0], pos[1], whiteType, true);
 			placePiece(-pos[0], -pos[1], blackType, false);
 		}
+	}
+	public boolean isInCheck(boolean isWhite) {
+		AxialCoordinate kingPos = null;
+		for (Map.Entry<AxialCoordinate, Piece> entry : pieces.entrySet()) {
+			if (entry.getValue().type == PieceType.KING && entry.getValue().isWhite == isWhite) {
+				kingPos = entry.getKey();
+				break;
+			}
+		}
+		if (kingPos == null)
+			return false;
+		for (Map.Entry<AxialCoordinate, Piece> entry : pieces.entrySet()) {
+			if (entry.getValue().isWhite != isWhite) {
+				for (Move move : getMoves(entry.getKey(), entry.getValue())) {
+					if (move.to.equals(kingPos))
+						return true;
+				}
+			}
+		}
+		return false;
+	}
+	public boolean hasLegalMoves(final boolean isWhite) {
+		final List<Move> moves = listMoves(isWhite);
+		for (final Move move : moves) {
+			final Board clone = new Board(this);
+			clone.movePiece(move.from, move.to);
+			if (!clone.isInCheck(isWhite))
+				return true;
+		}
+		return false;
+	}
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj)
+			return true;
+		if (!(obj instanceof final Board other))
+			return false;
+		return isWhiteTurn == other.isWhiteTurn && Objects.equals(enPassant, other.enPassant)
+			&& pieces.equals(other.pieces);
+	}
+	@Override
+	public int hashCode() {
+		return Objects.hash(isWhiteTurn, enPassant, pieces);
 	}
 }

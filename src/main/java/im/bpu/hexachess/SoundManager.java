@@ -19,6 +19,7 @@ public class SoundManager {
 			System.err.println("Audio File Not Found Error");
 			return;
 		}
+		CLICK.setVolume(SettingsManager.volume);
 		CLICK.play();
 	}
 }

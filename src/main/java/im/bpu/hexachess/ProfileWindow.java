@@ -6,8 +6,7 @@ import im.bpu.hexachess.network.API;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -24,23 +23,8 @@ public class ProfileWindow {
 		"https://www.chess.com/bundles/web/images/noavatar_l.gif";
 	private static final String FLAGS_URL =
 		"https://www.chess.com/bundles/web/images/sprites/flags-128.png";
-	private static final Map<String, String> COUNTRIES = new HashMap<>();
 	private static final DateTimeFormatter DATE_TIME_FORMATTER =
 		DateTimeFormatter.ofPattern("MMM d yyyy");
-	static {
-		COUNTRIES.put("cn", "China");
-		COUNTRIES.put("de", "Germany");
-		COUNTRIES.put("es", "Spain");
-		COUNTRIES.put("fr", "France");
-		COUNTRIES.put("it", "Italy");
-		COUNTRIES.put("jp", "Japan");
-		COUNTRIES.put("kr", "South Korea");
-		COUNTRIES.put("pl", "Poland");
-		COUNTRIES.put("ro", "Romania");
-		COUNTRIES.put("ru", "Russia");
-		COUNTRIES.put("ua", "Ukraine");
-		COUNTRIES.put("us", "United States");
-	}
 	public static String targetHandle;
 	@FXML private HBox profileItem;
 	@FXML private ImageView avatarIcon;
@@ -54,6 +38,7 @@ public class ProfileWindow {
 	private void initialize() {
 		final String handle = targetHandle != null ? targetHandle : SettingsManager.userHandle;
 		Thread.ofVirtual().start(() -> {
+			final ResourceBundle bundle = Main.getBundle();
 			final Player player = API.profile(handle);
 			final File avatarFile;
 			if (player == null) {
@@ -73,19 +58,24 @@ public class ProfileWindow {
 				if (player == null) {
 					avatarIcon.setImage(avatarImage);
 					handleLabel.setText(handle);
-					ratingLabel.setText("Rating: Offline");
-					locationLabel.setText("Offline");
-					joinedAtLabel.setText("Joined: Offline");
+					ratingLabel.setText(bundle.getString("common.rating") + ": "
+						+ bundle.getString("common.offline"));
+					locationLabel.setText(bundle.getString("common.offline"));
+					joinedAtLabel.setText(bundle.getString("common.joined") + ": "
+						+ bundle.getString("common.offline"));
 				} else {
 					final int rating = player.getRating();
 					final String location = player.getLocation();
 					final LocalDateTime joinedAt = player.getJoinedAt();
 					avatarIcon.setImage(avatarImage);
 					handleLabel.setText(handle);
-					ratingLabel.setText("Rating: " + rating);
+					ratingLabel.setText(bundle.getString("common.rating") + ": " + rating);
 					if (location != null && !location.isEmpty()) {
-						final String country = COUNTRIES.getOrDefault(location, location);
-						locationLabel.setText(country);
+						final String countryKey = "country." + location.toLowerCase();
+						final String countryName = bundle.containsKey(countryKey)
+							? bundle.getString(countryKey)
+							: location;
+						locationLabel.setText(countryName);
 						countryFlagIcon.setStyle(
 							"-fx-background-image: url('" + flagsFile.toURI().toString() + "');");
 						countryFlagIcon.getStyleClass().add("country-" + location);
@@ -93,7 +83,8 @@ public class ProfileWindow {
 						countryFlagIcon.setVisible(true);
 					}
 					if (joinedAt != null) {
-						joinedAtLabel.setText("Joined: " + joinedAt.format(DATE_TIME_FORMATTER));
+						joinedAtLabel.setText(bundle.getString("common.joined") + ": "
+							+ joinedAt.format(DATE_TIME_FORMATTER));
 					}
 				}
 				profileItem.setVisible(true);

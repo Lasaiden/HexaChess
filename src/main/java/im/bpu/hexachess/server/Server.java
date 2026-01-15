@@ -139,10 +139,35 @@ public class Server {
 				String handle = player.getHandle();
 				String email = player.getEmail();
 				String password = player.getPasswordHash();
+				boolean isWeakPassword = true;
+				if (password != null && password.length() >= 8) {
+					boolean hasDigit = false;
+					boolean hasLowerCase = false;
+					boolean hasUpperCase = false;
+					boolean hasSpecialCharacter = false;
+					for (int i = 0; i < password.length(); i++) {
+						char character = password.charAt(i);
+						if (Character.isDigit(character))
+							hasDigit = true;
+						else if (Character.isLowerCase(character))
+							hasLowerCase = true;
+						else if (Character.isUpperCase(character))
+							hasUpperCase = true;
+						else if ("@#$%^&+=!".indexOf(character) != -1)
+							hasSpecialCharacter = true;
+					}
+					if (hasDigit && hasLowerCase && hasUpperCase && hasSpecialCharacter)
+						isWeakPassword = false;
+				}
+				if (isWeakPassword) {
+					sendResponse(exchange, 422,
+						"Weak password. Requires at least 8 characters, 1 digit, 1 lowercase "
+							+ "letter, 1 uppercase letter, and 1 special character.");
+					return;
+				}
 				if (handle == null || handle.isEmpty() || handle.length() > 32 || email == null
-					|| !email.contains("@") || !email.contains(".") || password == null
-					|| password.length() < 8) {
-					sendResponse(exchange, 400, "Bad Request");
+					|| !email.contains("@") || !email.contains(".")) {
+					sendResponse(exchange, 422, "Unprocessable Content");
 					return;
 				}
 				PlayerDAO playerDAO = new PlayerDAO();

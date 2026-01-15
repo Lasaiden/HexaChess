@@ -5,6 +5,7 @@ import im.bpu.hexachess.network.API;
 import im.bpu.hexachess.ui.HexPanel;
 
 import java.io.File;
+import java.util.ResourceBundle;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -21,6 +22,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.Screen;
 import javafx.util.Duration;
 
 import static im.bpu.hexachess.Main.loadWindow;
@@ -33,7 +35,6 @@ public class MainWindow {
 	private static final double SIDEBAR_HIDDEN_X = -160;
 	private static final double SIDEBAR_VISIBLE_X = 0;
 	private static final int SIDEBAR_DURATION_MS = 160;
-	private static final String COMPUTER_HANDLE = "Computer";
 	private static final int BASE_ELO = 1200;
 	private static final long DEV_MODE_MS = 2000;
 	private static final int DEFAULT_MAX_DEPTH = 3;
@@ -43,6 +44,8 @@ public class MainWindow {
 	@FXML private Button settingsHelpButton;
 	@FXML private VBox sidebar;
 	@FXML private Canvas canvas;
+	@FXML private VBox gameOverContainer;
+	@FXML private Label gameOverLabel;
 	@FXML private Button restartButton;
 	@FXML private Button rewindButton;
 	@FXML private HBox playerItem;
@@ -56,23 +59,35 @@ public class MainWindow {
 	@FXML private Region opponentCountryFlagIcon;
 	@FXML private Label opponentRatingLabel;
 	@FXML private ProgressBar opponentProgressBar;
+	@FXML private VBox devModeContainer;
 	@FXML private Label fontFamilyLabel;
 	@FXML private Label fontNameLabel;
+	@FXML private Label screenWidthLabel;
+	@FXML private Label screenHeightLabel;
+	@FXML private Label aspectRatioLabel;
 	@FXML
 	private void initialize() {
 		final State state = State.getState();
 		hexPanel = new HexPanel(canvas, state,
 			progressPercentage
 			-> Platform.runLater(() -> opponentProgressBar.setProgress(progressPercentage)),
-			loadingStatus -> Platform.runLater(() -> {
+			loadingStatus
+			-> Platform.runLater(() -> {
 				final boolean showProgressBar = loadingStatus
 					&& SettingsManager.maxDepth > DEFAULT_MAX_DEPTH && !state.isMultiplayer;
-				opponentRatingLabel.setVisible(!showProgressBar);
 				opponentRatingLabel.setManaged(!showProgressBar);
-				opponentProgressBar.setVisible(showProgressBar);
+				opponentRatingLabel.setVisible(!showProgressBar);
 				opponentProgressBar.setManaged(showProgressBar);
+				opponentProgressBar.setVisible(showProgressBar);
 				if (!loadingStatus)
 					opponentProgressBar.setProgress(0);
+			}),
+			gameOverMessage -> Platform.runLater(() -> {
+				canvas.setManaged(false);
+				canvas.setVisible(false);
+				gameOverLabel.setText(gameOverMessage);
+				gameOverContainer.setManaged(true);
+				gameOverContainer.setVisible(true);
 			}));
 		loadPlayerItem();
 		loadOpponentItem();
@@ -83,18 +98,29 @@ public class MainWindow {
 			rewindButton.setVisible(false);
 		}
 		if (state.isDeveloperMode) {
-			Platform.runLater(() -> {
-				settingsHelpButton.applyCss();
-				Font font = settingsHelpButton.getFont();
-				fontFamilyLabel.setText("Family: " + font.getFamily());
-				fontNameLabel.setText("Name: " + font.getName());
-				fontFamilyLabel.getParent().setVisible(true);
-				fontFamilyLabel.getParent().setManaged(true);
-			});
+			Platform.runLater(this::showDevModeLabels);
 		}
+	}
+	private void showDevModeLabels() {
+		final ResourceBundle bundle = Main.getBundle();
+		final Font font = settingsHelpButton.getFont();
+		final String fontFamily = font.getFamily();
+		final String fontName = font.getName();
+		final double width = Screen.getPrimary().getBounds().getWidth();
+		final double height = Screen.getPrimary().getBounds().getHeight();
+		final double aspectRatio = width / height;
+		fontFamilyLabel.setText(bundle.getString("devmode.font.family") + ": " + fontFamily);
+		fontNameLabel.setText(bundle.getString("devmode.font.name") + ": " + fontName);
+		screenWidthLabel.setText(bundle.getString("devmode.screen.width") + ": " + (int) width);
+		screenHeightLabel.setText(bundle.getString("devmode.screen.height") + ": " + (int) height);
+		aspectRatioLabel.setText(
+			bundle.getString("devmode.screen.aspectratio") + ": " + aspectRatio);
+		devModeContainer.setManaged(true);
+		devModeContainer.setVisible(true);
 	}
 	private void loadPlayerItem() {
 		Thread.ofVirtual().start(() -> {
+			final ResourceBundle bundle = Main.getBundle();
 			final String handle = SettingsManager.userHandle;
 			final Player player = API.profile(handle);
 			if (player == null) {
@@ -104,7 +130,8 @@ public class MainWindow {
 				Platform.runLater(() -> {
 					avatarIcon.setImage(avatarImage);
 					handleLabel.setText(handle);
-					ratingLabel.setText("Rating: Offline");
+					ratingLabel.setText(bundle.getString("common.rating") + ": "
+						+ bundle.getString("common.offline"));
 					playerItem.setManaged(true);
 					playerItem.setVisible(true);
 				});
@@ -122,7 +149,7 @@ public class MainWindow {
 			Platform.runLater(() -> {
 				avatarIcon.setImage(avatarImage);
 				handleLabel.setText(handle);
-				ratingLabel.setText("Rating: " + rating);
+				ratingLabel.setText(bundle.getString("common.rating") + ": " + rating);
 				if (location != null && !location.isEmpty()) {
 					countryFlagIcon.setStyle(
 						"-fx-background-image: url('" + flagsFile.toURI().toString() + "');");
@@ -137,8 +164,9 @@ public class MainWindow {
 	}
 	private void loadOpponentItem() {
 		Thread.ofVirtual().start(() -> {
+			final ResourceBundle bundle = Main.getBundle();
 			final State state = State.getState();
-			String handle = COMPUTER_HANDLE;
+			String handle = bundle.getString("common.computer");
 			int rating = ((SettingsManager.maxDepth - 1) / 2 % 3 + 1) * BASE_ELO;
 			String location = null;
 			String avatarUrl = AVATAR_URL;
@@ -163,7 +191,7 @@ public class MainWindow {
 			Platform.runLater(() -> {
 				opponentAvatarIcon.setImage(avatarImage);
 				opponentHandleLabel.setText(finalHandle);
-				opponentRatingLabel.setText("Rating: " + finalRating);
+				opponentRatingLabel.setText(bundle.getString("common.rating") + ": " + finalRating);
 				if (finalLocation != null && !finalLocation.isEmpty()) {
 					opponentCountryFlagIcon.setStyle(
 						"-fx-background-image: url('" + flagsFile.toURI().toString() + "');");
@@ -202,6 +230,10 @@ public class MainWindow {
 	@FXML
 	private void restart() {
 		if (!State.getState().isMultiplayer) {
+			gameOverContainer.setManaged(false);
+			gameOverContainer.setVisible(false);
+			canvas.setManaged(true);
+			canvas.setVisible(true);
 			hexPanel.restart();
 			final long startTime = System.currentTimeMillis();
 			if (restartClickCount == 0 || (startTime - startRestartClickTime > DEV_MODE_MS)) {
@@ -213,12 +245,12 @@ public class MainWindow {
 				restartClickCount = 0;
 				State.getState().isDeveloperMode = !State.getState().isDeveloperMode;
 				Platform.runLater(() -> {
-					settingsHelpButton.applyCss();
-					Font font = settingsHelpButton.getFont();
-					fontFamilyLabel.setText("Family: " + font.getFamily());
-					fontNameLabel.setText("Name: " + font.getName());
-					fontFamilyLabel.getParent().setVisible(State.getState().isDeveloperMode);
-					fontFamilyLabel.getParent().setManaged(State.getState().isDeveloperMode);
+					if (State.getState().isDeveloperMode) {
+						showDevModeLabels();
+					} else {
+						devModeContainer.setManaged(false);
+						devModeContainer.setVisible(false);
+					}
 				});
 				hexPanel.repaint();
 			}
@@ -226,8 +258,13 @@ public class MainWindow {
 	}
 	@FXML
 	private void rewind() {
-		if (!State.getState().isMultiplayer)
+		if (!State.getState().isMultiplayer) {
+			gameOverContainer.setManaged(false);
+			gameOverContainer.setVisible(false);
+			canvas.setManaged(true);
+			canvas.setVisible(true);
 			hexPanel.rewind();
+		}
 	}
 	@FXML
 	private void openSettings() {
@@ -235,9 +272,10 @@ public class MainWindow {
 	}
 	@FXML
 	private void openHelpSettings() {
+		final ResourceBundle bundle = Main.getBundle();
 		final ContextMenu menu = new ContextMenu();
-		final MenuItem settingsItem = new MenuItem("Settings");
-		final MenuItem helpItem = new MenuItem("Help");
+		final MenuItem settingsItem = new MenuItem(bundle.getString("main.menu.settings"));
+		final MenuItem helpItem = new MenuItem(bundle.getString("main.menu.help"));
 		settingsItem.setOnAction(event -> openSettings());
 		helpItem.setOnAction(event -> openSettings());
 		menu.getItems().addAll(settingsItem, helpItem);

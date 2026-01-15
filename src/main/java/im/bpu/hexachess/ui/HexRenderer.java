@@ -1,5 +1,6 @@
 package im.bpu.hexachess.ui;
 
+import im.bpu.hexachess.SettingsManager;
 import im.bpu.hexachess.State;
 import im.bpu.hexachess.model.AxialCoordinate;
 import im.bpu.hexachess.model.Board;
@@ -11,6 +12,7 @@ import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+// import javafx.scene.paint.Paint;
 import javafx.scene.shape.ClosePath;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
@@ -18,6 +20,8 @@ import javafx.scene.shape.Path;
 import javafx.scene.shape.PathElement;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+// import javafx.scene.layout.Region;
+// import javafx.scene.Parent;
 
 class HexRenderer {
 	private static final Color SANDYBROWN = Color.rgb(232, 171, 111);
@@ -132,8 +136,37 @@ class HexRenderer {
 			gc.strokeLine(x1, y1, x2, y2);
 		}
 	}
+	/*
+	private Color getSceneBackgroundColor(GraphicsContext gc) {
+		if (gc.getCanvas().getScene() == null)
+			return Color.WHITE;
+		Parent root = gc.getCanvas().getScene().getRoot();
+		if (root instanceof Region region && region.getBackground() != null
+			&& !region.getBackground().getFills().isEmpty()) {
+			Paint fill = region.getBackground().getFills().get(0).getFill();
+			if (fill instanceof Color color)
+				return color;
+		}
+		return Color.WHITE;
+	}
+	private double calculateHslLightness(Color color) {
+		double red = color.getRed();
+		double green = color.getGreen();
+		double blue = color.getBlue();
+		double max = Math.max(red, Math.max(green, blue));
+		double min = Math.min(red, Math.min(green, blue));
+		return (max + min) / 2.0;
+	}
+	*/
 	void drawBoardBorder(final GraphicsContext gc, final double cx, final double cy) {
-		gc.setStroke(Color.BLACK);
+		/*
+		Color backgroundColor = getSceneBackgroundColor(gc);
+		double backgroundColorLightness = calculateHslLightness(backgroundColor);
+		gc.setStroke(backgroundColorLightness > 0.5 ? Color.BLACK : Color.WHITE);
+		*/
+		final String theme = SettingsManager.theme;
+		final Color borderColor = theme.equals("Light") ? Color.BLACK : Color.WHITE;
+		gc.setStroke(borderColor);
 		gc.setLineWidth(BORDER_LINE_WIDTH);
 		for (int q = -RADIUS; q <= RADIUS; q++)
 			for (int r = -RADIUS; r <= RADIUS; r++) drawCellBorder(gc, cx, cy, q, r);
