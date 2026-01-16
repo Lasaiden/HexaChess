@@ -34,7 +34,7 @@ import javafx.scene.control.Label;
 
 import org.mindrot.jbcrypt.BCrypt;
 
-public class HexaChessTest {
+public class Test {
 	private static int passedTests = 0;
 	private static int failedTests = 0;
 	private static final List<String> failures = new ArrayList<>();
