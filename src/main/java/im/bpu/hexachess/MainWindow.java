@@ -277,10 +277,16 @@ public class MainWindow {
 		final MenuItem settingsItem = new MenuItem(bundle.getString("main.menu.settings"));
 		final MenuItem helpItem = new MenuItem(bundle.getString("main.menu.help"));
 		settingsItem.setOnAction(event -> openSettings());
-		helpItem.setOnAction(event -> openSettings());
+		helpItem.setOnAction(event -> openHelp());
 		menu.getItems().addAll(settingsItem, helpItem);
 		menu.show(settingsHelpButton, Side.BOTTOM, 0, 0);
 	}
+
+	@FXML
+	private void openHelp() {
+    loadWindow("ui/helpWindow.fxml", new HelpWindow(), settingsHelpButton);
+}	
+ 
 	@FXML
 	private void openSearch() {
 		loadWindow("ui/searchWindow.fxml", new SearchWindow(), settingsHelpButton);
