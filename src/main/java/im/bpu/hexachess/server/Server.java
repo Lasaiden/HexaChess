@@ -61,6 +61,8 @@ public class Server {
 		server.createContext("/api/tournaments", new TournamentsHandler());
 		server.createContext("/api/challenge", new ChallengeHandler());
 		server.createContext("/api/sync", new SyncHandler());
+		server.createContext("/api/tournaments/join", new TournamentJoinHandler());
+		server.createContext("/api/tournaments/participants", new TournamentParticipantsHandler());
 		server.createContext("/api/unlock", new UnlockHandler());
 		server.createContext("/api/join", new JoinHandler());
 		server.setExecutor(Executors.newCachedThreadPool());
@@ -401,6 +403,67 @@ public class Server {
 				sendResponse(exchange, 200, gameId);
 			} else {
 				sendResponse(exchange, 200, "Pending");
+			}
+		}
+	}
+	static class TournamentJoinHandler implements HttpHandler {
+		@Override
+		public void handle(HttpExchange exchange) throws IOException {
+			String handle = auth(exchange);
+			if (handle == null) {
+				sendResponse(exchange, 401, "Unauthorized");
+				return;
+			}
+			if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+				sendResponse(exchange, 405, "Method Not Allowed");
+				return;
+			}
+			try {
+				ObjectNode json = MAPPER.readValue(exchange.getRequestBody(), ObjectNode.class);
+				String tournamentId = json.get("tournamentId").asText();
+				PlayerDAO playerDAO = new PlayerDAO();
+				Player player = playerDAO.getPlayerByHandle(handle);
+				if (player != null) {
+					TournamentDAO tournamentDAO = new TournamentDAO();
+					if (tournamentDAO.addParticipant(tournamentId, player.getPlayerId())) {
+						sendResponse(exchange, 200, "Joined");
+					} else {
+						sendResponse(exchange, 409, "Already joined or Error");
+					}
+				} else {
+					sendResponse(exchange, 404, "Player not found");
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				sendResponse(exchange, 500, "Internal Error");
+			}
+		}
+	}
+	static class TournamentParticipantsHandler implements HttpHandler {
+		@Override
+		public void handle(HttpExchange exchange) throws IOException {
+			if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
+				sendResponse(exchange, 405, "Method Not Allowed");
+				return;
+			}
+			try {
+				String query = exchange.getRequestURI().getQuery();
+				if (query == null || !query.contains("id=")) {
+					sendResponse(exchange, 400, "Missing tournament ID");
+					return;
+				}
+				String tournamentId = query.split("=")[1];
+				TournamentDAO dao = new TournamentDAO();
+				List<Player> players = dao.getParticipants(tournamentId);
+				for (Player player : players) {
+					player.setEmail(null);
+					player.setPasswordHash(null);
+				}
+				String response = MAPPER.writeValueAsString(players);
+				sendResponse(exchange, 200, response);
+			} catch (Exception exception) {
+				exception.printStackTrace();
+				sendResponse(exchange, 500, "Internal Server Error");
 			}
 		}
 	}
