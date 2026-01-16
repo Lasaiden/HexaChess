@@ -64,6 +64,7 @@ public class Server {
 		server.createContext("/api/sync", new SyncHandler());
 		server.createContext("/api/tournaments/join", new TournamentJoinHandler());
 		server.createContext("/api/tournaments/participants", new TournamentParticipantsHandler());
+		server.createContext("/api/profile/update", new ProfileUpdateHandler());
 		server.setExecutor(Executors.newCachedThreadPool());
 		server.start();
 		System.out.println("HexaChess Server started on port " + PORT);
@@ -429,6 +430,63 @@ public class Server {
 
 				String response = MAPPER.writeValueAsString(players);
 				sendResponse(exchange, 200, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+				sendResponse(exchange, 500, "Internal Error");
+			}
+		}
+	}
+static class ProfileUpdateHandler implements HttpHandler {
+		@Override
+		public void handle(HttpExchange exchange) throws IOException {
+			String handle = auth(exchange);
+			if (handle == null) {
+				sendResponse(exchange, 401, "Unauthorized");
+				return;
+			}
+			if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+				sendResponse(exchange, 405, "Method Not Allowed");
+				return;
+			}
+			try {
+				ObjectNode json = MAPPER.readValue(exchange.getRequestBody(), ObjectNode.class);
+				PlayerDAO playerDAO = new PlayerDAO();
+				Player player = playerDAO.getPlayerByHandle(handle);
+
+				if (player == null) {
+					sendResponse(exchange, 404, "Player not found");
+					return;
+				}
+
+				String currentPassword = json.has("currentPassword") ? json.get("currentPassword").asText() : "";
+				if (!BCrypt.checkpw(currentPassword, player.getPasswordHash())) {
+					sendResponse(exchange, 403, "Invalid current password");
+					return;
+				}
+
+				if (json.has("email") && !json.get("email").asText().trim().isEmpty()) {
+					player.setEmail(json.get("email").asText().trim());
+				}
+
+
+				if (json.has("location") && !json.get("location").asText().trim().isEmpty()) {
+					player.setLocation(json.get("location").asText().trim());
+				}
+
+				if (json.has("avatar") && !json.get("avatar").asText().trim().isEmpty()) {
+					player.setAvatar(json.get("avatar").asText().trim());
+				}
+
+				
+				if (json.has("newPassword") && !json.get("newPassword").asText().isEmpty()) {
+					String newPass = json.get("newPassword").asText();
+					if (newPass.length() >= 8) { 
+						player.setPasswordHash(BCrypt.hashpw(newPass, BCrypt.gensalt()));
+					}
+				}
+
+				playerDAO.update(player); 
+				sendResponse(exchange, 200, "Profile updated");
 			} catch (Exception e) {
 				e.printStackTrace();
 				sendResponse(exchange, 500, "Internal Error");
