@@ -69,6 +69,34 @@ public class Server {
 		server.start();
 		System.out.println("HexaChess Server started on port " + PORT);
 	}
+	private static void sendResponse(final HttpExchange exchange, final int statusCode,
+		final String response) throws IOException {
+		final byte[] bytes = response.getBytes();
+		exchange.getResponseHeaders().set("Content-Type", "application/json");
+		exchange.sendResponseHeaders(statusCode, bytes.length);
+		try (final OutputStream os = exchange.getResponseBody()) {
+			os.write(bytes);
+		}
+	}
+	private static boolean isWeakPassword(final String password) {
+		if (password == null || password.length() < 8)
+			return true;
+		boolean hasDigit = false;
+		boolean hasLower = false;
+		boolean hasUpper = false;
+		boolean hasSpecial = false;
+		for (final char character : password.toCharArray()) {
+			if (Character.isDigit(character))
+				hasDigit = true;
+			else if (Character.isLowerCase(character))
+				hasLower = true;
+			else if (Character.isUpperCase(character))
+				hasUpper = true;
+			else if ("@#$%^&+=!".indexOf(character) != -1)
+				hasSpecial = true;
+		}
+		return !(hasDigit && hasLower && hasUpper && hasSpecial);
+	}
 	private static String auth(final HttpExchange exchange) {
 		final String authHeader = exchange.getRequestHeaders().getFirst("Authorization");
 		if (authHeader == null || !authHeader.startsWith("Bearer "))
@@ -145,27 +173,7 @@ public class Server {
 				final String handle = player.getHandle();
 				final String email = player.getEmail();
 				final String password = player.getPasswordHash();
-				boolean isWeakPassword = true;
-				if (password != null && password.length() >= 8) {
-					boolean hasDigit = false;
-					boolean hasLowerCase = false;
-					boolean hasUpperCase = false;
-					boolean hasSpecialCharacter = false;
-					for (int i = 0; i < password.length(); i++) {
-						final char character = password.charAt(i);
-						if (Character.isDigit(character))
-							hasDigit = true;
-						else if (Character.isLowerCase(character))
-							hasLowerCase = true;
-						else if (Character.isUpperCase(character))
-							hasUpperCase = true;
-						else if ("@#$%^&+=!".indexOf(character) != -1)
-							hasSpecialCharacter = true;
-					}
-					if (hasDigit && hasLowerCase && hasUpperCase && hasSpecialCharacter)
-						isWeakPassword = false;
-				}
-				if (isWeakPassword) {
+				if (isWeakPassword(password)) {
 					sendResponse(exchange, 422,
 						"Weak password. Requires at least 8 characters, 1 digit, 1 lowercase "
 							+ "letter, 1 uppercase letter, and 1 special character.");
@@ -606,15 +614,6 @@ public class Server {
 				exception.printStackTrace();
 				sendResponse(exchange, 500, "Internal Server Error");
 			}
-		}
-	}
-	private static void sendResponse(final HttpExchange exchange, final int statusCode,
-		final String response) throws IOException {
-		final byte[] bytes = response.getBytes();
-		exchange.getResponseHeaders().set("Content-Type", "application/json");
-		exchange.sendResponseHeaders(statusCode, bytes.length);
-		try (final OutputStream os = exchange.getResponseBody()) {
-			os.write(bytes);
 		}
 	}
 }
