@@ -24,7 +24,7 @@ public class HelpWindow {
 	@FXML private Button showBestMoveButton;
 	@FXML private Canvas moveCanvas;
 	@FXML private Label bestMoveLabel;
-	private Move bestMove = null;
+	private Move bestMove;
 	@FXML
 	private void initialize() {
 		// Disable the button if not in the game
@@ -66,20 +66,20 @@ public class HelpWindow {
 		if (bestMove == null || moveCanvas == null)
 			return;
 		final GraphicsContext gc = moveCanvas.getGraphicsContext2D();
-		final double centerX = moveCanvas.getWidth() / 2;
-		final double centerY = moveCanvas.getHeight() / 2;
+		final double cx = moveCanvas.getWidth() / 2;
+		final double cy = moveCanvas.getHeight() / 2;
 		// Clear canvas
 		gc.clearRect(0, 0, moveCanvas.getWidth(), moveCanvas.getHeight());
 		// Draw "from" hex
-		drawHex(gc, centerX - 60, centerY, HEX_SIZE, Color.LIGHTGREEN, "FROM");
+		drawHex(gc, cx - 60, cy, HEX_SIZE, Color.LIGHTGREEN, "FROM");
 		// Draw arrow
 		gc.setStroke(Color.BLACK);
 		gc.setLineWidth(2);
-		gc.strokeLine(centerX - 30, centerY, centerX + 30, centerY);
-		gc.strokeLine(centerX + 20, centerY - 5, centerX + 30, centerY);
-		gc.strokeLine(centerX + 20, centerY + 5, centerX + 30, centerY);
+		gc.strokeLine(cx - 30, cy, cx + 30, cy);
+		gc.strokeLine(cx + 20, cy - 5, cx + 30, cy);
+		gc.strokeLine(cx + 20, cy + 5, cx + 30, cy);
 		// Draw "to" hex
-		drawHex(gc, centerX + 60, centerY, HEX_SIZE, Color.LIGHTBLUE, "TO");
+		drawHex(gc, cx + 60, cy, HEX_SIZE, Color.LIGHTBLUE, "TO");
 	}
 	private void drawHex(final GraphicsContext gc, final double x, final double y,
 		final double size, final Color color, final String label) {

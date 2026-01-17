@@ -406,8 +406,8 @@ public class Server {
 	}
 	static class TournamentJoinHandler implements HttpHandler {
 		@Override
-		public void handle(HttpExchange exchange) throws IOException {
-			String handle = auth(exchange);
+		public void handle(final HttpExchange exchange) throws IOException {
+			final String handle = auth(exchange);
 			if (handle == null) {
 				sendResponse(exchange, 401, "Unauthorized");
 				return;
@@ -417,12 +417,13 @@ public class Server {
 				return;
 			}
 			try {
-				ObjectNode json = MAPPER.readValue(exchange.getRequestBody(), ObjectNode.class);
-				String tournamentId = json.get("tournamentId").asText();
-				PlayerDAO playerDAO = new PlayerDAO();
-				Player player = playerDAO.getPlayerByHandle(handle);
+				final ObjectNode json =
+					MAPPER.readValue(exchange.getRequestBody(), ObjectNode.class);
+				final String tournamentId = json.get("tournamentId").asText();
+				final PlayerDAO playerDAO = new PlayerDAO();
+				final Player player = playerDAO.getPlayerByHandle(handle);
 				if (player != null) {
-					TournamentDAO tournamentDAO = new TournamentDAO();
+					final TournamentDAO tournamentDAO = new TournamentDAO();
 					if (tournamentDAO.addParticipant(tournamentId, player.getPlayerId())) {
 						sendResponse(exchange, 200, "Joined");
 					} else {
@@ -431,7 +432,7 @@ public class Server {
 				} else {
 					sendResponse(exchange, 404, "Player not found");
 				}
-			} catch (Exception exception) {
+			} catch (final Exception exception) {
 				exception.printStackTrace();
 				sendResponse(exchange, 500, "Internal Error");
 			}

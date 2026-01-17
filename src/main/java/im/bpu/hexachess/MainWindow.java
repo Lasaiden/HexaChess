@@ -41,11 +41,12 @@ public class MainWindow {
 	private static final int BASE_ELO = 1200;
 	private static final long DEV_MODE_MS = 2000;
 	private static final int DEFAULT_MAX_DEPTH = 3;
+	private static final int DEFAULT_TIMER_SECONDS = 600;
 	private HexPanel hexPanel;
 	private int restartClickCount = 0;
 	private long startRestartClickTime = 0;
-	private int playerTimeSeconds = 600;
-	private int opponentTimeSeconds = 600;
+	private int playerTimeSeconds = DEFAULT_TIMER_SECONDS;
+	private int opponentTimeSeconds = DEFAULT_TIMER_SECONDS;
 	private Timeline clockTimeline;
 	@FXML private Button settingsHelpButton;
 	@FXML private VBox sidebar;
@@ -96,6 +97,7 @@ public class MainWindow {
 				gameOverLabel.setText(gameOverMessage);
 				gameOverContainer.setManaged(true);
 				gameOverContainer.setVisible(true);
+				stopTimer();
 			}));
 		loadPlayerItem();
 		loadOpponentItem();
@@ -238,10 +240,12 @@ public class MainWindow {
 	}
 	@FXML
 	private void restart() {
-		playerTimeSeconds = 600;
-		opponentTimeSeconds = 600;
+		playerTimeSeconds = DEFAULT_TIMER_SECONDS;
+		opponentTimeSeconds = DEFAULT_TIMER_SECONDS;
 		updateTimerLabels(playerTimerLabel, playerTimeSeconds);
 		updateTimerLabels(opponentTimerLabel, opponentTimeSeconds);
+		if (clockTimeline != null)
+			clockTimeline.play();
 		if (!State.getState().isMultiplayer) {
 			gameOverContainer.setManaged(false);
 			gameOverContainer.setVisible(false);
@@ -281,6 +285,7 @@ public class MainWindow {
 	}
 	@FXML
 	private void openSettings() {
+		stopTimer();
 		loadWindow("ui/settingsWindow.fxml", new SettingsWindow(), settingsHelpButton);
 	}
 	@FXML
@@ -296,27 +301,33 @@ public class MainWindow {
 	}
 	@FXML
 	private void openHelp() {
+		stopTimer();
 		loadWindow("ui/helpWindow.fxml", new HelpWindow(), settingsHelpButton);
 	}
 	@FXML
 	private void openSearch() {
+		stopTimer();
 		loadWindow("ui/searchWindow.fxml", new SearchWindow(), settingsHelpButton);
 	}
 	@FXML
 	private void openProfile() {
+		stopTimer();
 		ProfileWindow.targetHandle = SettingsManager.userHandle;
 		loadWindow("ui/profileWindow.fxml", new ProfileWindow(), settingsHelpButton);
 	}
 	@FXML
 	private void openTournaments() {
+		stopTimer();
 		loadWindow("ui/tournamentsWindow.fxml", new TournamentsWindow(), settingsHelpButton);
 	}
 	@FXML
 	private void openAchievements() {
+		stopTimer();
 		loadWindow("ui/achievementsWindow.fxml", new AchievementsWindow(), settingsHelpButton);
 	}
 	@FXML
 	private void openLeaderboard() {
+		stopTimer();
 		loadWindow("ui/leaderboardWindow.fxml", new LeaderboardWindow(), settingsHelpButton);
 	}
 	private void setupTimers() {
@@ -338,12 +349,16 @@ public class MainWindow {
 				}
 			}
 			if (playerTimeSeconds == 0 || opponentTimeSeconds == 0) {
-				clockTimeline.stop();
+				stopTimer();
 				System.out.println("Time's up!");
 			}
 		}));
 		clockTimeline.setCycleCount(Animation.INDEFINITE);
 		clockTimeline.play();
+	}
+	private void stopTimer() {
+		if (clockTimeline != null)
+			clockTimeline.stop();
 	}
 	private void updateTimerLabels(final Label label, final int totalSeconds) {
 		if (label == null)

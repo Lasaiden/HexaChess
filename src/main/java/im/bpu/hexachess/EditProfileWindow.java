@@ -20,22 +20,22 @@ public class EditProfileWindow {
 	@FXML private PasswordField currentPasswordField;
 	@FXML private Label statusLabel;
 	@FXML private Button backButton;
-	private String myHandle;
+	private String handle;
 	@FXML
 	private void initialize() {
-		myHandle = SettingsManager.userHandle;
-		if (myHandle != null) {
+		handle = SettingsManager.userHandle;
+		if (handle != null) {
 			loadCurrentData();
 		}
 	}
 	private void loadCurrentData() {
 		Thread.ofVirtual().start(() -> {
-			final Player me = API.profile(myHandle);
-			if (me != null) {
+			final Player player = API.profile(handle);
+			if (player != null) {
 				Platform.runLater(() -> {
-					emailField.setText(me.getEmail());
-					locationField.setText(me.getLocation());
-					avatarField.setText(me.getAvatar());
+					emailField.setText(player.getEmail());
+					locationField.setText(player.getLocation());
+					avatarField.setText(player.getAvatar());
 					currentPasswordField.clear();
 					newPasswordField.clear();
 				});
@@ -48,21 +48,27 @@ public class EditProfileWindow {
 		if (currentPass == null || currentPass.isEmpty()) {
 			statusLabel.setText("Current password is required!");
 			statusLabel.setStyle("-fx-text-fill: red;");
+			statusLabel.setManaged(true);
 			statusLabel.setVisible(true);
 			return;
 		}
-		if (API.updateProfile(currentPass, emailField.getText(), locationField.getText(),
-				avatarField.getText(), newPasswordField.getText())) {
-			statusLabel.setText("Profile updated successfully!");
-			statusLabel.setStyle("-fx-text-fill: green;");
-			statusLabel.setVisible(true);
-			currentPasswordField.clear();
-			newPasswordField.clear();
-		} else {
-			statusLabel.setText("Update failed (Wrong password?)");
-			statusLabel.setStyle("-fx-text-fill: red;");
-			statusLabel.setVisible(true);
-		}
+		Thread.ofVirtual().start(() -> {
+			final boolean success = API.updateProfile(currentPass, emailField.getText(),
+				locationField.getText(), avatarField.getText(), newPasswordField.getText());
+			Platform.runLater(() -> {
+				if (success) {
+					statusLabel.setText("Profile updated successfully!");
+					statusLabel.setStyle("-fx-text-fill: green;");
+					currentPasswordField.clear();
+					newPasswordField.clear();
+				} else {
+					statusLabel.setText("Update failed (Wrong password?)");
+					statusLabel.setStyle("-fx-text-fill: red;");
+				}
+				statusLabel.setManaged(true);
+				statusLabel.setVisible(true);
+			});
+		});
 	}
 	@FXML
 	private void handleCancel() {
