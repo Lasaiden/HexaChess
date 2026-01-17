@@ -1,6 +1,5 @@
 package im.bpu.hexachess.model;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,15 +21,7 @@ public class AI {
 		final Board board, final int depth, int alpha, int beta, final boolean maximizingPlayer) {
 		if (depth == 0)
 			return -evaluate(board);
-		// Retrieve the moves and filter the illegal ones
-		final List<Move> rawMoves = board.listMoves(!maximizingPlayer);
-		final List<Move> moves = new ArrayList<>();
-		for (final Move move : rawMoves) {
-			// If the move does not cause self-destruction, keep it for calculation
-			if (!board.isMoveIntoCheck(move, maximizingPlayer))
-				moves.add(move);
-		}
-		// final List<Move> moves = board.listMoves(!maximizingPlayer);
+		final List<Move> moves = board.listMoves(!maximizingPlayer);
 		if (moves.isEmpty())
 			return maximizingPlayer ? MIN_ALPHA : MAX_BETA;
 		int bestEval = maximizingPlayer ? MIN_ALPHA : MAX_BETA;
@@ -51,15 +42,7 @@ public class AI {
 		return bestEval;
 	}
 	public Move getBestMove(final Board board, final DoubleConsumer progressCallback) {
-		// Retrieve the moves and filter the illegal ones
-		final List<Move> rawMoves = board.listMoves(false);
-		final List<Move> moves = new ArrayList<>();
-		for (final Move move : rawMoves) {
-			// This is where we prevent the AI from committing suicide or ignoring check
-			if (!board.isMoveIntoCheck(move, false))
-				moves.add(move);
-		}
-		// final List<Move> moves = board.listMoves(false);
+		final List<Move> moves = board.listMoves(false);
 		if (moves.isEmpty())
 			return null;
 		final AtomicInteger completedMoves = new AtomicInteger(0);
