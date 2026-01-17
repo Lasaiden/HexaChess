@@ -97,6 +97,11 @@ public class Server {
 		}
 		return !(hasDigit && hasLower && hasUpper && hasSpecial);
 	}
+	private static String getParameter(final String query, final String key) {
+		if (query == null || !query.contains(key + "="))
+			return null;
+		return query.split(key + "=")[1];
+	}
 	private static String auth(final HttpExchange exchange) {
 		final String authHeader = exchange.getRequestHeaders().getFirst("Authorization");
 		if (authHeader == null || !authHeader.startsWith("Bearer "))
@@ -211,8 +216,7 @@ public class Server {
 			}
 			try {
 				final String query = exchange.getRequestURI().getQuery();
-				final String handle =
-					(query != null && query.contains("=")) ? query.split("=")[1] : "";
+				final String handle = getParameter(query, "handle");
 				final PlayerDAO playerDAO = new PlayerDAO();
 				final List<Player> players = playerDAO.searchPlayers(handle);
 				for (final Player player : players) player.setPasswordHash(null);
@@ -233,11 +237,11 @@ public class Server {
 			}
 			try {
 				final String query = exchange.getRequestURI().getQuery();
-				if (query == null || !query.contains("handle=")) {
+				if (getParameter(query, "handle") == null) {
 					sendResponse(exchange, 400, "Bad Request");
 					return;
 				}
-				final String handle = query.split("=")[1];
+				final String handle = getParameter(query, "handle");
 				final PlayerDAO playerDAO = new PlayerDAO();
 				final Player player = playerDAO.getPlayerByHandle(handle);
 				if (player != null) {
@@ -264,8 +268,8 @@ public class Server {
 				final String query = exchange.getRequestURI().getQuery();
 				final AchievementDAO achievementDAO = new AchievementDAO();
 				final List<Achievement> achievements;
-				if (query != null && query.contains("playerId=")) {
-					final String playerId = query.split("playerId=")[1];
+				if (getParameter(query, "playerId") != null) {
+					final String playerId = getParameter(query, "playerId");
 					achievements = achievementDAO.readAllForPlayer(playerId);
 				} else {
 					achievements = achievementDAO.readAll();
@@ -346,11 +350,11 @@ public class Server {
 			if ("GET".equalsIgnoreCase(exchange.getRequestMethod())) {
 				try {
 					final String query = exchange.getRequestURI().getQuery();
-					if (query == null || !query.contains("playerId=")) {
+					if (getParameter(query, "playerId") == null) {
 						sendResponse(exchange, 400, "Bad Request");
 						return;
 					}
-					final String playerId = query.split("=")[1];
+					final String playerId = getParameter(query, "playerId");
 					final PlayerDAO playerDAO = new PlayerDAO();
 					final Player player = playerDAO.read(playerId);
 					if (player == null || !player.getHandle().equals(handle)) {
@@ -457,11 +461,11 @@ public class Server {
 				sendResponse(exchange, 200, "OK");
 			} else {
 				final String query = exchange.getRequestURI().getQuery();
-				if (query == null || !query.contains("gameId=")) {
+				if (getParameter(query, "gameId") == null) {
 					sendResponse(exchange, 400, "Bad Request");
 					return;
 				}
-				final String gameId = query.split("=")[1];
+				final String gameId = getParameter(query, "gameId");
 				if (!isUserInGame(handle, gameId)) {
 					sendResponse(exchange, 403, "Forbidden");
 					return;
@@ -597,11 +601,11 @@ public class Server {
 			}
 			try {
 				final String query = exchange.getRequestURI().getQuery();
-				if (query == null || !query.contains("id=")) {
+				if (getParameter(query, "tournamentId") == null) {
 					sendResponse(exchange, 400, "Missing tournament ID");
 					return;
 				}
-				final String tournamentId = query.split("=")[1];
+				final String tournamentId = getParameter(query, "tournamentId");
 				final TournamentDAO tournamentDAO = new TournamentDAO();
 				final List<Player> players = tournamentDAO.getParticipants(tournamentId);
 				for (final Player player : players) {
