@@ -143,6 +143,10 @@ public class API {
 	public static List<Achievement> achievements() {
 		return fetch("/achievements", Achievement[].class);
 	}
+
+	public static List<Achievement> achievements(final String playerId) {
+		return fetch("/achievements?playerId=" + playerId, Achievement[].class);
+	}
 	public static List<Puzzle> puzzles() {
 		return fetch("/puzzles", Puzzle[].class);
 	}
@@ -150,17 +154,7 @@ public class API {
 		return fetch("/tournaments", Tournament[].class);
 	}
 	public static List<Player> leaderboard() {
-		try {
-			final HttpRequest.Builder requestBuilder =
-				HttpRequest.newBuilder().GET().timeout(TIMEOUT_DURATION);
-			final HttpResponse<String> response = sendWithFallback(requestBuilder, "/leaderboard");
-			if (response != null && response.statusCode() == 200) {
-				return List.of(MAPPER.readValue(response.body(), Player[].class));
-			}
-		} catch (final Exception exception) {
-			exception.printStackTrace();
-		}
-		return Collections.emptyList();
+		return fetch("/leaderboard", Player[].class);
 	}
 	public static Settings settings(final String playerId) {
 		try {
@@ -241,36 +235,34 @@ public class API {
 		}
 		return null;
 	}
-	public static boolean update(final String currentPassword, final String email,
-		final String location, final String avatar, final String newPassword) {
+	public static boolean update(final String password, final String email, final String location,
+		final String avatar, final String newPassword) {
 		try {
-			final ObjectNode json = MAPPER.createObjectNode();
-			json.put("currentPassword", currentPassword);
-			json.put("email", email);
-			json.put("location", location);
-			json.put("avatar", avatar);
+			final ObjectNode jsonNode = MAPPER.createObjectNode();
+			jsonNode.put("password", password);
+			jsonNode.put("email", email);
+			jsonNode.put("location", location);
+			jsonNode.put("avatar", avatar);
 			if (newPassword != null && !newPassword.isEmpty()) {
-				json.put("newPassword", newPassword);
+				jsonNode.put("newPassword", newPassword);
 			}
+			final String json = MAPPER.writeValueAsString(jsonNode);
 			final HttpRequest.Builder requestBuilder =
 				HttpRequest.newBuilder()
-					.POST(HttpRequest.BodyPublishers.ofString(json.toString()))
-					.header("Content-Type", "application/json");
-			final HttpResponse<String> response =
-				sendWithFallback(requestBuilder, "/profile/update");
+					.header("Content-Type", "application/json")
+					.POST(HttpRequest.BodyPublishers.ofString(json))
+					.timeout(TIMEOUT_DURATION);
+			final HttpResponse<String> response = sendWithFallback(requestBuilder, "/update");
 			return response != null && response.statusCode() == 200;
+		} catch (final HttpTimeoutException ignored) {
 		} catch (final Exception exception) {
 			exception.printStackTrace();
-			return false;
 		}
+		return false;
 	}
 	public static void unlock(final String achievementId) {
 		try {
-			final String playerId = SettingsManager.playerId;
-			if (playerId == null)
-				return;
 			final ObjectNode jsonNode = MAPPER.createObjectNode();
-			jsonNode.put("playerId", playerId);
 			jsonNode.put("achievementId", achievementId);
 			final String json = MAPPER.writeValueAsString(jsonNode);
 			final HttpRequest.Builder requestBuilder =
@@ -279,6 +271,7 @@ public class API {
 					.POST(HttpRequest.BodyPublishers.ofString(json))
 					.timeout(TIMEOUT_DURATION);
 			sendWithFallback(requestBuilder, "/unlock");
+		} catch (final HttpTimeoutException ignored) {
 		} catch (final Exception exception) {
 			exception.printStackTrace();
 		}
@@ -302,22 +295,6 @@ public class API {
 		return false;
 	}
 	public static List<Player> participants(final String tournamentId) {
-		return fetch("/participants?id=" + tournamentId, Player[].class);
-	}
-	public static List<Achievement> achievementsForPlayer(final String playerId) {
-		if (playerId == null)
-			return Collections.emptyList();
-		try {
-			final HttpRequest.Builder requestBuilder =
-				HttpRequest.newBuilder().GET().timeout(TIMEOUT_DURATION);
-			final HttpResponse<String> response =
-				sendWithFallback(requestBuilder, "/achievements?playerId=" + playerId);
-			if (response != null && response.statusCode() == 200) {
-				return List.of(MAPPER.readValue(response.body(), Achievement[].class));
-			}
-		} catch (final Exception exception) {
-			exception.printStackTrace();
-		}
-		return Collections.emptyList();
+		return fetch("/participants?tournamentId=" + tournamentId, Player[].class);
 	}
 }

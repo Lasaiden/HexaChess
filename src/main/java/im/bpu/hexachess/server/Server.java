@@ -549,12 +549,13 @@ public class Server {
 			try {
 				final ObjectNode jsonNode =
 					MAPPER.readValue(exchange.getRequestBody(), ObjectNode.class);
-				if (jsonNode == null || !jsonNode.has("playerId")
-					|| !jsonNode.has("achievementId")) {
+				if (jsonNode == null || !jsonNode.has("achievementId")) {
 					sendResponse(exchange, 400, "Bad Request");
 					return;
 				}
-				final String playerId = jsonNode.get("playerId").asText();
+				final PlayerDAO playerDAO = new PlayerDAO();
+				final Player player = playerDAO.getPlayerByHandle(handle);
+				final String playerId = player.getPlayerId();
 				final String achievementId = jsonNode.get("achievementId").asText();
 				final AchievementDAO achievementDAO = new AchievementDAO();
 				achievementDAO.unlock(playerId, achievementId);
