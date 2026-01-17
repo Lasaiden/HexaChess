@@ -139,9 +139,12 @@ public class HexPanel {
 	private void executeMove(final AxialCoordinate target) {
 		if (isLockedIn || isGameOver)
 			return;
+		final ResourceBundle bundle = Main.getBundle();
 		if (state.history.isEmpty()) {
-			Thread.ofVirtual().start(() -> API.unlock("ACH_0000001"));
-			System.out.println("Achievement: First step unlocked!");
+			Thread.ofVirtual().start(() -> {
+				API.unlock("ACH_0000001");
+				System.out.println(bundle.getString("achievement.firststep"));
+			});
 		}
 		final Piece pieceBeforeMove = state.board.getPiece(selected);
 		final boolean wasPawn = (pieceBeforeMove != null && pieceBeforeMove.type == PieceType.PAWN);
@@ -150,8 +153,10 @@ public class HexPanel {
 		state.board.movePiece(selected, target);
 		final Piece pieceAfterMove = state.board.getPiece(target);
 		if (wasPawn && pieceAfterMove != null && pieceAfterMove.type == PieceType.QUEEN) {
-			Thread.ofVirtual().start(() -> API.unlock("ACH_0000006"));
-			System.out.println("Achievement: Promotion Royal unlocked!");
+			Thread.ofVirtual().start(() -> {
+				API.unlock("ACH_0000006");
+				System.out.println(bundle.getString("achievement.promotionroyal"));
+			});
 		}
 		deselect();
 		checkGameOver();
